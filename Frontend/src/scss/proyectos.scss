@@ -1,0 +1,16 @@
+.cuadros {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    
+    transition: 1s;
+    :hover{
+        transform: scale(1.05);
+    }
+}
+.cuadro2{
+    cursor: pointer;
+    background-color:#e6e6fa;
+    border: 1px solid black;
+
+}
