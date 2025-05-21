@@ -5,7 +5,7 @@
 @use "vendors/simplebar";
 
 body {
-  background-color:#331cc0;
+  background-color:rgb(205, 199, 199);
 }
 
 .wrapper {
@@ -56,12 +56,57 @@ body {
   min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
 }
 
+
+
+
+ 
+  .sidebar .nav-link:hover {
+  background-color: #e6e6fa;  //crea un hover para el menu lateral
+  color: black ; 
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+
+.sidebar .nav-link.active {
+  background-color: #e6e6fa;  //crea un hover para el menu lateral
+  color: black ; 
+  font-weight: bold;
+  border-radius: 8px;
+  position: relative;
+}
+
+.sidebar .nav-link.active::before {
+  content: '';
+  position: absolute;
+  left:-1%;
+  top: 8px;
+  bottom: 8px;
+  width: 5px;
+  border-radius: 4px;
+  background: #3d3dff; // Color azul, cámbialo si quieres otro
+}
+
+
+
+
+
 @include color-mode(dark) {
-  body {
-    background-color: var(--cui-dark-bg-subtle);
+  .sidebar {
+    background-color:#212631;//pone el menu lateral en negro en el modo oscuro
   }
 
-  .footer {
-    --cui-footer-bg: var(--cui-body-bg);
+  .sidebar .nav-link:hover {
+    background-color: black; //crea un hover para el menu lateral en el modo oscuro
+    color: white; 
   }
+
+  .sidebar .nav-link.active {
+    background-color: black; //cambia a modo oscuro
+    color: white; 
+  }
+  
 }
+
+
+

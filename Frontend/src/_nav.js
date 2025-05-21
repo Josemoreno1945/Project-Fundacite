@@ -14,6 +14,9 @@ import {
   cilSpeedometer,
   cilStar,
   cilUser,
+  cilGroup,
+  cilHome,
+  cilBarChart
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -21,34 +24,53 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Perfil',
-    to: '#',
-    icon:<CIcon icon={cilUser} />
+    to: '/components/Perfil',
+    icon:<CIcon icon={cilUser} customClassName="nav-icon" />
   },
 
   {
     component: CNavItem,
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
   },
 
+
+    {
+    component: CNavGroup,
+    name: 'Usuarios',
+    icon:<CIcon icon={cilGroup} customClassName="nav-icon"/>,
+    
+    items: [
+      {
+        component: CNavItem,
+        name: 'Lista de usuarios',
+        to: '/components/Usuarios',
+      },
+      {
+        component: CNavItem,
+        name: 'Registro de usuarios',
+        to: '/components/Registro',
+      },
+    ],
+  },
 
 
 
   {
     component: CNavGroup,
     name: 'Proyectos',
-    
+    icon:<CIcon icon={cilBarChart} customClassName="nav-icon"/>,
     items: [
       {
         component: CNavItem,
-        name: 'Subir',
-        to: '#',
+        name: 'Lista de Proyectos',
+        to: '/components/Proyectos',
       },
       {
         component: CNavItem,
-        name: 'Lista',
-        to: '#',
+        name: 'Subir Proyecto',
+        to: '/components/Registro-Proyectos',
       },
     ],
   }

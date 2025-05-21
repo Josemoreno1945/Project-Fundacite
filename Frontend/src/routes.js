@@ -4,6 +4,12 @@ const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
+const Usuarios = React.lazy(() => import('./components/Usuarios'))
+const Registro = React.lazy(() => import('./components/Registro'))
+const Proyectos = React.lazy(() => import('./components/Proyectos'))
+const Registro_Proyectos = React.lazy(() => import('./components/Registro-Proyectos.js'))
+const Perfil = React.lazy(() => import('./components/Perfil.js'))
+
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
@@ -97,6 +103,17 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
+
+
+  { path: '/components/Perfil', name: 'components', element: Perfil },
+  { path: '/components/Usuarios', name: 'components', element: Usuarios },
+  { path: '/components/Registro', name: 'components', element: Registro },
+  { path: '/components/Proyectos', name: 'components', element: Proyectos },
+  { path: '/components/Registro-Proyectos', name: 'components', element: Registro_Proyectos },
+
+
+
+
 ]
 
 export default routes
