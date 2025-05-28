@@ -49,7 +49,7 @@ const navigate = useNavigate();
 
     return(
         <>
-        <CCard>
+        <CCard className='mb-4'>
           <CCardHeader>Lista de Proyectos</CCardHeader>
           <CCardBody>
             <div className='cuadros'>

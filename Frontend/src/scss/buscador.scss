@@ -1,0 +1,58 @@
+.search-buttom{
+    display: flex;
+    background-color:#0057B8;
+    color: white;
+    border-radius: 0px 5.3px 5.3px 0px;
+    &:hover {
+        background-color:white;
+        color: black;
+        border: 1px solid black;
+        transform: scale(1.07);
+    }
+}
+
+.input-buttom-search{
+    border-radius: 5.3px 0px 0px 5.3px;
+}
+
+.icon-search{
+    transform: scale(2.4);
+    padding: 2.5px 0px 0px 0px;
+    margin: 0px 0px 0px 2px;
+}
+
+
+.buscador{
+    width: 50%;
+    position: relative;
+    left: 25%;
+    top: -8px;
+    border: 1px solid black;
+    border-radius: 7px;
+}
+
+
+.box-buttom{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-input{
+    margin-right: 10px;
+    background-color:#0057B8;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#0057B8, 10%);
+        transform:scale(1.1);
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#0057B8, 30%);
+    }
+}

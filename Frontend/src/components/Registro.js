@@ -25,7 +25,7 @@ import "../scss/registro-u.scss";
 const Registro =()=>{
     return(
         <>
-        <CCard>
+        <CCard className='mb-4'>
             <CCardHeader>REGISTRO DE USUARIO</CCardHeader>
             <CCardBody>
                 <CForm>

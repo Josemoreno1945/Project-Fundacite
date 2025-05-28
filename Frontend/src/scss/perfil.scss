@@ -1,0 +1,70 @@
+.profile-module {
+  max-width: 480px;
+  margin: 2rem auto;
+  border-radius: 8px;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 2rem;
+
+
+  &__title {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: #2d3748; // dark gray
+  }
+
+
+  &__field {
+    margin-bottom: 1.75rem;
+
+
+    label.form-label {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      display: block;
+      color: #4a5568; // medium gray
+    }
+
+
+    &__input-group {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+
+      input.form-control {
+        background-color: #edf2f7; // light gray background
+        border: 1px solid #cbd5e0; // border gray
+        color: #4a5568; // text gray
+        flex: 1;
+      }
+    }
+  }
+
+
+  .profile-module__input-group {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+
+    input.form-control {
+      background-color: #edf2f7;
+      border: 1px solid #cbd5e0;
+      color: #4a5568;
+      flex: 1;
+    }
+  }
+
+  .profile-module__edit-btn {
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+    transition: transform 0.2s ease;
+
+
+    &:hover {
+      transform: scale(1.1);
+      color: #ffffff !important;
+      background-color: #000000 !important;
+      border-color: #000000 !important;
+    }
+  }
+}

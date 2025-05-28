@@ -77,7 +77,7 @@ const handleSubmit = (e) => {
 	return(
 		
 		<>
-		<CCard>
+		<CCard className='mb-4'>
 			<CCardHeader>REGISTRO DE PROYECTO</CCardHeader>
 			<CCardBody>
 				<CForm>
