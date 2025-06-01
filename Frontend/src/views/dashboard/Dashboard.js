@@ -53,6 +53,8 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import MainChart from './MainChart'
+import { CChartPie } from '@coreui/react-chartjs';
+import '../../scss/dashboard.scss'
 
 const Dashboard = () => {
   const progressExample = [
@@ -179,6 +181,80 @@ const Dashboard = () => {
   return (
     <>
  
+<CRow className="align-items-center">
+      {/* Tarjeta de Resumen de Proyectos */}
+      <CCol xs={12} md={6}>
+        <CCard className="mb-4 project-container">
+          <CCardHeader className="text-center">Resumen de Proyectos</CCardHeader>
+          <CCardBody>
+            <CRow>
+              {/* Proyectos Aprobados */}
+              <CCol xs={12} sm={4}>
+                <CCard className="mb-3 project-card">
+                  <CCardBody className="d-flex flex-column align-items-center justify-content-center">
+                    <h5>Proyectos Aprobados</h5>
+                    <h3>30</h3>
+                  </CCardBody>
+                  <div style={{ height: '4px', backgroundColor: '#28a745' }}></div>
+                </CCard>
+              </CCol>
+
+              {/* Proyectos Pendientes */}
+              <CCol xs={12} sm={4}>
+                <CCard className="mb-3 project-card">
+                  <CCardBody className="d-flex flex-column align-items-center justify-content-center">
+                    <h5>Proyectos Pendientes</h5>
+                    <h3>15</h3>
+                  </CCardBody>
+                  <div style={{ height: '4px', backgroundColor: '#ffc107' }}></div>
+                </CCard>
+              </CCol>
+
+              {/* Proyectos Rechazados */}
+              <CCol xs={12} sm={4}>
+                <CCard className="mb-3 project-card">
+                  <CCardBody className="d-flex flex-column align-items-center justify-content-center">
+                    <h5>Proyectos Rechazados</h5>
+                    <h3>5</h3>
+                  </CCardBody>
+                  <div style={{ height: '4px', backgroundColor: '#dc3545' }}></div>
+                </CCard>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+      </CCol>
+
+      {/* Gráfico de Distribución */}
+      <CCol xs={12} md={6}>
+        <CCard className="mb-4 chart-card">
+          <CCardHeader className="text-center">Distribución de Proyectos por Categorías</CCardHeader>
+          <CCardBody className="d-flex justify-content-center">
+            <div className="chart-container">
+              <CChartPie
+                data={{
+                  labels: ['Investigación', 'Desarrollo', 'Educación', 'Innovación', 'Otros'],
+                  datasets: [
+                    {
+                      backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d'],
+                      hoverBackgroundColor: ['#0056b3', '#1e7e34', '#d39e00', '#a71d2a', '#5a6268'],
+                      hoverOffset: 10,
+                      data: [20, 35, 25, 10, 15],
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                }}
+              />
+            </div>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
+
+
       <CCard className="mb-4">
         <CCardBody>
           <CRow>

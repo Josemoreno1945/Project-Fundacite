@@ -1,0 +1,30 @@
+.box-buttom{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-input{
+    margin-right: 10px;
+    background-color:#0057B8;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#0057B8, 10%);
+        transform:scale(1.1);
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#0057B8, 30%);
+    }
+}
+
+.botonhover{
+    &:hover{
+        transform:scale(1.2);
+    }
+}

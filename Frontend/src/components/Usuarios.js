@@ -17,7 +17,9 @@ import {
   cilGroup,
   cilHome,
   cilBarChart,
-  cilXCircle
+  cilXCircle,
+  cilSearch,
+  cilLowVision
 } from '@coreui/icons'
 import {
   CButton,
@@ -44,6 +46,9 @@ CTableHeaderCell,
 CTableDataCell
 } from '@coreui/react'
 
+import '../scss/buscador.scss'
+import '../scss/lista-usuarios.scss'
+
 import Paginacion from './paginacion';
 
 const Usuarios =()=>{
@@ -59,14 +64,65 @@ const [users,setUsers]=useState([
     nombre:'mperez',
     rol:'usuario',
     correo:'example2@gmail.com'
+  },
+
+      {
+    nombre:'mperez',
+    rol:'usuario',
+    correo:'example2@gmail.com'
+  },
+  
+      {
+    nombre:'mperez',
+    rol:'usuario',
+    correo:'example2@gmail.com'
+  },
+
+      {
+    nombre:'mperez',
+    rol:'usuario',
+    correo:'example2@gmail.com'
   }
+
+  
 ])
 
 
     return(
         <>
-        <CCard>
-          <CCardHeader>TABLA DE USUARIOS</CCardHeader>
+
+
+          <div className="buscador">
+          <CForm className="d-flex">
+              <CFormInput
+              className="input-buttom-search"
+              type="text"
+              placeholder="Buscar..."
+              ></CFormInput>
+              <CButton className="search-buttom"><CIcon className="icon-search" icon={cilSearch} /></CButton>
+          </CForm>
+          </div>
+
+
+
+        <CCard className='mb-4'>
+          <CCardHeader>
+              <div className='box-buttom'>
+                  <div>Usuarios</div>
+                  <div >
+                      <CForm >
+                          <CFormSelect className='filter-input'>
+                          <option>Filtrar</option>
+                          <option>Nombre de usuario</option>
+                          <option>Correo Electronico</option>
+                          <option>Rol</option>
+                          <option>Nombre</option>
+                          <option>Apellido</option>
+                      </CFormSelect>
+                      </CForm>
+                  </div>
+              </div>
+          </CCardHeader>
           <CCardBody>
             <CTable>
               <CTableHead>
@@ -74,6 +130,7 @@ const [users,setUsers]=useState([
                   <CTableHeaderCell>Nombre de usuario</CTableHeaderCell>
                   <CTableHeaderCell>Rol</CTableHeaderCell>
                   <CTableHeaderCell>Correo electronico</CTableHeaderCell>
+                  <CTableHeaderCell>Ver</CTableHeaderCell>
                   <CTableHeaderCell>Editar</CTableHeaderCell>
                   <CTableHeaderCell>Eliminar</CTableHeaderCell>
                 </CTableRow>
@@ -85,10 +142,13 @@ const [users,setUsers]=useState([
                   <CTableDataCell>{u.rol}</CTableDataCell>
                   <CTableDataCell>{u.correo}</CTableDataCell>
                   <CTableDataCell>
-                    <CButton><CIcon icon={cilPencil}></CIcon></CButton>
+                    <CButton className='botonhover' onClick={() => {}}><CIcon  icon={cilLowVision} /></CButton>
                   </CTableDataCell>
                   <CTableDataCell>
-                    <CButton><CIcon icon={cilXCircle}></CIcon></CButton>
+                    <CButton className='botonhover'><CIcon icon={cilPencil} style={{color:'blue'}}></CIcon></CButton>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    <CButton className='botonhover'><CIcon icon={cilXCircle} style={{ color: 'red' }} /></CButton>
                   </CTableDataCell>
                 </CTableRow>
                 ))}
