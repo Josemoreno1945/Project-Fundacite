@@ -1,4 +1,4 @@
-import {React,  useState } from 'react'
+import {React,  use,  useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import { 
 cilLockLocked, 
@@ -38,6 +38,7 @@ const Registro_Proyectos =()=>{
 
 const [documentos, setDocumentos] = useState([]); // Array para almacenar archivos seleccionados
 const [categorias, setCategorias] = useState([]);
+const [TipoArchivos,setTipoArchivos]=useState([])
 
 
 const [formData, setFormData] = useState({
@@ -49,6 +50,11 @@ const [formData, setFormData] = useState({
 	Proy_CatId:'',
 });
 
+const [formData_doc,setFormData_doc]=useState({
+	Doc_NomArc:'',
+	Doc_RutaAr:'',
+	Doc_TiArId:''
+})
 
 
 
@@ -76,6 +82,23 @@ const cargarCategorias = async () => {
 //--------------------------------------------------------------------------------------------------------------
 
 
+//-----------------------------------------------------------------------------------------------------
+
+
+const cargarTarchivos = async () => {
+    try {
+        const result = await axios.get('http://localhost:4000/tipoArchivos'); 
+        setTipoArchivos(result.data); 
+    } catch (error) {
+        console.error('Error al obtener los tipos', error);
+    }
+};
+//--------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
 
 
@@ -83,8 +106,7 @@ const cargarCategorias = async () => {
 
 const handleSubmit =async (e) => {
 	e.preventDefault();
-
-
+//------------------------------------------------------------------proy
 	const formDataToSend = new FormData();
 	formDataToSend.append('Proy_Titul',formData.Proy_Titul);
 	formDataToSend.append('Proy_Descr',formData.Proy_Descr);
@@ -92,6 +114,13 @@ const handleSubmit =async (e) => {
 	formDataToSend.append('Proy_FecRe',formData.Proy_FecRe);
 	formDataToSend.append('proy_statu',formData.proy_statu);
 	formDataToSend.append('Proy_CatId',formData.Proy_CatId);
+
+
+//------------------------------------------------------------------doc
+	const FormData_doc_ToSend = new formData()
+	FormData_doc_ToSend.append('Doc_NomArc',formData_doc.Doc_NomArc)
+	FormData_doc_ToSend.append('Doc_RutaAr',formData_doc.Doc_RutaAr)
+	FormData_doc_ToSend.append('Doc_TiArId',formData_doc.Doc_TiArId)
 
 
 	try{
@@ -252,6 +281,43 @@ const handleSubmit =async (e) => {
 				<CCard>
 					<CCardHeader>Anexar Documentos</CCardHeader>
 					<CCardBody>
+						<CInputGroup className="mb-3">
+							<div className='d-flex  w-100 gap-3'>
+								<div className="w-50">
+										<CFormLabel>Nombre del archivo</CFormLabel>
+										<CInputGroup>
+											<CInputGroupText>
+											<CIcon icon={cilPencil} />
+											</CInputGroupText>
+											<CFormInput 
+												type='text'
+												placeholder='Nombre del archivo'
+												name="" 
+												
+											></CFormInput>
+										</CInputGroup>
+										
+								</div>
+								<div className="w-50">
+										<CFormLabel>Tipo de archivo</CFormLabel>
+										<CInputGroup>
+											<CInputGroupText>
+												<CIcon icon={cilOptions} />
+											</CInputGroupText>
+											<CFormSelect onFocus={cargarTarchivos}  name='Doc_TiArId'
+											value={formData_doc.Doc_TiArId}> 
+												<option value="">Tipo de archivo</option>
+													{TipoArchivos.map((archivo) => (
+														<option key={archivo.TipA_Id} value={archivo.TipA_Id}>
+															{archivo.TipA_Nombr}
+														</option>
+													))}
+											</CFormSelect>
+										</CInputGroup>
+										
+								</div>
+							</div>
+						</CInputGroup>
 					 {/*}
 						<MyDropzone onFilesAccepted={handleDocumentChange} />
 						{*/}

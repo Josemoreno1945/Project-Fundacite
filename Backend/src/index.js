@@ -6,6 +6,7 @@ import usersRoutes from "./routes/users.routes.js"
 import docRoutes from "./routes/doc.routes.js"
 import proyRoutes from "./routes/proy.routes.js"
 import catRoutes from "./routes/cate.routes.js"
+import TaRoutes from "./routes/TipoArch.routes.js"
 
 import morgan from 'morgan'
 
@@ -19,5 +20,6 @@ app.use(usersRoutes)
 app.use(docRoutes)
 app.use(proyRoutes)
 app.use(catRoutes)
+app.use(TaRoutes)
 app.listen(PORT);
 console.log("Server on port",PORT)
