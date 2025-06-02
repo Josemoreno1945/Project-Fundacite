@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import {React,  useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import { 
 cilLockLocked, 
@@ -30,47 +30,78 @@ CFormLabel,
 CFormTextarea
 } from '@coreui/react'
 import '../scss/registro-u.scss'
+import axios from 'axios';
 import MyDropzone from './subirarchivos'; 
 
 const Registro_Proyectos =()=>{
 
-const [projectTitle, setProjectTitle] = useState('');
+
 const [documentos, setDocumentos] = useState([]); // Array para almacenar archivos seleccionados
+const [categorias, setCategorias] = useState([]);
 
-const handleDocumentChange = (acceptedFiles) => {
-// Esto acumula los archivos, en lugar de reemplazarlos
-setDocumentos((prevDocs) => [...prevDocs, ...acceptedFiles]);
+
+const [formData, setFormData] = useState({
+    Proy_Titul: '',
+    Proy_Descr: '',
+	Proy_Resum:'',
+	Proy_FecRe:'',
+	proy_statu:'',
+	Proy_CatId:'',
+});
+
+
+
+
+
+const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+        ...prevState,
+        [name]: value
+    }));
 };
 
-const handleSubmit = (e) => {
+
+//-----------------------------------------------------------------------------------------------------
+
+
+const cargarCategorias = async () => {
+    try {
+        const result = await axios.get('http://localhost:4000/categorias'); 
+        setCategorias(result.data); 
+    } catch (error) {
+        console.error('Error al obtener las categorías', error);
+    }
+};
+//--------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+const handleSubmit =async (e) => {
 	e.preventDefault();
-	// Aquí construirás el objeto a enviar al backend, 
-	// usando FormData si vas a enviar archivos
-	const formData = new FormData();
-	formData.append('projectTitle', projectTitle);
-	documentos.forEach((file) => {
-		formData.append('documentos', file);
-	});
-	console.log('Datos a enviar:', formData);
-	// Aquí envías el formulario con fetch o axios
-	// Ejemplo:
-	// axios.post('/api/projects', formData)
-	//   .then(response => console.log(response.data))
-	//   .catch(error => console.error(error));
-};
 
 
+	const formDataToSend = new FormData();
+	formDataToSend.append('Proy_Titul',formData.Proy_Titul);
+	formDataToSend.append('Proy_Descr',formData.Proy_Descr);
+	formDataToSend.append('Proy_Resum',formData.Proy_Resum);
+	formDataToSend.append('Proy_FecRe',formData.Proy_FecRe);
+	formDataToSend.append('proy_statu',formData.proy_statu);
+	formDataToSend.append('Proy_CatId',formData.Proy_CatId);
 
 
-
-
-
-
-
-
-
-
-
+	try{
+		console.log("🚀 Datos que se envían a /proyectos:", [...formDataToSend.entries()]);
+		const postProyect=await axios.post("http://localhost:4000/proyectos", formDataToSend)
+		
+	}catch (err) {
+    	console.error('Error al registrar proyecto o documentos:', err)
+	};
+}
 
 
 
@@ -109,6 +140,8 @@ const handleSubmit = (e) => {
 											</CInputGroupText>
 											<CFormInput 
 												type='Text'
+												name="Proy_Titul" 
+												onChange={handleInputChange}
 												placeholder='Titulo'
 											></CFormInput>
 										</CInputGroup>
@@ -126,7 +159,11 @@ const handleSubmit = (e) => {
 											<CInputGroupText>
 											<CIcon icon={cilCommentSquare} />
 											</CInputGroupText>
-											<CFormTextarea placeholder='Descripcion' id="descripcion" rows={3}></CFormTextarea>
+											<CFormTextarea 
+											name="Proy_Descr" 
+											onChange={handleInputChange}
+											placeholder='Descripcion' 
+											id="descripcion" rows={3}></CFormTextarea>
 										</CInputGroup>
 										
 								</div>
@@ -136,7 +173,12 @@ const handleSubmit = (e) => {
 											<CInputGroupText>
 												<CIcon icon={cilCommentSquare} />
 											</CInputGroupText>
-											<CFormTextarea placeholder='Resumen' id="descripcion" rows={3}></CFormTextarea>
+											<CFormTextarea 
+											name="Proy_Resum" 
+											onChange={handleInputChange}
+											placeholder='Resumen' 
+											id="descripcion" 
+											rows={3}></CFormTextarea>
 										</CInputGroup>
 										
 								</div>
@@ -155,6 +197,8 @@ const handleSubmit = (e) => {
 											<CFormInput 
 												type='date'
 												placeholder='Fecha'
+												name="Proy_FecRe" 
+												onChange={handleInputChange}
 											></CFormInput>
 										</CInputGroup>
 										
@@ -165,10 +209,12 @@ const handleSubmit = (e) => {
 											<CInputGroupText>
 												<CIcon icon={cilOptions} />
 											</CInputGroupText>
-											<CFormSelect>
+											<CFormSelect  name="proy_statu" 
+														onChange={handleInputChange}>
 												<option>Estado</option>
-												<option>x</option>
-												<option>x</option>
+												<option>aprobado</option>
+												<option>pendiente</option>
+												<option>rechazado</option>
 											</CFormSelect>
 										</CInputGroup>
 										
@@ -185,10 +231,14 @@ const handleSubmit = (e) => {
 											<CInputGroupText>
 											<CIcon icon={cilOptions} />
 											</CInputGroupText>
-											<CFormSelect>
-												<option>Categoria</option>
-												<option>x</option>
-												<option>x</option>
+											<CFormSelect onFocus={cargarCategorias} onChange={handleInputChange} name='Proy_CatId'
+											value={formData.Proy_CatId}> 
+												<option value="">Seleccionar categoría</option>
+													{categorias.map((categoria) => (
+														<option key={categoria.Cate_Id} value={categoria.Cate_Id}>
+															{categoria.Cate_NomCa}
+														</option>
+													))}
 											</CFormSelect>
 										</CInputGroup>
 										
@@ -202,8 +252,9 @@ const handleSubmit = (e) => {
 				<CCard>
 					<CCardHeader>Anexar Documentos</CCardHeader>
 					<CCardBody>
+					 {/*}
 						<MyDropzone onFilesAccepted={handleDocumentChange} />
-
+						{*/}
 
 
 
@@ -230,7 +281,7 @@ const handleSubmit = (e) => {
 			</CCardBody>
 				<CCardFooter>
 						<div className='caja-boton'>
-						<CButton className='boton-registro'>Registrar</CButton>
+						<CButton className='boton-registro' onClick={handleSubmit}>Registrar</CButton>
 						</div>
 				</CCardFooter>
 		</CCard>
