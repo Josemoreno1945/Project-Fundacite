@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { react, useEffect, useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
@@ -48,26 +48,25 @@ import {
 } from '@coreui/react'
 
 import '../scss/buscador.scss'
-import '../scss/lista-usuarios.scss'
+import Paginacion from './paginacion'
+import '../scss/botonadd.scss'
 import axios from 'axios'
 
-import Paginacion from './paginacion'
-
-const Usuarios = () => {
+const tipo_a = () => {
   const [carga, setcarga] = useState(true)
-  const [users, setUsers] = useState([])
+  const [tipo_a, settipo_a] = useState([])
 
   useEffect(() => {
-    const usuarios = async () => {
+    const TiposArchivos = async () => {
       try {
-        const result = await axios.get('http://localhost:4000/users')
-        setUsers(result.data)
+        const result = await axios.get('http://localhost:4000/tipoArchivos')
+        settipo_a(result.data)
         setcarga(false)
       } catch (error) {
-        console.error('Error al obtener los usuarios:', error)
+        console.error('Error al obtener los tipos de archivos:', error)
       }
     }
-    usuarios()
+    TiposArchivos()
   }, [])
 
   if (carga) {
@@ -96,18 +95,9 @@ const Usuarios = () => {
       <CCard className="mb-4">
         <CCardHeader>
           <div className="box-buttom">
-            <div>Usuarios</div>
+            <div>Tipo de archivos</div>
             <div>
-              <CForm>
-                <CFormSelect className="filter-input">
-                  <option>Filtrar</option>
-                  <option>Nombre de usuario</option>
-                  <option>Correo Electronico</option>
-                  <option>Rol</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
-                </CFormSelect>
-              </CForm>
+              <CButton className="botonadd">Agregar</CButton>
             </div>
           </div>
         </CCardHeader>
@@ -115,25 +105,17 @@ const Usuarios = () => {
           <CTable>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>Nombre de usuario</CTableHeaderCell>
-                <CTableHeaderCell>Rol</CTableHeaderCell>
-                <CTableHeaderCell>Correo electronico</CTableHeaderCell>
-                <CTableHeaderCell>Ver</CTableHeaderCell>
+                <CTableHeaderCell>id </CTableHeaderCell>
+                <CTableHeaderCell>Nombre </CTableHeaderCell>
                 <CTableHeaderCell>Editar</CTableHeaderCell>
                 <CTableHeaderCell>Eliminar</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {users.map((u, index) => (
+              {tipo_a.map((ta, index) => (
                 <CTableRow key={index}>
-                  <CTableDataCell>{u.Usua_NomUs}</CTableDataCell>
-                  <CTableDataCell>{u.Rol_Nombre}</CTableDataCell>
-                  <CTableDataCell>{u.Usua_Email}</CTableDataCell>
-                  <CTableDataCell>
-                    <CButton className="botonhover" onClick={() => {}}>
-                      <CIcon icon={cilLowVision} />
-                    </CButton>
-                  </CTableDataCell>
+                  <CTableDataCell>{ta.TipA_Id}</CTableDataCell>
+                  <CTableDataCell>{ta.TipA_Nombr}</CTableDataCell>
                   <CTableDataCell>
                     <CButton className="botonhover">
                       <CIcon icon={cilPencil} style={{ color: 'blue' }}></CIcon>
@@ -157,4 +139,4 @@ const Usuarios = () => {
     </>
   )
 }
-export default Usuarios
+export default tipo_a

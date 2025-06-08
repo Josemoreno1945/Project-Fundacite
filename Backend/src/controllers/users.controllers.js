@@ -1,18 +1,15 @@
-import { getU} from "../models/users.model.js"
-
-
+import { getU, postU } from "../models/users.model.js";
 
 //---------------------------------Get---------------------------------------
-export const getUsers  = async (req,res)=>{
-    try{
-        const rows = await getU()
-        res.json(rows);
-    }catch(error){
-        console.error("Error getting user:", error);
-        res.status(500).send("Error getting user");
-    }
-}
-
+export const getUsers = async (req, res) => {
+  try {
+    const rows = await getU();
+    res.json(rows);
+  } catch (error) {
+    console.error("Error getting user:", error);
+    res.status(500).send("Error getting user");
+  }
+};
 
 /*
 //---------------------------------Get---------------------------------------
@@ -32,18 +29,16 @@ export const getDepartmentsId = async(req,res)=>{
     }
 }
 
+*/
 
 //-------------------------------Post-----------------------------------------
-export const postDeparments = async(req,res)=>{
-    try{
-        const data=req.body
-        const  rows = await postDept(data)
-        return res.json(rows)
-    }   
-    catch(error){
-        console.error("Error when creating department:", error);
-        res.status(500).send("Error when creating department");
-    } 
-}
-
-*/
+export const postUsers = async (req, res) => {
+  try {
+    const data = req.body;
+    const rows = await postU(data);
+    return res.json(rows);
+  } catch (error) {
+    console.error("Error when post users:", error);
+    res.status(500).send("Error when post users");
+  }
+};

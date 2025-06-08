@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { react, useEffect, useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
@@ -48,26 +48,25 @@ import {
 } from '@coreui/react'
 
 import '../scss/buscador.scss'
-import '../scss/lista-usuarios.scss'
+import Paginacion from './paginacion'
+import '../scss/botonadd.scss'
 import axios from 'axios'
 
-import Paginacion from './paginacion'
-
-const Usuarios = () => {
+const categorias = () => {
   const [carga, setcarga] = useState(true)
-  const [users, setUsers] = useState([])
+  const [categorias, setcategorias] = useState([])
 
   useEffect(() => {
-    const usuarios = async () => {
+    const categorias = async () => {
       try {
-        const result = await axios.get('http://localhost:4000/users')
-        setUsers(result.data)
+        const result = await axios.get('http://localhost:4000/categorias')
+        setcategorias(result.data)
         setcarga(false)
       } catch (error) {
-        console.error('Error al obtener los usuarios:', error)
+        console.error('Error al obtener las categorias:', error)
       }
     }
-    usuarios()
+    categorias()
   }, [])
 
   if (carga) {
@@ -77,7 +76,6 @@ const Usuarios = () => {
       </div>
     )
   }
-
   return (
     <>
       <div className="buscador">
@@ -96,18 +94,9 @@ const Usuarios = () => {
       <CCard className="mb-4">
         <CCardHeader>
           <div className="box-buttom">
-            <div>Usuarios</div>
+            <div>Categorias</div>
             <div>
-              <CForm>
-                <CFormSelect className="filter-input">
-                  <option>Filtrar</option>
-                  <option>Nombre de usuario</option>
-                  <option>Correo Electronico</option>
-                  <option>Rol</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
-                </CFormSelect>
-              </CForm>
+              <CButton className="botonadd">Agregar</CButton>
             </div>
           </div>
         </CCardHeader>
@@ -115,25 +104,19 @@ const Usuarios = () => {
           <CTable>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>Nombre de usuario</CTableHeaderCell>
-                <CTableHeaderCell>Rol</CTableHeaderCell>
-                <CTableHeaderCell>Correo electronico</CTableHeaderCell>
-                <CTableHeaderCell>Ver</CTableHeaderCell>
+                <CTableHeaderCell>id </CTableHeaderCell>
+                <CTableHeaderCell>Nombre </CTableHeaderCell>
+                <CTableHeaderCell>Descripcion</CTableHeaderCell>
                 <CTableHeaderCell>Editar</CTableHeaderCell>
                 <CTableHeaderCell>Eliminar</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {users.map((u, index) => (
+              {categorias.map((ca, index) => (
                 <CTableRow key={index}>
-                  <CTableDataCell>{u.Usua_NomUs}</CTableDataCell>
-                  <CTableDataCell>{u.Rol_Nombre}</CTableDataCell>
-                  <CTableDataCell>{u.Usua_Email}</CTableDataCell>
-                  <CTableDataCell>
-                    <CButton className="botonhover" onClick={() => {}}>
-                      <CIcon icon={cilLowVision} />
-                    </CButton>
-                  </CTableDataCell>
+                  <CTableDataCell>{ca.Cate_Id}</CTableDataCell>
+                  <CTableDataCell>{ca.Cate_NomCa}</CTableDataCell>
+                  <CTableDataCell>{ca.Cate_Descr}</CTableDataCell>
                   <CTableDataCell>
                     <CButton className="botonhover">
                       <CIcon icon={cilPencil} style={{ color: 'blue' }}></CIcon>
@@ -157,4 +140,4 @@ const Usuarios = () => {
     </>
   )
 }
-export default Usuarios
+export default categorias

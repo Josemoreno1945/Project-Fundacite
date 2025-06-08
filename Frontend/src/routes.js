@@ -10,6 +10,9 @@ const Proyectos = React.lazy(() => import('./components/Proyectos'))
 const Registro_Proyectos = React.lazy(() => import('./components/Registro-Proyectos.js'))
 const Perfil = React.lazy(() => import('./components/Perfil.js'))
 
+const Categorias = React.lazy(() => import('./components/categorias.js'))
+const tipo_a = React.lazy(() => import('./components/tipo_a.js'))
+
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
@@ -104,16 +107,14 @@ const routes = [
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
 
-
   { path: '/components/Perfil', name: 'components', element: Perfil },
   { path: '/components/Usuarios', name: 'components', element: Usuarios },
   { path: '/components/Registro', name: 'components', element: Registro },
   { path: '/components/Proyectos', name: 'components', element: Proyectos },
   { path: '/components/Registro-Proyectos', name: 'components', element: Registro_Proyectos },
 
-
-
-
+  { path: '/categorias', name: 'components', element: Categorias },
+  { path: '/tipo_a', name: 'components', element: tipo_a },
 ]
 
 export default routes

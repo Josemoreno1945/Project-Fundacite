@@ -1,15 +1,14 @@
-import { pool } from '../db.js';
+import { pool } from "../db.js";
 
 //---------------------------------Get---------------------------------------
-export const getU = async()=>{
-        const query = 
-        `SELECT * 
+export const getU = async () => {
+  const query = `SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_Contr", "Rol_Nombre", "Usua_FecCr"
         FROM "FPM_Usuari"
-        `
-        const result =await pool.query(query)
-        return result.rows
-}
-
+        JOIN "FPM_Rol" ON "FPM_Rol"."Rol_Id" = "FPM_Usuari"."Usua_RolId"
+        `;
+  const result = await pool.query(query);
+  return result.rows;
+};
 
 /*
 //---------------------------------Get---------------------------------------
@@ -20,20 +19,18 @@ export const getDeptid = async(id)=>{
 }
 
 //-------------------------------Post-----------------------------------------
-
-export const postDept = async(data)=>{
-        const query = `INSERT INTO departments(name, address, phone, email, operational_status)
-        VALUES ($1, $2, $3, $4, $5) RETURNING *`
-        
-        const values=[
-            data.name,
-            data.address,
-            data.phone,
-            data.email,
-            data.operational_status
-        ]
-        const result =await pool.query(query,values)
-        return result.rows
-}
-
 */
+export const postU = async (data) => {
+  const query = `INSERT INTO "FPM_Usuari"("Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_Contr", "Usua_RolId") VALUES ($1, $2, $3, $4, $5, $6)`;
+
+  const values = [
+    data.Usua_PrimN,
+    data.Usua_PrimA,
+    data.Usua_NomUs,
+    data.Usua_Email,
+    data.Usua_Contr,
+    data.Usua_RolId,
+  ];
+  const result = await pool.query(query, values);
+  return result.rows;
+};

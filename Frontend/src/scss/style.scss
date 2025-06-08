@@ -1,18 +1,94 @@
-@use "@coreui/coreui/scss/coreui" as * with ( 
-  $enable-deprecation-messages: false,
+@use '@coreui/coreui/scss/coreui' as * with (
+  $enable-deprecation-messages: false
 );
-@use "@coreui/chartjs/scss/coreui-chartjs";
-@use "vendors/simplebar";
+@use '@coreui/chartjs/scss/coreui-chartjs';
+@use 'vendors/simplebar';
+
+//------------------------------------------------------------------------------------------
 
 body {
-  background-color:rgb(205, 199, 199);
+  margin: auto;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: auto;
+  background: linear-gradient(
+    315deg,
+    rgba(101, 0, 94, 1) 3%,
+    rgba(60, 132, 206, 1) 38%,
+    rgba(60, 132, 206, 1) 68%,
+    rgba(255, 25, 25, 1) 98%
+  );
+  animation: gradient 15s ease infinite;
+  background-size: 400% 400%;
+  background-attachment: fixed;
 }
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.wave {
+  background: rgb(255 255 255 / 25%);
+  border-radius: 1000% 1000% 0 0;
+  position: fixed;
+  width: 200%;
+  height: 12em;
+  animation: wave 10s -3s linear infinite;
+  transform: translate3d(0, 0, 0);
+  opacity: 0.8;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.wave:nth-of-type(2) {
+  bottom: -1.25em;
+  animation: wave 18s linear reverse infinite;
+  opacity: 0.8;
+}
+
+.wave:nth-of-type(3) {
+  bottom: -2.5em;
+  animation: wave 20s -1s reverse infinite;
+  opacity: 0.9;
+}
+
+@keyframes wave {
+  2% {
+    transform: translateX(1);
+  }
+
+  25% {
+    transform: translateX(-25%);
+  }
+
+  50% {
+    transform: translateX(-50%);
+  }
+
+  75% {
+    transform: translateX(-25%);
+  }
+
+  100% {
+    transform: translateX(1);
+  }
+}
+
+//----------------------------------------------------------------
 
 .wrapper {
   width: 100%;
   padding-inline: var(--cui-sidebar-occupy-start, 0) var(--cui-sidebar-occupy-end, 0);
   will-change: auto;
-  @include transition(padding .15s);
+  @include transition(padding 0.15s);
 }
 
 .header > .container-fluid,
@@ -56,21 +132,16 @@ body {
   min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
 }
 
-
-
-
- 
-  .sidebar .nav-link:hover {
-  background-color: #e6e6fa;  //crea un hover para el menu lateral
-  color: black ; 
+.sidebar .nav-link:hover {
+  background-color: #e6e6fa; //crea un hover para el menu lateral
+  color: black;
   font-weight: bold;
   border-radius: 8px;
 }
 
-
 .sidebar .nav-link.active {
-  background-color: #e6e6fa;  //crea un hover para el menu lateral
-  color: black ; 
+  background-color: #e6e6fa; //crea un hover para el menu lateral
+  color: black;
   font-weight: bold;
   border-radius: 8px;
   position: relative;
@@ -79,7 +150,7 @@ body {
 .sidebar .nav-link.active::before {
   content: '';
   position: absolute;
-  left:-1%;
+  left: -1%;
   top: 8px;
   bottom: 8px;
   width: 5px;
@@ -87,26 +158,42 @@ body {
   background: #3d3dff; // Color azul, cámbialo si quieres otro
 }
 
+.sidebar {
+  background: white;
+}
+/*
+.header{
+    background: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: none;
 
-
-
+}
+.header,
+.header * {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+*/
+.footer {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: none;
+}
 
 @include color-mode(dark) {
   .sidebar {
-    background-color:#212631;//pone el menu lateral en negro en el modo oscuro
+    background-color: #212631; //pone el menu lateral en negro en el modo oscuro
   }
 
   .sidebar .nav-link:hover {
     background-color: black; //crea un hover para el menu lateral en el modo oscuro
-    color: white; 
+    color: white;
   }
 
   .sidebar .nav-link.active {
     background-color: black; //cambia a modo oscuro
-    color: white; 
+    color: white;
   }
-  
 }
-
-
-
