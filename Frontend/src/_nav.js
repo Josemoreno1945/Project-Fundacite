@@ -16,66 +16,81 @@ import {
   cilUser,
   cilGroup,
   cilHome,
-  cilBarChart
+  cilBarChart,
+  cilChart,
+  cilFile,
+  cilBook,
+  cilLibrary,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
   {
     component: CNavItem,
-    name: 'Perfil',
-    to: '/components/Perfil',
-    icon:<CIcon icon={cilUser} customClassName="nav-icon" />
+    name: 'Home',
+    to: '/',
+    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
   },
 
   {
     component: CNavItem,
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilChart} customClassName="nav-icon" />,
   },
 
-
-    {
+  {
     component: CNavGroup,
     name: 'Usuarios',
-    icon:<CIcon icon={cilGroup} customClassName="nav-icon"/>,
-    
+    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
+
     items: [
-      {
-        component: CNavItem,
-        name: 'Lista de usuarios',
-        to: '/components/Usuarios',
-      },
       {
         component: CNavItem,
         name: 'Registro de usuarios',
         to: '/components/Registro',
       },
+      {
+        component: CNavItem,
+        name: 'Lista de usuarios',
+        to: '/components/Usuarios',
+      },
     ],
   },
-
-
 
   {
     component: CNavGroup,
     name: 'Proyectos',
-    icon:<CIcon icon={cilBarChart} customClassName="nav-icon"/>,
+    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
     items: [
-      {
-        component: CNavItem,
-        name: 'Lista de Proyectos',
-        to: '/components/Proyectos',
-      },
       {
         component: CNavItem,
         name: 'Subir Proyecto',
         to: '/components/Registro-Proyectos',
       },
+      {
+        component: CNavItem,
+        name: 'Lista de Proyectos',
+        to: '/components/Proyectos',
+      },
     ],
-  }
+  },
 
-/*
+  {
+    component: CNavItem,
+    name: 'Categorias',
+    to: '/categorias',
+    icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
+  },
+
+  {
+    component: CNavItem,
+    name: 'Tipos de archivos',
+    to: '/tipo_a',
+    icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
+  },
+
+  /*
   {
     component: CNavTitle,
     name: 'Theme',

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
@@ -16,62 +16,61 @@ import {
   cilUser,
   cilGroup,
   cilHome,
-  cilBarChart
+  cilBarChart,
 } from '@coreui/icons'
-import { CNavGroup, 
-  CNavItem, 
+import {
+  CNavGroup,
+  CNavItem,
   CNavTitle,
   CCard,
   CCardBody,
-  CCardHeader, 
-  CCardFooter} from '@coreui/react'
-import { useNavigate } from 'react-router-dom';
+  CCardHeader,
+  CCardFooter,
+} from '@coreui/react'
+import { useNavigate } from 'react-router-dom'
 import '../scss/proyectos.scss'
-import Paginacion from './paginacion';
+import Paginacion from './paginacion'
+import axios from 'axios'
 
-const Proyectos =()=>{
+const Proyectos = () => {
+  const [proyectos, setProyectos] = useState([])
+  const navigate = useNavigate()
 
-  const proyectos = [
-  { nombre: 'Proyecto A', ruta: '#' },
-  { nombre: 'Proyecto B', ruta: '#' },
-  { nombre: 'Proyecto C', ruta: '#' },
-  { nombre: 'Proyecto D', ruta: '#' },
-  { nombre: 'Proyecto E', ruta: '#' },
-  { nombre: 'Proyecto F', ruta: '#' },
-  { nombre: 'Proyecto G', ruta: '#' },
-  { nombre: 'Proyecto H', ruta: '#' },
-  { nombre: 'Proyecto I', ruta: '#' },
-];
+  useEffect(() => {
+    const obtenerProyectos = async () => {
+      try {
+        const res = await axios.get('http://localhost:4000/proyectos')
+        setProyectos(res.data)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+    obtenerProyectos()
+  }, [])
 
-const colores = ['#FF5733', '#33FF57', '#3357FF', '#F3FF33'];
-
-const navigate = useNavigate();
-
-    return(
-        <>
-        <CCard className='mb-4'>
-          <CCardHeader>Lista de Proyectos</CCardHeader>
-          <CCardBody>
-            <div className='cuadros'>
+  return (
+    <>
+      <CCard className="mb-4">
+        <CCardHeader>Lista de Proyectos</CCardHeader>
+        <CCardBody>
+          <div className="cuadros">
             {proyectos.map((p, index) => (
-              <CCard className='cuadro2' key={index} onClick={() => navigate(p.ruta)}>
-                <CCardHeader>{p.nombre}</CCardHeader>
+              <CCard
+                className="cuadro2"
+                key={p.Proy_Id}
+                onClick={() => navigate(`/proyectos/${p.Proy_Id}`)}
+              >
+                <CCardHeader>{p.Proy_Titul}</CCardHeader>
                 <CCardBody>Haz clic para ver más detalles</CCardBody>
               </CCard>
             ))}
           </div>
-          </CCardBody>
-          <CCardFooter>
-            <Paginacion/>
-          </CCardFooter>
-        </CCard>
-
-
-          
-        </>
-    )
+        </CCardBody>
+        <CCardFooter>
+          <Paginacion />
+        </CCardFooter>
+      </CCard>
+    </>
+  )
 }
 export default Proyectos
-
-
-

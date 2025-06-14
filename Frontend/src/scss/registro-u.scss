@@ -1,20 +1,40 @@
-.boton-registro{
+.boton-registro {
+  background-color: rgb(70, 70, 138);
+  color: white;
+  border: 1px solid black;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 20px;
+  &:hover {
     background-color: rgb(70, 70, 138);
     color: white;
+    transform: scale(1.1);
     border: 1px solid black;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 20px; 
-    &:hover {
-        background-color: rgb(70, 70, 138);
-        color: white;
-        transform: scale(1.10);
-        border: 1px solid black;
-    }
+  }
 }
 
-.caja-boton{
-    display: flex;
-    justify-content: center;
-    width: 100%;
+.caja-boton {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.usuarios-caja {
+  width: 50%;
+  display: flex;
+  margin: 2rem auto;
+  justify-content: center;
+}
+
+.input-tamaño {
+  width: 80% !important;
+  min-width: 0 !important;
+  flex: none !important;
+}
+
+.proyecto-caja {
+  width: 50%;
+  display: flex;
+  margin: 2rem auto;
+  justify-content: center;
 }

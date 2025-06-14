@@ -9,7 +9,7 @@
   &__title {
     font-weight: 700;
     font-size: 1.75rem;
-    color: #2d3748; // dark gray
+    color: white !important;
   }
 
 
@@ -21,7 +21,7 @@
       font-weight: 600;
       margin-bottom: 0.4rem;
       display: block;
-      color: #4a5568; // medium gray
+      color: white !important;
     }
 
 
@@ -33,7 +33,7 @@
       input.form-control {
         background-color: #edf2f7; // light gray background
         border: 1px solid #cbd5e0; // border gray
-        color: #4a5568; // text gray
+        color: white !important;
         flex: 1;
       }
     }
@@ -67,4 +67,54 @@
       border-color: #000000 !important;
     }
   }
+}
+
+.boton{
+    background-color: rgb(70, 70, 138);
+    color: white;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 20px; 
+    &:hover {
+        background-color: rgb(70, 70, 138);
+        color: white;
+        transform: scale(1.10);
+        border: 1px solid black;
+    }
+}
+
+.caja-boton{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+
+
+// Personalización del modal de perfil
+.modal-c .modal-dialog,
+.c-modal.modal-c .c-modal-dialog {
+  width: 50%;
+  
+  margin: auto;
+}
+
+.modal-c .modal-content,
+.c-modal.modal-c .c-modal-content {
+  background: none;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.85) !important;
+  border-radius: 16px !important;
+  border: none !important;
+  color: white !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.modal-c,
+.c-modal.modal-c {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
 }
