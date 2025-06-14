@@ -1,4 +1,4 @@
-import { getU, postU } from "../models/users.model.js";
+import { getU, postU, deleteU, putU } from "../models/users.model.js";
 
 //---------------------------------Get---------------------------------------
 export const getUsers = async (req, res) => {
@@ -40,5 +40,36 @@ export const postUsers = async (req, res) => {
   } catch (error) {
     console.error("Error when post users:", error);
     res.status(500).send("Error when post users");
+  }
+};
+
+//--------------------------------Put----------------------------------------
+export const putUsers = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = req.body;
+    const rows = await putU(id, data);
+    res.json(rows);
+  } catch (error) {
+    console.error("Error actualizando usuario:", error);
+    res.status(500).send("Error actualizando usuario");
+  }
+};
+
+//-------------------------------Delete-----------------------------------------
+
+export const deleteUsers = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const rows = await deleteU(id);
+
+    if (rows === 0) {
+      return res.status(404).json({ message: "usuario no encontrada" });
+    } else {
+      return res.json({ message: "usuario eliminada" });
+    }
+  } catch (error) {
+    console.error("Error obteniendo usuario:", error);
+    res.status(500).send("Error obteniendo usuario");
   }
 };

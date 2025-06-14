@@ -45,6 +45,10 @@ import {
   CTableHeaderCell,
   CTableDataCell,
   CSpinner,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
 } from '@coreui/react'
 
 import '../scss/buscador.scss'
@@ -54,6 +58,8 @@ import axios from 'axios'
 import Paginacion from './paginacion'
 
 const Usuarios = () => {
+  const [userID, setuserID] = useState(null)
+  const [Modal_eli, setModal_eli] = useState(false)
   const [carga, setcarga] = useState(true)
   const [users, setUsers] = useState([])
 
@@ -78,8 +84,51 @@ const Usuarios = () => {
     )
   }
 
+  const cargarusuarios = async () => {
+    try {
+      const result = await axios.get('http://localhost:4000/users')
+      setUsers(result.data)
+      setcarga(false)
+    } catch (error) {
+      console.error('Error al obtener los usuarios:', error)
+    }
+  }
+
+  const deleteUsuario = async (id) => {
+    try {
+      const deleteU = await axios.delete(`http://localhost:4000/users/${id}`)
+      cargarusuarios()
+      setuserID(null)
+    } catch (err) {
+      console.error('Error al eliminar usuario:', err)
+    }
+  }
+
   return (
     <>
+      {/*MODAL PARA BOTON ELIMINAR ----------------------------------------------------------------*/}
+      <CModal visible={Modal_eli} onClose={() => setModal_eli(false)}>
+        <CModalHeader>Eliminar usuario</CModalHeader>
+        <CModalBody>
+          <p>¿Seguro que desea eliminar un usuario?</p>
+        </CModalBody>
+        <CModalFooter>
+          <div className="caja-boton">
+            <CButton
+              className="boton"
+              onClick={() => {
+                deleteUsuario(userID), setModal_eli(false)
+              }}
+            >
+              Eliminar
+            </CButton>
+            <CButton className="boton" onClick={() => setModal_eli(false)}>
+              Cancelar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <div className="buscador">
         <CForm className="d-flex">
           <CFormInput
@@ -140,7 +189,13 @@ const Usuarios = () => {
                     </CButton>
                   </CTableDataCell>
                   <CTableDataCell>
-                    <CButton className="botonhover">
+                    <CButton
+                      className="botonhover"
+                      onClick={() => {
+                        setuserID(u.Usua_Id)
+                        setModal_eli(true)
+                      }}
+                    >
                       <CIcon icon={cilXCircle} style={{ color: 'red' }} />
                     </CButton>
                   </CTableDataCell>

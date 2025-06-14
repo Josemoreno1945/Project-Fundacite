@@ -34,3 +34,36 @@ export const postU = async (data) => {
   const result = await pool.query(query, values);
   return result.rows;
 };
+//--------------------------------Put----------------------------------------
+
+export const putU = async (id, data) => {
+  const query = `
+        UPDATE "FPM_Usuari"
+        SET "Usua_PrimN"=$1, "Usua_PrimA"=$2, "Usua_NomUs"=$3, "Usua_Email"=$4, "Usua_Contr"=$5, "Usua_RolId"=$6
+        WHERE "Usua_Id"=$7  RETURNING * ;
+        `;
+
+  const values = [
+    data.Usua_PrimN,
+    data.Usua_PrimA,
+    data.Usua_NomUs,
+    data.Usua_Email,
+    data.Usua_Contr,
+    data.Usua_RolId,
+    id,
+  ];
+
+  const result = await pool.query(query, values);
+  return result.rows;
+};
+
+//-------------------------------Delete-----------------------------------------
+
+export const deleteU = async (id) => {
+  const query = `
+  DELETE FROM "FPM_Usuari"
+	WHERE "Usua_Id"=$1
+  `;
+  const result = await pool.query(query, [id]);
+  return result.rows;
+};

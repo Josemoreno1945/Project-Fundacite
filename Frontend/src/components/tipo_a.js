@@ -45,6 +45,10 @@ import {
   CTableHeaderCell,
   CTableDataCell,
   CSpinner,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
 } from '@coreui/react'
 
 import '../scss/buscador.scss'
@@ -53,8 +57,12 @@ import '../scss/botonadd.scss'
 import axios from 'axios'
 
 const tipo_a = () => {
+  const [Modal_agg, setModal_agg] = useState(false)
   const [carga, setcarga] = useState(true)
   const [tipo_a, settipo_a] = useState([])
+  const [formData, setFormData] = useState({
+    TipA_Nombr: '',
+  })
 
   useEffect(() => {
     const TiposArchivos = async () => {
@@ -77,8 +85,77 @@ const tipo_a = () => {
     )
   }
 
+  const cargarTiposArchivos = async () => {
+    try {
+      const result = await axios.get('http://localhost:4000/tipoArchivos')
+      settipo_a(result.data)
+      setcarga(false)
+    } catch (error) {
+      console.error('Error al obtener los tipos de archivos:', error)
+    }
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }))
+  }
+
+  const postTipo_a = async () => {
+    const formDataToSend = new FormData()
+    formDataToSend.append('TipA_Nombr', formData.TipA_Nombr)
+    try {
+      const postTa = await axios.post('http://localhost:4000/tipoArchivos', formDataToSend)
+      cargarTiposArchivos()
+    } catch (err) {
+      console.error('Error al registrar tipo de archivo:', err)
+    }
+  }
+
   return (
     <>
+      {/*MODAL PARA BOTON AGREGAR ----------------------------------------------------------------*/}
+
+      <CModal visible={Modal_agg} onClose={() => setModal_agg(false)}>
+        <CModalHeader>Agregar nuevo formato</CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CInputGroup className="mb-3">
+              <CFormLabel>Nombre</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText>
+                  <CIcon icon={cilPencil} />
+                </CInputGroupText>
+                <CFormInput
+                  type="Text"
+                  placeholder="Nombre"
+                  name="TipA_Nombr"
+                  onChange={handleInputChange}
+                ></CFormInput>
+              </CInputGroup>
+            </CInputGroup>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <div className="caja-boton">
+            <CButton
+              className="boton"
+              onClick={() => {
+                setModal_agg(false)
+                postTipo_a()
+              }}
+            >
+              Agregar
+            </CButton>
+            <CButton className="boton" onClick={() => setModal_agg(false)}>
+              Cancelar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <div className="buscador">
         <CForm className="d-flex">
           <CFormInput
@@ -97,7 +174,9 @@ const tipo_a = () => {
           <div className="box-buttom">
             <div>Tipo de archivos</div>
             <div>
-              <CButton className="botonadd">Agregar</CButton>
+              <CButton className="botonadd" onClick={() => setModal_agg(true)}>
+                Agregar
+              </CButton>
             </div>
           </div>
         </CCardHeader>
@@ -108,7 +187,6 @@ const tipo_a = () => {
                 <CTableHeaderCell>id </CTableHeaderCell>
                 <CTableHeaderCell>Nombre </CTableHeaderCell>
                 <CTableHeaderCell>Editar</CTableHeaderCell>
-                <CTableHeaderCell>Eliminar</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -119,11 +197,6 @@ const tipo_a = () => {
                   <CTableDataCell>
                     <CButton className="botonhover">
                       <CIcon icon={cilPencil} style={{ color: 'blue' }}></CIcon>
-                    </CButton>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <CButton className="botonhover">
-                      <CIcon icon={cilXCircle} style={{ color: 'red' }} />
                     </CButton>
                   </CTableDataCell>
                 </CTableRow>

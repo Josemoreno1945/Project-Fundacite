@@ -62,6 +62,18 @@ const Registro_Proyectos = () => {
     }))
   }
 
+  const handleDocumentChange = (files) => {
+    setDocumentos(files)
+  }
+
+  const handleDocInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData_doc((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }))
+  }
+
   //-----------------------------------------------------------------------------------------------------
 
   const cargarCategorias = async () => {
@@ -97,19 +109,29 @@ const Registro_Proyectos = () => {
     formDataToSend.append('proy_statu', formData.proy_statu)
     formDataToSend.append('Proy_CatId', formData.Proy_CatId)
 
-    //------------------------------------------------------------------doc
-    const FormData_doc_ToSend = new formData()
-    FormData_doc_ToSend.append('Doc_NomArc', formData_doc.Doc_NomArc)
-    FormData_doc_ToSend.append('Doc_RutaAr', formData_doc.Doc_RutaAr)
-    FormData_doc_ToSend.append('Doc_TiArId', formData_doc.Doc_TiArId)
-
     try {
-      console.log('🚀 Datos que se envían a /proyectos:', [...formDataToSend.entries()])
       const postProyect = await axios.post('http://localhost:4000/proyectos', formDataToSend)
+      const proyectoId = postProyect.data.id
+
+      // 2. Registrar documentos asociados al proyecto------------------------------------------
+
+      for (const doc of documentos) {
+        const docForm = new FormData()
+        docForm.append('Doc_NomArc', formData_doc.Doc_NomArc || doc.name)
+        docForm.append('Doc_RutaAr', doc) // El archivo
+        docForm.append('Doc_TiArId', formData_doc.Doc_TiArId)
+        docForm.append('Doc_ProyId', String(proyectoId)) // Asocia el documento al proyecto
+
+        await axios.post('http://localhost:4000/documentos', docForm, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+      }
     } catch (err) {
       console.error('Error al registrar proyecto o documentos:', err)
     }
   }
+
+  //------------------------------------------------------------------------------------------------
 
   return (
     <>
@@ -267,7 +289,8 @@ const Registro_Proyectos = () => {
                             className="input-tamaño"
                             type="text"
                             placeholder="Nombre del archivo"
-                            name=""
+                            name="Doc_NomArc"
+                            onChange={handleDocInputChange}
                           ></CFormInput>
                         </CInputGroup>
                       </div>
@@ -282,6 +305,7 @@ const Registro_Proyectos = () => {
                             onFocus={cargarTarchivos}
                             name="Doc_TiArId"
                             value={formData_doc.Doc_TiArId}
+                            onChange={handleDocInputChange}
                           >
                             <option value="">Tipo de archivo</option>
                             {TipoArchivos.map((archivo) => (
@@ -294,9 +318,8 @@ const Registro_Proyectos = () => {
                       </div>
                     </div>
                   </CInputGroup>
-                  {/*}
-						<MyDropzone onFilesAccepted={handleDocumentChange} />
-						{*/}
+
+                  <MyDropzone onFilesAccepted={handleDocumentChange} />
 
                   <div>
                     {documentos && documentos.length > 0 && (
