@@ -58,7 +58,7 @@ const Proyectos = () => {
               <CCard
                 className="cuadro2"
                 key={p.Proy_Id}
-                onClick={() => navigate(`/proyectos/${p.Proy_Id}`)}
+                onClick={() => navigate(`/ProyectosDetalle/${p.Proy_Id}`)}
               >
                 <CCardHeader>{p.Proy_Titul}</CCardHeader>
                 <CCardBody>Haz clic para ver más detalles</CCardBody>

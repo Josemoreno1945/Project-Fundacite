@@ -33,18 +33,19 @@ import {
 import '../scss/registro-u.scss'
 import axios from 'axios'
 import MyDropzone from './subirarchivos'
-
+import { useNavigate } from 'react-router-dom'
 const Registro_Proyectos = () => {
   const [documentos, setDocumentos] = useState([]) // Array para almacenar archivos seleccionados
   const [categorias, setCategorias] = useState([])
   const [TipoArchivos, setTipoArchivos] = useState([])
-
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     Proy_Titul: '',
     Proy_Descr: '',
     Proy_Resum: '',
     Proy_FecRe: '',
     proy_statu: '',
+    Proy_NomAu: '',
     Proy_CatId: '',
   })
 
@@ -107,6 +108,7 @@ const Registro_Proyectos = () => {
     formDataToSend.append('Proy_Resum', formData.Proy_Resum)
     formDataToSend.append('Proy_FecRe', formData.Proy_FecRe)
     formDataToSend.append('proy_statu', formData.proy_statu)
+    formDataToSend.append('Proy_NomAu', formData.Proy_NomAu)
     formDataToSend.append('Proy_CatId', formData.Proy_CatId)
 
     try {
@@ -125,6 +127,7 @@ const Registro_Proyectos = () => {
         await axios.post('http://localhost:4000/documentos', docForm, {
           headers: { 'Content-Type': 'multipart/form-data' },
         })
+        navigate('/components/Proyectos')
       }
     } catch (err) {
       console.error('Error al registrar proyecto o documentos:', err)
@@ -143,12 +146,18 @@ const Registro_Proyectos = () => {
               <CInputGroup className="mb-3">
                 <div className="d-flex  w-100 gap-3">
                   <div className="w-50">
-                    <CFormLabel>Usuario</CFormLabel>
+                    <CFormLabel>Nombre de Autor</CFormLabel>
                     <CInputGroup>
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput type="Text" readOnly></CFormInput>
+                      <CFormInput
+                        type="Text"
+                        name="Proy_NomAu"
+                        onChange={handleInputChange}
+                        placeholder="Nombre del autor"
+                        className="input-tamaño"
+                      ></CFormInput>
                     </CInputGroup>
                   </div>
                 </div>

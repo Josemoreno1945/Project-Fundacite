@@ -27,8 +27,8 @@ import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 const _nav = [
   {
     component: CNavItem,
-    name: 'Home',
-    to: '/',
+    name: 'Inicio',
+    to: '/inicio',
     icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
   },
 

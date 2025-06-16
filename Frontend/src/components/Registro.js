@@ -28,8 +28,10 @@ import {
 } from '@coreui/icons'
 import '../scss/registro-u.scss'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const Registro = () => {
+  const navigate = useNavigate()
   const [roles, Setroles] = useState([])
   const [formData, setFormData] = useState({
     Usua_PrimN: '',
@@ -70,6 +72,7 @@ const Registro = () => {
     try {
       console.log('🚀 Datos que se envían a /users:', [...formDataToSend.entries()])
       const postUsers = await axios.post('http://localhost:4000/users', formDataToSend)
+      navigate('/components/Usuarios')
     } catch (err) {
       console.error('Error al registrar usuario:', err)
     }

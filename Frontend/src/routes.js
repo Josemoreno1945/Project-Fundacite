@@ -13,6 +13,10 @@ const Perfil = React.lazy(() => import('./components/Perfil.js'))
 const Categorias = React.lazy(() => import('./components/categorias.js'))
 const tipo_a = React.lazy(() => import('./components/tipo_a.js'))
 
+const inicio = React.lazy(() => import('./components/inicio.js'))
+const login = React.lazy(() => import('./views/pages/login/Login.js'))
+const ProyectoDetalle = React.lazy(() => import('./components/proyecto-detalle.js'))
+
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
@@ -61,7 +65,6 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
@@ -115,6 +118,11 @@ const routes = [
 
   { path: '/categorias', name: 'components', element: Categorias },
   { path: '/tipo_a', name: 'components', element: tipo_a },
+
+  { path: '/', exact: true, name: 'Inicio', element: inicio },
+  { path: '/inicio', name: 'Inicio', element: inicio },
+  { path: '/login', name: 'pages', element: login },
+  { path: '/ProyectosDetalle/:id', name: 'components', element: ProyectoDetalle },
 ]
 
 export default routes
