@@ -111,9 +111,13 @@ const AppHeaderDropdown = () => {
         {*/}
           <CDropdownDivider />
           <CDropdownItem>
-            <CButton onClick={() => navigate('/login')}>
+            <CButton
+              onClick={() => {
+                localStorage.removeItem('token'), navigate('/login')
+              }}
+            >
               <CIcon icon={cilLockLocked} className="me-2" />
-              Lock Account
+              Cerrar sesion
             </CButton>
           </CDropdownItem>
         </CDropdownMenu>

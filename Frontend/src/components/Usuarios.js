@@ -62,11 +62,17 @@ const Usuarios = () => {
   const [Modal_eli, setModal_eli] = useState(false)
   const [carga, setcarga] = useState(true)
   const [users, setUsers] = useState([])
+  const [deleteMensaje, SetdeleteMensaje] = useState(false)
 
   useEffect(() => {
     const usuarios = async () => {
       try {
-        const result = await axios.get('http://localhost:4000/users')
+        const token = localStorage.getItem('token')
+        const result = await axios.get('http://localhost:4000/users', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         setUsers(result.data)
         setcarga(false)
       } catch (error) {
@@ -86,7 +92,12 @@ const Usuarios = () => {
 
   const cargarusuarios = async () => {
     try {
-      const result = await axios.get('http://localhost:4000/users')
+      const token = localStorage.getItem('token')
+      const result = await axios.get('http://localhost:4000/users', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setUsers(result.data)
       setcarga(false)
     } catch (error) {
@@ -96,7 +107,13 @@ const Usuarios = () => {
 
   const deleteUsuario = async (id) => {
     try {
-      const deleteU = await axios.delete(`http://localhost:4000/users/${id}`)
+      const token = localStorage.getItem('token')
+      await axios.delete(`http://localhost:4000/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      SetdeleteMensaje(true)
       cargarusuarios()
       setuserID(null)
     } catch (err) {
@@ -106,6 +123,20 @@ const Usuarios = () => {
 
   return (
     <>
+      <CModal visible={deleteMensaje} onClose={() => SetdeleteMensaje(false)}>
+        <CModalHeader></CModalHeader>
+        <CModalBody>
+          <div>Eliminacion exitosa</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton className="button-register" onClick={() => SetdeleteMensaje(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       {/*MODAL PARA BOTON ELIMINAR ----------------------------------------------------------------*/}
       <CModal visible={Modal_eli} onClose={() => setModal_eli(false)}>
         <CModalHeader>Eliminar usuario</CModalHeader>

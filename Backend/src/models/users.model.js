@@ -68,9 +68,9 @@ export const deleteU = async (id) => {
   return result.rows;
 };
 
-export const getUserByusername = async (username) => {
-  const query = 'SELECT * FROM "FPT_Users" WHERE "Usua_NomUs" = $1';
-  const result = await pool.query(query, [username]);
+export const getUserByusername = async (Usua_NomUs) => {
+  const query = 'SELECT * FROM "FPM_Usuari" WHERE "Usua_NomUs" = $1';
+  const result = await pool.query(query, [Usua_NomUs]);
   return result.rows[0];
 };
 

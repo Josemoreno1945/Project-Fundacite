@@ -90,17 +90,18 @@ export const deleteUsers = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { username, password } = req.body;
-  const user = await getUserByusername(username);
-  if (!user) return res.status(401).json({ error: "Usuario no encontrado" });
+  const { Usua_NomUs, Usua_Contr } = req.body;
+  console.log(req.body);
+  const user = await getUserByusername(Usua_NomUs);
 
-  const valid = await bcrypt.compare(password, user.Usua_Contr);
+  if (!user) return res.status(401).json({ error: "Usuario no encontrado" });
+  const valid = await bcrypt.compare(Usua_Contr, user.Usua_Contr);
   if (!valid) return res.status(401).json({ error: "Contraseña incorrecta" });
 
   const token = jwt.sign(
     { id: user.Usua_Id, username: user.Usua_NomUs, rol: user.Usua_RolId },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
+    { expiresIn: "1h" }
   );
 
   res.json({

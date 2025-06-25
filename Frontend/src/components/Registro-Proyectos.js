@@ -112,7 +112,12 @@ const Registro_Proyectos = () => {
     formDataToSend.append('Proy_CatId', formData.Proy_CatId)
 
     try {
-      const postProyect = await axios.post('http://localhost:4000/proyectos', formDataToSend)
+      const token = localStorage.getItem('token')
+      const postProyect = await axios.post('http://localhost:4000/proyectos', formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       const proyectoId = postProyect.data.id
 
       // 2. Registrar documentos asociados al proyecto------------------------------------------
@@ -125,7 +130,10 @@ const Registro_Proyectos = () => {
         docForm.append('Doc_ProyId', String(proyectoId)) // Asocia el documento al proyecto
 
         await axios.post('http://localhost:4000/documentos', docForm, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
         })
         navigate('/components/Proyectos')
       }

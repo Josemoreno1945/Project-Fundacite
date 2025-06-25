@@ -1,4 +1,4 @@
-import React from 'react'
+import { React, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -32,9 +32,38 @@ import {
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import '../../../scss/login.scss'
+import axios from 'axios'
 
 const Login = () => {
   const navigate = useNavigate()
+
+  const [formData, setFormData] = useState({
+    Usua_NomUs: '',
+    Usua_Contr: '',
+  })
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }))
+  }
+
+  const postLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/login', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      localStorage.setItem('token', response.data.token)
+      navigate('/Inicio')
+    } catch (err) {
+      console.error('Error al iniciar sesion:', err)
+    }
+  }
+
   return (
     <>
       <div className="login-container">
@@ -58,6 +87,7 @@ const Login = () => {
                       placeholder="Nombre de usuario"
                       className="input-tamaño"
                       name="Usua_NomUs"
+                      onChange={handleInputChange}
                     />
                   </CInputGroup>
                   <CFormLabel>Contraseña</CFormLabel>
@@ -70,6 +100,7 @@ const Login = () => {
                       placeholder="Contraseña"
                       className="input-tamaño"
                       name="Usua_Contr"
+                      onChange={handleInputChange}
                     />
                   </CInputGroup>
                 </CCol>
@@ -83,7 +114,14 @@ const Login = () => {
           </CCardBody>
           <CCardFooter>
             <div className="caja-boton">
-              <CButton className="boton-login">Iniciar Sesion</CButton>
+              <CButton
+                className="boton-login"
+                onClick={() => {
+                  postLogin()
+                }}
+              >
+                Iniciar Sesion
+              </CButton>
             </div>
           </CCardFooter>
         </CCard>

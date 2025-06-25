@@ -23,7 +23,7 @@ router.put("/users/:id", verifyToken, isAdmin, putUsers);
 
 router.delete("/users/:id", verifyToken, isAdmin, deleteUsers);
 
-router.post("/login", verifyToken, login);
+router.post("/login", login);
 
 router.post("/register", register);
 

@@ -39,7 +39,12 @@ const Proyectos = () => {
   useEffect(() => {
     const obtenerProyectos = async () => {
       try {
-        const res = await axios.get('http://localhost:4000/proyectos')
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/proyectos', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         setProyectos(res.data)
       } catch (error) {
         console.error('Error al obtener proyectos:', error)

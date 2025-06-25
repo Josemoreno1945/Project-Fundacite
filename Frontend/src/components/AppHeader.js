@@ -51,10 +51,7 @@ const AppHeader = () => {
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
-        <CHeaderNav className="d-none d-md-flex">
-
-
-        </CHeaderNav>
+        <CHeaderNav className="d-none d-md-flex"></CHeaderNav>
         <CHeaderNav className="ms-auto">
           <CNavItem>
             <CNavLink href="#">
@@ -69,7 +66,6 @@ const AppHeader = () => {
           </li>
           */}
           <CDropdown variant="nav-item" placement="bottom-end">
-            {/*
             <CDropdownToggle caret={false}>
               {colorMode === 'dark' ? (
                 <CIcon icon={cilMoon} size="lg" />
@@ -79,7 +75,7 @@ const AppHeader = () => {
                 <CIcon icon={cilSun} size="lg" />
               )}
             </CDropdownToggle>
-            */}
+
             <CDropdownMenu>
               <CDropdownItem
                 active={colorMode === 'light'}
@@ -116,7 +112,7 @@ const AppHeader = () => {
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
-            { /*
+      {/*
       <CContainer className="px-4" fluid>
         <AppBreadcrumb />
       </CContainer>
