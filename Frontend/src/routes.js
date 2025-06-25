@@ -119,9 +119,7 @@ const routes = [
   { path: '/categorias', name: 'components', element: Categorias },
   { path: '/tipo_a', name: 'components', element: tipo_a },
 
-  { path: '/', exact: true, name: 'Inicio', element: inicio },
   { path: '/inicio', name: 'Inicio', element: inicio },
-  { path: '/login', name: 'pages', element: login },
   { path: '/ProyectosDetalle/:id', name: 'components', element: ProyectoDetalle },
 ]
 
