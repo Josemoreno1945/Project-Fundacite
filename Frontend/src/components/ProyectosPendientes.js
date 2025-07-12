@@ -40,7 +40,7 @@ const Proyectos = () => {
     const obtenerProyectos = async () => {
       try {
         const token = localStorage.getItem('token')
-        const res = await axios.get('http://localhost:4000/proyectosA', {
+        const res = await axios.get('http://localhost:4000/proyectos', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -56,7 +56,7 @@ const Proyectos = () => {
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Lista de Proyectos</CCardHeader>
+        <CCardHeader>Lista de Proyectos pendientes</CCardHeader>
         <CCardBody>
           <div className="cuadros">
             {proyectos.map((p, index) => (
@@ -65,7 +65,7 @@ const Proyectos = () => {
                 key={p.Proy_Id}
                 onClick={() =>
                   navigate(`/ProyectosDetalle/${p.Proy_Id}`, {
-                    state: { from: '/components/Proyectos' },
+                    state: { from: '/components/ProyectosPendientes' },
                   })
                 }
               >

@@ -37,14 +37,28 @@ import {
   CInputGroupText,
   CFormLabel,
   CFormTextarea,
+  CButton,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
 } from '@coreui/react'
-import { useNavigate, useParams } from 'react-router-dom'
 import '../scss/proyectos.scss'
+import '../scss/botones.scss'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
+
 import axios from 'axios'
 
 const ProyectosDetalle = () => {
   const { id } = useParams()
   const [proyecto, setProyecto] = useState([])
+  const [mensajeAprobado, setmensajeAprobado] = useState('')
+  const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
+  const navigate = useNavigate()
+
+  const location = useLocation()
+  const origen =
+    location.state?.from || '/components/ProyectosPendientes' || '/components/Proyectos'
 
   useEffect(() => {
     const getidProyecto = async () => {
@@ -58,14 +72,54 @@ const ProyectosDetalle = () => {
     getidProyecto()
   }, [id])
 
+  const getidProyecto = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4000/proyectos/${id}`)
+      setProyecto(res.data)
+    } catch (error) {
+      console.error('Error al obtener el proyecto:', error)
+    }
+  }
+  getidProyecto()
+
+  const Aprobarproyecto = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.put('http://localhost:4000/aprobar', proyecto[0], {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      getidProyecto()
+      setmensajeAprobado(response.data.message)
+      setModalmensajeAprobado(true)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
+      <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>{String(mensajeAprobado)}</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton className="boton-regresar" onClick={() => setModalmensajeAprobado(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <div>
         <CCard className="mb-4">
           <CCardHeader>PROYECTO ID : {id} </CCardHeader>
           <CCardBody>
-            {proyecto.map((P) => (
-              <CForm>
+            {proyecto.map((P, index) => (
+              <CForm key={index}>
                 <CInputGroup className="mb-3">
                   <div className="d-flex  w-100 gap-3">
                     <div className="w-50">
@@ -193,6 +247,26 @@ const ProyectosDetalle = () => {
               </CForm>
             ))}
           </CCardBody>
+          <CCardFooter>
+            {proyecto[0]?.proy_statu !== 'aprobado' && (
+              <CButton
+                className="boton-generar"
+                onClick={() => {
+                  Aprobarproyecto()
+                }}
+              >
+                Aprobar
+              </CButton>
+            )}
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                navigate(origen)
+              }}
+            >
+              Regresar
+            </CButton>
+          </CCardFooter>
         </CCard>
       </div>
     </>

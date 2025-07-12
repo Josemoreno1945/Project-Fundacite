@@ -51,7 +51,7 @@ export const postUsers = async (req, res) => {
     }
 
     const rows = await postU(data);
-    return res.json(rows);
+    return res.json({ rows, message: "Usuario registrado con exito" });
   } catch (error) {
     console.error("Error when post users:", error);
     res.status(500).send("Error when post users");

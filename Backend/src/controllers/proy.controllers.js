@@ -1,4 +1,4 @@
-import { getP, postP, getidP } from "../models/proy.model.js";
+import { getP, postP, getidP, putProy, getPA } from "../models/proy.model.js";
 
 //---------------------------------Get---------------------------------------
 export const getProyects = async (req, res) => {
@@ -29,9 +29,33 @@ export const postProyects = async (req, res) => {
     const data = req.body;
     console.log("Datos recibidos en el backend (req.body):", req.body);
     const result = await postP(data);
-    res.json({ id: result[0].Proy_Id });
+    res.json({
+      id: result[0].Proy_Id,
+      Message: "Proyecto registrado correctamente",
+    });
   } catch (error) {
     console.error("Error al guardar el documento:", error);
     res.status(500).send("Error al guardar el documento");
+  }
+};
+
+export const aprobarproyecto = async (req, res) => {
+  try {
+    const data = req.body;
+    const rows = await putProy(data);
+    res.json(rows);
+  } catch (error) {
+    console.error("Error actualizando proyectos:", error);
+    res.status(500).send("Error actualizandoproyectos");
+  }
+};
+
+export const getProyectsA = async (req, res) => {
+  try {
+    const rows = await getPA();
+    res.json(rows);
+  } catch (error) {
+    console.error("Error obteniendo proyectos:", error);
+    res.status(500).send("Error obteniendo proyectos");
   }
 };

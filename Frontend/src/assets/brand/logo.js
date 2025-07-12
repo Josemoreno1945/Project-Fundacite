@@ -1,2 +1,2 @@
-import fundaciteLogo from '../images/FUNDACITE_LOGO.png'
-export default fundaciteLogo
+import logoFP from '../images/logoFP.jpg'
+export default logoFP

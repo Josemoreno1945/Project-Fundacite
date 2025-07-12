@@ -15,6 +15,10 @@ import {
   CFormSelect,
   CCardFooter,
   CFormLabel,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -31,6 +35,8 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 const Registro = () => {
+  const [mensajeAprobado, setmensajeAprobado] = useState('')
+  const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
   const navigate = useNavigate()
   const [roles, Setroles] = useState([])
   const [formData, setFormData] = useState({
@@ -70,9 +76,15 @@ const Registro = () => {
     formDataToSend.append('Usua_Contr', formData.Usua_Contr)
     formDataToSend.append('Usua_RolId', formData.Usua_RolId)
     try {
-      console.log('🚀 Datos que se envían a /users:', [...formDataToSend.entries()])
-      const postUsers = await axios.post('http://localhost:4000/users', formDataToSend)
-      navigate('/components/Usuarios')
+      const token = localStorage.getItem('token')
+      const postUsers = await axios.post('http://localhost:4000/users', formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      setmensajeAprobado(postUsers.data.message)
+      setModalmensajeAprobado(true)
     } catch (err) {
       console.error('Error al registrar usuario:', err)
     }
@@ -80,6 +92,20 @@ const Registro = () => {
 
   return (
     <>
+      <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>{String(mensajeAprobado)}</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton className="boton-regresar" onClick={() => setModalmensajeAprobado(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <div className="usuarios-caja">
         <CCard className="mb-4">
           <CCardHeader>REGISTRO DE USUARIO</CCardHeader>

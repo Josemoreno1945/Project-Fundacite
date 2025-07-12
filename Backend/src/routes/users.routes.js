@@ -15,7 +15,7 @@ const upload = multer();
 const router = Router();
 
 //---------------------------------Get---------------------------------------
-router.get("/users", verifyToken, getUsers);
+router.get("/users", verifyToken, isAdmin, getUsers);
 
 router.post("/users", verifyToken, isAdmin, upload.none(), postUsers);
 

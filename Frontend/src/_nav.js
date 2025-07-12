@@ -24,21 +24,19 @@ import {
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-const _nav = [
+const _nav_admin = [
   {
     component: CNavItem,
     name: 'Inicio',
     to: '/inicio',
     icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
   },
-
   {
     component: CNavItem,
     name: 'Dashboard',
     to: '/dashboard',
     icon: <CIcon icon={cilChart} customClassName="nav-icon" />,
   },
-
   {
     component: CNavGroup,
     name: 'Usuarios',
@@ -57,6 +55,50 @@ const _nav = [
       },
     ],
   },
+  {
+    component: CNavGroup,
+    name: 'Proyectos',
+    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Subir Proyecto',
+        to: '/components/Registro-Proyectos',
+      },
+      {
+        component: CNavItem,
+        name: 'Proyectos Pendientes',
+        to: '/components/ProyectosPendientes',
+      },
+      {
+        component: CNavItem,
+        name: 'Lista de Proyectos',
+        to: '/components/Proyectos',
+      },
+    ],
+  },
+  {
+    component: CNavItem,
+    name: 'Categorias',
+    to: '/categorias',
+    icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
+  },
+
+  {
+    component: CNavItem,
+    name: 'Tipos de archivos',
+    to: '/tipo_a',
+    icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
+  },
+]
+
+const _nav_user = [
+  {
+    component: CNavItem,
+    name: 'Inicio',
+    to: '/inicio',
+    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
+  },
 
   {
     component: CNavGroup,
@@ -74,20 +116,6 @@ const _nav = [
         to: '/components/Proyectos',
       },
     ],
-  },
-
-  {
-    component: CNavItem,
-    name: 'Categorias',
-    to: '/categorias',
-    icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
-  },
-
-  {
-    component: CNavItem,
-    name: 'Tipos de archivos',
-    to: '/tipo_a',
-    icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
   },
 
   /*
@@ -513,5 +541,23 @@ const _nav = [
   },
   */
 ]
+
+const _nav = (Usua_RolId) => {
+  switch (Usua_RolId) {
+    case 1:
+      return _nav_admin
+    case 2:
+      return _nav_user
+    default:
+      return [
+        {
+          component: CNavItem,
+          name: 'Inicio',
+          to: '/inicio',
+          icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
+        },
+      ]
+  }
+}
 
 export default _nav

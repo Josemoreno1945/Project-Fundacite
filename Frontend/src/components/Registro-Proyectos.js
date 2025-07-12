@@ -29,12 +29,19 @@ import {
   CCardFooter,
   CFormLabel,
   CFormTextarea,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
 } from '@coreui/react'
 import '../scss/registro-u.scss'
+import '../scss/botones.scss'
 import axios from 'axios'
 import MyDropzone from './subirarchivos'
 import { useNavigate } from 'react-router-dom'
 const Registro_Proyectos = () => {
+  const [mensajeAprobado, setmensajeAprobado] = useState('')
+  const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
   const [documentos, setDocumentos] = useState([]) // Array para almacenar archivos seleccionados
   const [categorias, setCategorias] = useState([])
   const [TipoArchivos, setTipoArchivos] = useState([])
@@ -44,7 +51,6 @@ const Registro_Proyectos = () => {
     Proy_Descr: '',
     Proy_Resum: '',
     Proy_FecRe: '',
-    proy_statu: '',
     Proy_NomAu: '',
     Proy_CatId: '',
   })
@@ -107,7 +113,7 @@ const Registro_Proyectos = () => {
     formDataToSend.append('Proy_Descr', formData.Proy_Descr)
     formDataToSend.append('Proy_Resum', formData.Proy_Resum)
     formDataToSend.append('Proy_FecRe', formData.Proy_FecRe)
-    formDataToSend.append('proy_statu', formData.proy_statu)
+
     formDataToSend.append('Proy_NomAu', formData.Proy_NomAu)
     formDataToSend.append('Proy_CatId', formData.Proy_CatId)
 
@@ -118,6 +124,8 @@ const Registro_Proyectos = () => {
           Authorization: `Bearer ${token}`,
         },
       })
+      setmensajeAprobado(postProyect.data.Message)
+      setModalmensajeAprobado(true)
       const proyectoId = postProyect.data.id
 
       // 2. Registrar documentos asociados al proyecto------------------------------------------
@@ -135,7 +143,6 @@ const Registro_Proyectos = () => {
             Authorization: `Bearer ${token}`,
           },
         })
-        navigate('/components/Proyectos')
       }
     } catch (err) {
       console.error('Error al registrar proyecto o documentos:', err)
@@ -146,6 +153,20 @@ const Registro_Proyectos = () => {
 
   return (
     <>
+      <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>{String(mensajeAprobado)}</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton className="boton-regresar" onClick={() => setModalmensajeAprobado(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <div className="proyecto-caja">
         <CCard className="mb-4">
           <CCardHeader>REGISTRO DE PROYECTO</CCardHeader>
@@ -243,24 +264,6 @@ const Registro_Proyectos = () => {
                       ></CFormInput>
                     </CInputGroup>
                   </div>
-                  <div className="w-50">
-                    <CFormLabel>Estado</CFormLabel>
-                    <CInputGroup>
-                      <CInputGroupText>
-                        <CIcon icon={cilOptions} />
-                      </CInputGroupText>
-                      <CFormSelect
-                        name="proy_statu"
-                        onChange={handleInputChange}
-                        className="input-tamaño"
-                      >
-                        <option>Estado</option>
-                        <option>aprobado</option>
-                        <option>pendiente</option>
-                        <option>rechazado</option>
-                      </CFormSelect>
-                    </CInputGroup>
-                  </div>
                 </div>
               </CInputGroup>
 
@@ -353,7 +356,7 @@ const Registro_Proyectos = () => {
           </CCardBody>
           <CCardFooter>
             <div className="caja-boton">
-              <CButton className="boton-registro" onClick={handleSubmit}>
+              <CButton className="boton-generar" onClick={handleSubmit}>
                 Registrar
               </CButton>
             </div>

@@ -2,7 +2,10 @@ import { pool } from "../db.js";
 
 //---------------------------------Get---------------------------------------
 export const getP = async () => {
-  const query = `SELECT * FROM "FPT_Proyec"`;
+  const query = `
+  SELECT * FROM "FPT_Proyec"
+  WHERE proy_statu = 'pendiente'
+`;
   const result = await pool.query(query);
   return result.rows;
 };
@@ -30,11 +33,62 @@ export const postP = async (data) => {
     data.Proy_Descr,
     data.Proy_Resum,
     data.Proy_FecRe,
-    data.proy_statu,
+    "pendiente",
     data.Proy_NomAu,
     data.Proy_CatId,
   ];
 
   const result = await pool.query(query, values);
+  return result.rows;
+};
+
+export const putProy = async (data) => {
+  const client = await pool.connect();
+
+  try {
+    console.log(data);
+    const updateStatusQuery = `
+      UPDATE "FPT_Proyec"
+      SET proy_statu = 'aprobado'
+      WHERE "Proy_Id" = $1
+    `;
+    await client.query(updateStatusQuery, [data.Proy_Id]);
+
+    const insertAceQuery = `
+      INSERT INTO "FPT_ProAce"("ProyA_PrId", "ProyA_FecA", "ProyA_MotA", "ProyA_Come")
+      VALUES ($1, $2, $3, $4)
+    `;
+    const aceValues = [
+      data.Proy_Id,
+      new Date(), // Fecha actual automática
+      "Aprobado", // Motivo por defecto
+      "Aprobado sin observaciones",
+    ];
+    await client.query(insertAceQuery, aceValues);
+
+    return { message: "Proyecto aprobado exitosamente." };
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+export const getPA = async () => {
+  const query = `
+    SELECT 
+      p."Proy_Id",
+      p."Proy_Titul",
+      p."Proy_Descr",
+      p."Proy_Resum",
+      p."Proy_FecRe",
+      p.proy_statu,
+      p."Proy_UsuId",
+      p."Proy_CatId",
+      p."Proy_NomAu"
+    FROM "FPT_ProAce" a
+    JOIN "FPT_Proyec" p ON a."ProyA_PrId" = p."Proy_Id"
+  `;
+  const result = await pool.query(query);
   return result.rows;
 };
