@@ -1,18 +1,18 @@
 import { pool } from "../db.js";
 
 //-------------------------------Post-----------------------------------------
-export const postDoc = async (data, imagenPath) => {
+export const postDoc = async (data, rutaRemota) => {
   const query = `INSERT INTO "FPD_Docume"("Doc_NomArc", "Doc_RutaAr", "Doc_TiArId","Doc_ProyId")
-	VALUES ($1,$2,$3,$4)`;
+	VALUES ($1,$2,$3,$4) RETURNING *`;
 
   const values = [
     data.Doc_NomArc,
-    imagenPath,
+    rutaRemota,
     data.Doc_TiArId,
     data.Doc_ProyId,
   ];
   const result = await pool.query(query, values);
-  return result.rows;
+  return result.rows[0];
 };
 
 //-------------------------------get-----------------------------------------

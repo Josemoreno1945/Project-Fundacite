@@ -39,6 +39,7 @@ import '../scss/botones.scss'
 import axios from 'axios'
 import MyDropzone from './subirarchivos'
 import { useNavigate } from 'react-router-dom'
+
 const Registro_Proyectos = () => {
   const [mensajeAprobado, setmensajeAprobado] = useState('')
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
@@ -107,49 +108,53 @@ const Registro_Proyectos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    //------------------------------------------------------------------proy
-    const formDataToSend = new FormData()
-    formDataToSend.append('Proy_Titul', formData.Proy_Titul)
-    formDataToSend.append('Proy_Descr', formData.Proy_Descr)
-    formDataToSend.append('Proy_Resum', formData.Proy_Resum)
-    formDataToSend.append('Proy_FecRe', formData.Proy_FecRe)
-
-    formDataToSend.append('Proy_NomAu', formData.Proy_NomAu)
-    formDataToSend.append('Proy_CatId', formData.Proy_CatId)
-
     try {
+      const formDataToSend = new FormData()
+      formDataToSend.append('Proy_Titul', formData.Proy_Titul)
+      formDataToSend.append('Proy_Descr', formData.Proy_Descr)
+      formDataToSend.append('Proy_Resum', formData.Proy_Resum)
+      formDataToSend.append('Proy_FecRe', formData.Proy_FecRe)
+      formDataToSend.append('Proy_NomAu', formData.Proy_NomAu)
+      formDataToSend.append('Proy_CatId', formData.Proy_CatId)
       const token = localStorage.getItem('token')
+      documentos.forEach((file) => formDataToSend.append('images', file))
       const postProyect = await axios.post('http://localhost:4000/proyectos', formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       })
       setmensajeAprobado(postProyect.data.Message)
       setModalmensajeAprobado(true)
-      const proyectoId = postProyect.data.id
-
-      // 2. Registrar documentos asociados al proyecto------------------------------------------
-
-      for (const doc of documentos) {
-        const docForm = new FormData()
-        docForm.append('Doc_NomArc', formData_doc.Doc_NomArc || doc.name)
-        docForm.append('Doc_RutaAr', doc) // El archivo
-        docForm.append('Doc_TiArId', formData_doc.Doc_TiArId)
-        docForm.append('Doc_ProyId', String(proyectoId)) // Asocia el documento al proyecto
-
-        await axios.post('http://localhost:4000/documentos', docForm, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        })
-      }
     } catch (err) {
       console.error('Error al registrar proyecto o documentos:', err)
     }
   }
 
   //------------------------------------------------------------------------------------------------
+
+  const handleGenerateAndDownload = async () => {
+    if (!documentos || documentos.length === 0) return alert('Agrega imágenes') //HACER ALERTA A MANO ---
+    try {
+      const fd = new FormData()
+      documentos.forEach((f) => fd.append('images', f))
+      const res = await axios.post('http://localhost:4000/documentos/generate-pdf', fd, {
+        responseType: 'blob',
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `preview_${Date.now()}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Error generando PDF de preview:', err)
+      alert('Error generando PDF')
+    }
+  }
 
   return (
     <>
@@ -189,9 +194,6 @@ const Registro_Proyectos = () => {
                       ></CFormInput>
                     </CInputGroup>
                   </div>
-                </div>
-
-                <div className="d-flex  w-100 gap-3">
                   <div className="w-50">
                     <CFormLabel>Titulo del proyecto</CFormLabel>
                     <CInputGroup>
@@ -264,11 +266,7 @@ const Registro_Proyectos = () => {
                       ></CFormInput>
                     </CInputGroup>
                   </div>
-                </div>
-              </CInputGroup>
 
-              <CInputGroup className="mb-3">
-                <div className="d-flex  w-100 gap-3">
                   <div className="w-50">
                     <CFormLabel>Categorias</CFormLabel>
                     <CInputGroup>
@@ -297,48 +295,6 @@ const Registro_Proyectos = () => {
               <CCard>
                 <CCardHeader>Anexar Documentos</CCardHeader>
                 <CCardBody>
-                  <CInputGroup className="mb-3">
-                    <div className="d-flex  w-100 gap-3">
-                      <div className="w-50">
-                        <CFormLabel>Nombre del archivo</CFormLabel>
-                        <CInputGroup>
-                          <CInputGroupText>
-                            <CIcon icon={cilPencil} />
-                          </CInputGroupText>
-                          <CFormInput
-                            className="input-tamaño"
-                            type="text"
-                            placeholder="Nombre del archivo"
-                            name="Doc_NomArc"
-                            onChange={handleDocInputChange}
-                          ></CFormInput>
-                        </CInputGroup>
-                      </div>
-                      <div className="w-50">
-                        <CFormLabel>Tipo de archivo</CFormLabel>
-                        <CInputGroup>
-                          <CInputGroupText>
-                            <CIcon icon={cilOptions} />
-                          </CInputGroupText>
-                          <CFormSelect
-                            className="input-tamaño"
-                            onFocus={cargarTarchivos}
-                            name="Doc_TiArId"
-                            value={formData_doc.Doc_TiArId}
-                            onChange={handleDocInputChange}
-                          >
-                            <option value="">Tipo de archivo</option>
-                            {TipoArchivos.map((archivo) => (
-                              <option key={archivo.TipA_Id} value={archivo.TipA_Id}>
-                                {archivo.TipA_Nombr}
-                              </option>
-                            ))}
-                          </CFormSelect>
-                        </CInputGroup>
-                      </div>
-                    </div>
-                  </CInputGroup>
-
                   <MyDropzone onFilesAccepted={handleDocumentChange} />
 
                   <div>
@@ -355,7 +311,10 @@ const Registro_Proyectos = () => {
             </CForm>
           </CCardBody>
           <CCardFooter>
-            <div className="caja-boton">
+            <div className="caja-boton" style={{ display: 'flex', gap: 8 }}>
+              <CButton className="boton-generar" onClick={handleGenerateAndDownload}>
+                Generar y descargar PDF
+              </CButton>
               <CButton className="boton-generar" onClick={handleSubmit}>
                 Registrar
               </CButton>

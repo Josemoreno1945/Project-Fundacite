@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
   getProyects,
-  postProyects,
   getidProyects,
   aprobarproyecto,
   getProyectsA,
+  postProyectWithPdf,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -19,7 +19,12 @@ router.get("/proyectosA", getProyectsA);
 
 router.get("/proyectos/:id", getidProyects);
 
-router.post("/proyectos", verifyToken, isAdmin, upload.none(), postProyects);
+router.post(
+  "/proyectos",
+  verifyToken,
+  upload.array("images"),
+  postProyectWithPdf
+);
 
 router.put("/aprobar", verifyToken, isAdmin, aprobarproyecto);
 
