@@ -21,3 +21,18 @@ export const getDoc = async () => {
   const result = await pool.query(query);
   return result.rows;
 };
+
+//--------------------------------------------------------------------------------
+export const getPdfByProyId = async (proyId) => {
+  const query = `SELECT * FROM "FPD_Docume" WHERE "Doc_ProyId" = $1 AND "Doc_TiArId" = 2 ORDER BY "Doc_Id" DESC LIMIT 1`;
+  const r = await pool.query(query, [proyId]);
+  return r.rows[0] || null;
+};
+
+//delete---------------------------------------------------------------------------
+
+export const deleteDocsByProyId = async (proyId) => {
+  const query = `DELETE FROM "FPD_Docume" WHERE "Doc_ProyId" = $1 RETURNING *`;
+  const result = await pool.query(query, [proyId]);
+  return result.rows;
+};

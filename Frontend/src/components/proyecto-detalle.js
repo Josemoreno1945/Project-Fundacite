@@ -53,6 +53,10 @@ const ProyectosDetalle = () => {
   const { id } = useParams()
   const [proyecto, setProyecto] = useState([])
   const [mensajeAprobado, setmensajeAprobado] = useState('')
+  const [mensajeEliminado, setmensajeEliminado] = useState('')
+  const [ModalRealizadoAprobado, setModalRealizadoAprobado] = useState(false)
+  const [ModalRealizadoEliminado, setModalRealizadoEliminado] = useState(false)
+  const [ModalmensajeEliminar, setModalmensajeEliminar] = useState(false)
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
   const navigate = useNavigate()
 
@@ -92,21 +96,123 @@ const ProyectosDetalle = () => {
       })
       getidProyecto()
       setmensajeAprobado(response.data.message)
-      setModalmensajeAprobado(true)
     } catch (err) {
       console.log(err)
     }
   }
 
+  const openPdf = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await axios.get(`http://localhost:4000/documentos/download-by-proy/${id}`, {
+        responseType: 'blob',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
+      // abrir en nueva pestaña:
+      window.open(url, '_blank')
+    } catch (err) {
+      console.error('Error descargando PDF:', err)
+      alert('No se pudo descargar el PDF')
+    }
+  }
+
+  //elimminar
+
+  const handleDeleteProject = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      await axios.delete(`http://localhost:4000/proyectos/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    } catch (err) {
+      console.error('Error eliminando proyecto:', err)
+      alert('No se pudo eliminar el proyecto')
+    }
+  }
+
   return (
     <>
-      <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
+      <CModal visible={ModalRealizadoEliminado} onClose={() => setModalRealizadoEliminado(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>Proyecto Eliminado</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalRealizadoEliminado(false)
+                navigate('../components/ProyectosPendientes')
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <CModal visible={ModalmensajeEliminar} onClose={() => setModalmensajeEliminar(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>Desea eliminar el proyecto?</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-eliminar"
+              onClick={() => {
+                handleDeleteProject()
+                setModalmensajeEliminar(false)
+                setModalRealizadoEliminado(true)
+              }}
+            >
+              Eliminar
+            </CButton>
+            <CButton className="boton-regresar" onClick={() => setModalmensajeEliminar(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <CModal visible={ModalRealizadoAprobado} onClose={() => setModalRealizadoAprobado(false)}>
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>{String(mensajeAprobado)}</div>
         </CModalBody>
         <CModalFooter>
           <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalRealizadoAprobado(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>Desea aprobar el proyecto?</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-generar"
+              onClick={() => {
+                Aprobarproyecto()
+                setModalmensajeAprobado(false)
+                setModalRealizadoAprobado(true)
+              }}
+            >
+              Aprobar
+            </CButton>
             <CButton className="boton-regresar" onClick={() => setModalmensajeAprobado(false)}>
               Cerrar
             </CButton>
@@ -249,15 +355,28 @@ const ProyectosDetalle = () => {
           </CCardBody>
           <CCardFooter>
             {proyecto[0]?.proy_statu !== 'aprobado' && (
-              <CButton
-                className="boton-generar"
-                onClick={() => {
-                  Aprobarproyecto()
-                }}
-              >
-                Aprobar
-              </CButton>
+              <>
+                <CButton
+                  className="boton-generar"
+                  onClick={() => {
+                    setModalmensajeAprobado(true)
+                  }}
+                >
+                  Aprobar
+                </CButton>
+                <CButton
+                  className="boton-eliminar"
+                  onClick={() => {
+                    setModalmensajeEliminar(true)
+                  }}
+                >
+                  Eliminar
+                </CButton>
+              </>
             )}
+            <CButton className="boton-descargar" onClick={openPdf}>
+              Descargar PDF
+            </CButton>
             <CButton
               className="boton-regresar"
               onClick={() => {

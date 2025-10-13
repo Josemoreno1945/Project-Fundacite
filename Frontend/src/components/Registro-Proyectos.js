@@ -312,7 +312,7 @@ const Registro_Proyectos = () => {
           </CCardBody>
           <CCardFooter>
             <div className="caja-boton" style={{ display: 'flex', gap: 8 }}>
-              <CButton className="boton-generar" onClick={handleGenerateAndDownload}>
+              <CButton className="boton-descargar" onClick={handleGenerateAndDownload}>
                 Generar y descargar PDF
               </CButton>
               <CButton className="boton-generar" onClick={handleSubmit}>

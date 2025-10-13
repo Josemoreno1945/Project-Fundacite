@@ -92,3 +92,10 @@ export const getPA = async () => {
   const result = await pool.query(query);
   return result.rows;
 };
+
+//delete -------------------------------------------------------
+export const deleteProyById = async (proyId) => {
+  const query = `DELETE FROM "FPT_Proyec" WHERE "Proy_Id" = $1 RETURNING *`;
+  const result = await pool.query(query, [proyId]);
+  return result.rows[0] || null;
+};

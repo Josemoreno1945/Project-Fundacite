@@ -1,6 +1,10 @@
 import { Router } from "express";
 import multer from "multer";
-import { getDocuments, postDocuments } from "../controllers/doc.controllers.js";
+import {
+  getDocuments,
+  postDocuments,
+  downloadPdfByProy,
+} from "../controllers/doc.controllers.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 import { generatePdfDownload } from "../controllers/pdf.controllers.js";
@@ -19,6 +23,12 @@ router.post(
   verifyToken,
   upload.single("Doc_RutaAr"),
   postDocuments
+);
+
+router.get(
+  "/documentos/download-by-proy/:proyId",
+  verifyToken,
+  downloadPdfByProy
 );
 
 export default router;

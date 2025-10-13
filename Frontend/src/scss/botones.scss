@@ -20,7 +20,7 @@
     }
 }
 
-.boton-regresar{
+.boton-eliminar{
    
     margin-right: 10px;
     background-color:#ad0606;
@@ -41,3 +41,48 @@
         color: white;
     }
 }
+
+.boton-regresar{
+   
+    margin-right: 10px;
+    background-color:#dfdc04;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#dfdc04, 10%);
+        transform:scale(1.1);
+        color: white;
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#dfdc04, 30%);
+        color: white;
+    }
+}
+
+.boton-descargar{
+   
+    margin-right: 10px;
+    background-color:#00be29;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#00be29, 10%);
+        transform:scale(1.1);
+        color: white;
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#00be29, 30%);
+        color: white;
+    }
+}
+

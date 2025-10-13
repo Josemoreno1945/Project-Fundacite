@@ -5,6 +5,7 @@ import {
   aprobarproyecto,
   getProyectsA,
   postProyectWithPdf,
+  deleteProyectAndDoc,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -26,6 +27,7 @@ router.post(
   postProyectWithPdf
 );
 
+router.delete("/proyectos/:id", verifyToken, isAdmin, deleteProyectAndDoc);
 router.put("/aprobar", verifyToken, isAdmin, aprobarproyecto);
 
 export default router;

@@ -1,6 +1,14 @@
-import { getP, postP, getidP, putProy, getPA } from "../models/proy.model.js";
+import {
+  getP,
+  postP,
+  getidP,
+  putProy,
+  getPA,
+  deleteProyById,
+} from "../models/proy.model.js";
+import { getPdfByProyId, deleteDocsByProyId } from "../models/doc.model.js";
 import { postDoc } from "../models/doc.model.js";
-import { uploadBuffer } from "../services/icedrive.js";
+import { uploadBuffer, deleteRemotePath } from "../services/icedrive.js";
 import PDFDocument from "pdfkit";
 
 //---------------------------------Get---------------------------------------
@@ -74,7 +82,9 @@ export const postProyectWithPdf = async (req, res) => {
     pdfDoc.on("end", async () => {
       try {
         const pdfBuffer = Buffer.concat(buffers);
-        const remotePdfPath = `proyectos/${body.Proy_Titul}_${Date.now()}.pdf`;
+        const remotePdfPath = `proyectos/${body.Proy_Titul}_${
+          body.Proy_Id
+        }_${Date.now()}.pdf`;
         // Subir a Icedrive
         await uploadBuffer(pdfBuffer, remotePdfPath);
         // Guardar registro en BD
@@ -131,5 +141,44 @@ export const postProyectWithPdf = async (req, res) => {
     res
       .status(500)
       .json({ error: "Error creando proyecto y PDF", detail: err.message });
+  }
+};
+
+//delete --------------------------------------------------------------
+export const deleteProyectAndDoc = async (req, res) => {
+  const proyId = req.params.id;
+  try {
+    // 1) obtener documento (si existe)
+    const doc = await getPdfByProyId(proyId);
+
+    // 2) si hay doc remoto, intentar borrarlo primero
+    if (doc && doc.Doc_RutaAr) {
+      try {
+        await deleteRemotePath(doc.Doc_RutaAr);
+      } catch (err) {
+        console.error("Error borrando archivo remoto:", err.message || err);
+        return res
+          .status(500)
+          .json({
+            error: "Error borrando archivo remoto",
+            detail: err.message,
+          });
+      }
+    }
+
+    // 3) borrar registros de documentos en BD
+    await deleteDocsByProyId(proyId);
+
+    // 4) borrar el proyecto
+    const deletedProject = await deleteProyById(proyId);
+    if (!deletedProject)
+      return res.status(404).json({ error: "Proyecto no encontrado" });
+
+    return res.json({ ok: true, message: "Proyecto y documentos eliminados" });
+  } catch (err) {
+    console.error("deleteProyectAndDoc error:", err);
+    return res
+      .status(500)
+      .json({ error: "Error eliminando proyecto", detail: err.message });
   }
 };
