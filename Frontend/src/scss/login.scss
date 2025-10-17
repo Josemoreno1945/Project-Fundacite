@@ -1,0 +1,49 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login-container .card {
+  width: 23%;
+  border: 2px solid #3d3dff;
+  box-shadow: 0 8px 32px 0 rgba(14, 24, 168, 0.18);
+  transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+  border-radius: 24px;
+  transition: 0.5s;
+}
+.login-container .card:hover {
+  box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.28);
+  border-color: #1a237e;
+  transform: scale(1.02);
+}
+
+
+.container{
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: aquamarine;
+}
+
+.boton-login {
+  background-color: rgb(70, 70, 138);
+  color: white;
+  border: 1px solid black;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 20px;
+  &:hover {
+    background-color: rgb(70, 70, 138);
+    color: white;
+    transform: scale(1.1);
+    border: 1px solid black;
+  }
+}
+
+.caja-boton {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}

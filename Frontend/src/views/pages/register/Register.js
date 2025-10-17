@@ -1,70 +1,179 @@
-import React from 'react'
+import { React, useState, useEffect } from 'react'
 import {
   CButton,
   CCard,
   CCardBody,
+  CCardHeader,
   CCol,
   CContainer,
   CForm,
   CFormInput,
   CInputGroup,
   CInputGroupText,
+  CNavGroup,
   CRow,
+  CFormSelect,
+  CCardFooter,
+  CFormLabel,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import {
+  cilLockLocked,
+  cilPencil,
+  cilUser,
+  cilEnvelopeClosed,
+  cilGroup,
+  cilCalendar,
+  cilLockUnlocked,
+} from '@coreui/icons'
+import { useNavigate } from 'react-router-dom'
+import '../../../scss/login.scss'
+import axios from 'axios'
 
 const Register = () => {
+  const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+    Usua_PrimN: '',
+    Usua_PrimA: '',
+    Usua_NomUs: '',
+    Usua_Email: '',
+    Usua_Contr: '',
+  })
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      await axios.post('http://localhost:4000/register', formData)
+      navigate('/login')
+    } catch (err) {
+      console.error('Error al registrar usuario:', err)
+    }
+  }
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <CContainer>
-        <CRow className="justify-content-center">
-          <CCol md={9} lg={7} xl={6}>
-            <CCard className="mx-4">
-              <CCardBody className="p-4">
-                <CForm>
-                  <h1>Register</h1>
-                  <p className="text-body-secondary">Create your account</p>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput placeholder="Username" autoComplete="username" />
-                  </CInputGroup>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>@</CInputGroupText>
-                    <CFormInput placeholder="Email" autoComplete="email" />
-                  </CInputGroup>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Password"
-                      autoComplete="new-password"
-                    />
-                  </CInputGroup>
-                  <CInputGroup className="mb-4">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Repeat password"
-                      autoComplete="new-password"
-                    />
-                  </CInputGroup>
-                  <div className="d-grid">
-                    <CButton color="success">Create Account</CButton>
+    <>
+      <div className="login-container">
+        <CCard className="mb-4">
+          <CCardBody>
+            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ marginBottom: '1.5rem', fontWeight: 'bold', color: '#1a237e' }}>
+                Registrate!
+              </h3>
+            </div>
+            <CForm>
+              <CInputGroup className="mb-3">
+                <div className="d-flex  w-100 gap-3">
+                  <div className="w-50">
+                    <CFormLabel>Primer Nombre</CFormLabel>
+                    <CInputGroup>
+                      <CInputGroupText>
+                        <CIcon icon={cilPencil} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="Text"
+                        placeholder="Primer Nombre"
+                        className="input-tamaño"
+                        name="Usua_PrimN"
+                        onChange={handleInputChange}
+                      ></CFormInput>
+                    </CInputGroup>
                   </div>
-                </CForm>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        </CRow>
-      </CContainer>
-    </div>
+                  <div className="w-50">
+                    <CFormLabel>Primer Apellido</CFormLabel>
+                    <CInputGroup>
+                      <CInputGroupText>
+                        <CIcon icon={cilPencil} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="Text"
+                        placeholder="Primer Apellido"
+                        className="input-tamaño"
+                        name="Usua_PrimA"
+                        onChange={handleInputChange}
+                      ></CFormInput>
+                    </CInputGroup>
+                  </div>
+                </div>
+              </CInputGroup>
+
+              <CInputGroup className="mb-3">
+                <div className="d-flex  w-100 gap-3">
+                  <div className="w-50">
+                    <CFormLabel>Nombre de Usuario</CFormLabel>
+                    <CInputGroup>
+                      <CInputGroupText>
+                        <CIcon icon={cilUser} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="Text"
+                        placeholder="Nombre de usuario"
+                        className="input-tamaño"
+                        name="Usua_NomUs"
+                        onChange={handleInputChange}
+                      ></CFormInput>
+                    </CInputGroup>
+                  </div>
+                  <div className="w-50">
+                    <CFormLabel>Correo electronico</CFormLabel>
+                    <CInputGroup>
+                      <CInputGroupText>
+                        <CIcon icon={cilEnvelopeClosed} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="Text"
+                        placeholder="Correo electronico"
+                        className="input-tamaño"
+                        name="Usua_Email"
+                        onChange={handleInputChange}
+                      ></CFormInput>
+                    </CInputGroup>
+                  </div>
+                </div>
+              </CInputGroup>
+
+              <CInputGroup className="mb-3">
+                <div className="d-flex  w-100 gap-3">
+                  <div className="w-50">
+                    <CFormLabel>Contraseña</CFormLabel>
+                    <CInputGroup>
+                      <CInputGroupText>
+                        <CIcon icon={cilLockUnlocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="password"
+                        placeholder="Contraseña"
+                        className="input-tamaño"
+                        name="Usua_Contr"
+                        onChange={handleInputChange}
+                      ></CFormInput>
+                    </CInputGroup>
+                  </div>
+                </div>
+              </CInputGroup>
+            </CForm>
+            <div>
+              <CButton color="link" className="boton-link" onClick={() => navigate('/login')}>
+                Ya tienes cuenta ?
+              </CButton>
+            </div>
+          </CCardBody>
+          <CCardFooter>
+            <div className="caja-boton">
+              <CButton className="boton-login" onClick={handleSubmit}>
+                Registrar
+              </CButton>
+            </div>
+          </CCardFooter>
+        </CCard>
+      </div>
+    </>
   )
 }
 

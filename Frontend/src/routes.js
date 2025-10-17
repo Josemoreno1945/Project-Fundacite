@@ -7,11 +7,17 @@ const Typography = React.lazy(() => import('./views/theme/typography/Typography'
 const Usuarios = React.lazy(() => import('./components/Usuarios'))
 const Registro = React.lazy(() => import('./components/Registro'))
 const Proyectos = React.lazy(() => import('./components/Proyectos'))
+const ProyectosPendientes = React.lazy(() => import('./components/ProyectosPendientes'))
+const ProyectosArchivados = React.lazy(() => import('./components/proyecto-archivados.js'))
 const Registro_Proyectos = React.lazy(() => import('./components/Registro-Proyectos.js'))
 const Perfil = React.lazy(() => import('./components/Perfil.js'))
 
 const Categorias = React.lazy(() => import('./components/categorias.js'))
 const tipo_a = React.lazy(() => import('./components/tipo_a.js'))
+
+const inicio = React.lazy(() => import('./components/inicio.js'))
+const login = React.lazy(() => import('./views/pages/login/Login.js'))
+const ProyectoDetalle = React.lazy(() => import('./components/proyecto-detalle.js'))
 
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -61,7 +67,6 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
@@ -111,10 +116,15 @@ const routes = [
   { path: '/components/Usuarios', name: 'components', element: Usuarios },
   { path: '/components/Registro', name: 'components', element: Registro },
   { path: '/components/Proyectos', name: 'components', element: Proyectos },
+  { path: '/components/ProyectosPendientes', name: 'components', element: ProyectosPendientes },
+  { path: '/components/proyecto-archivados', name: 'components', element: ProyectosArchivados },
   { path: '/components/Registro-Proyectos', name: 'components', element: Registro_Proyectos },
 
   { path: '/categorias', name: 'components', element: Categorias },
   { path: '/tipo_a', name: 'components', element: tipo_a },
+
+  { path: '/inicio', name: 'Inicio', element: inicio },
+  { path: '/ProyectosDetalle/:id', name: 'components', element: ProyectoDetalle },
 ]
 
 export default routes

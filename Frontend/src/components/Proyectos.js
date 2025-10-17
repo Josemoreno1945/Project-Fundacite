@@ -39,7 +39,12 @@ const Proyectos = () => {
   useEffect(() => {
     const obtenerProyectos = async () => {
       try {
-        const res = await axios.get('http://localhost:4000/proyectos')
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/proyectosA', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         setProyectos(res.data)
       } catch (error) {
         console.error('Error al obtener proyectos:', error)
@@ -58,7 +63,11 @@ const Proyectos = () => {
               <CCard
                 className="cuadro2"
                 key={p.Proy_Id}
-                onClick={() => navigate(`/proyectos/${p.Proy_Id}`)}
+                onClick={() =>
+                  navigate(`/ProyectosDetalle/${p.Proy_Id}`, {
+                    state: { from: '/components/Proyectos' },
+                  })
+                }
               >
                 <CCardHeader>{p.Proy_Titul}</CCardHeader>
                 <CCardBody>Haz clic para ver más detalles</CCardBody>

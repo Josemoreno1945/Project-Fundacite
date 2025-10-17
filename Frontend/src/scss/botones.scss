@@ -1,0 +1,87 @@
+.boton-generar{
+    float: right;
+    margin-right: 10px;
+    background-color:#0D6EFD;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#0D6EFD, 10%);
+        transform:scale(1.1);
+        color: white;
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#0D6EFD, 30%);
+        color: white;
+    }
+}
+
+.boton-eliminar{
+    float: inline-end;
+    margin-right: 10px;
+    background-color:#DC3545;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#DC3545, 10%);
+        transform:scale(1.1);
+        color: white;
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#DC3545, 30%);
+        color: white;
+    }
+}
+
+.boton-regresar{
+    float: left;
+    margin-right: 10px;
+    background-color:#6C757D;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#6C757D, 10%);
+        transform:scale(1.1);
+        color: white;
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#6C757D, 30%);
+        color: white;
+    }
+}
+
+.boton-descargar{
+    margin-right: 10px;
+    background-color:#198754;
+    color: white;
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#198754, 10%);
+        transform:scale(1.1);
+        color: white;
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#198754, 30%);
+        color: white;
+    }
+}
+

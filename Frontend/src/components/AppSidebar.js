@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
 
 import {
   CCloseButton,
@@ -13,17 +12,25 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
-
-import { logo } from 'src/assets/brand/logo'
+import logo from 'src/assets/brand/logo'
 import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
 import navigation from '../_nav'
+import { getUserRole } from '../utils/auth.js'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  const [navigation_menu, setNavigation_menu] = useState([])
+
+  useEffect(() => {
+    const Usua_RolId = getUserRole()
+    const correctNavItems = navigation(Usua_RolId)
+
+    setNavigation_menu(correctNavItems)
+  }, [])
 
   return (
     <CSidebar
@@ -37,8 +44,11 @@ const AppSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/">
-          <CIcon customClassName="sidebar-brand-full" icon={logo} height={32} />
-          <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} />
+          <img
+            src={logo}
+            alt="Fundacite Táchira"
+            style={{ width: '120%', height: '150px', margin: '0px', padding: '0px' }}
+          />
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"
@@ -46,7 +56,7 @@ const AppSidebar = () => {
           onClick={() => dispatch({ type: 'set', sidebarShow: false })}
         />
       </CSidebarHeader>
-      <AppSidebarNav items={navigation} />
+      <AppSidebarNav items={navigation_menu} />
       <CSidebarFooter className="border-top d-none d-lg-flex">
         <CSidebarToggler
           onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}

@@ -10,7 +10,9 @@ import TaRoutes from "./routes/TipoArch.routes.js";
 import RolRoutes from "./routes/roles.routes.js";
 
 import morgan from "morgan";
+import dotenv from "dotenv";
 
+dotenv.config();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());

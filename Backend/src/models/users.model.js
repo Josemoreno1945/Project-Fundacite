@@ -67,3 +67,24 @@ export const deleteU = async (id) => {
   const result = await pool.query(query, [id]);
   return result.rows;
 };
+
+export const getUserByusername = async (Usua_NomUs) => {
+  const query = 'SELECT * FROM "FPM_Usuari" WHERE "Usua_NomUs" = $1';
+  const result = await pool.query(query, [Usua_NomUs]);
+  return result.rows[0];
+};
+
+export const postRegister = async (data) => {
+  const query = `INSERT INTO "FPM_Usuari"("Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_Contr", "Usua_RolId") VALUES ($1, $2, $3, $4, $5, $6)`;
+
+  const values = [
+    data.Usua_PrimN,
+    data.Usua_PrimA,
+    data.Usua_NomUs,
+    data.Usua_Email,
+    data.Usua_Contr,
+    2,
+  ];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
