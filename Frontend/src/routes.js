@@ -8,6 +8,7 @@ const Usuarios = React.lazy(() => import('./components/Usuarios'))
 const Registro = React.lazy(() => import('./components/Registro'))
 const Proyectos = React.lazy(() => import('./components/Proyectos'))
 const ProyectosPendientes = React.lazy(() => import('./components/ProyectosPendientes'))
+const ProyectosArchivados = React.lazy(() => import('./components/proyecto-archivados.js'))
 const Registro_Proyectos = React.lazy(() => import('./components/Registro-Proyectos.js'))
 const Perfil = React.lazy(() => import('./components/Perfil.js'))
 
@@ -116,6 +117,7 @@ const routes = [
   { path: '/components/Registro', name: 'components', element: Registro },
   { path: '/components/Proyectos', name: 'components', element: Proyectos },
   { path: '/components/ProyectosPendientes', name: 'components', element: ProyectosPendientes },
+  { path: '/components/proyecto-archivados', name: 'components', element: ProyectosArchivados },
   { path: '/components/Registro-Proyectos', name: 'components', element: Registro_Proyectos },
 
   { path: '/categorias', name: 'components', element: Categorias },

@@ -1,7 +1,7 @@
 .boton-generar{
-   
+    float: right;
     margin-right: 10px;
-    background-color:#0057B8;
+    background-color:#0D6EFD;
     color: white;
     border-radius: 10px; // Hace los botones ovalados
     padding: 8px 16px;
@@ -9,21 +9,21 @@
     transition: all 0.3s ease-in-out;
 
     &:hover {
-        background-color: darken(#0057B8, 10%);
+        background-color: darken(#0D6EFD, 10%);
         transform:scale(1.1);
         color: white;
     }
 
     &:focus {
-        outline: 3px solid lighten(#0057B8, 30%);
+        outline: 3px solid lighten(#0D6EFD, 30%);
         color: white;
     }
 }
 
 .boton-eliminar{
-   
+    float: inline-end;
     margin-right: 10px;
-    background-color:#ad0606;
+    background-color:#DC3545;
     color: white;
     border-radius: 10px; // Hace los botones ovalados
     padding: 8px 16px;
@@ -31,21 +31,21 @@
     transition: all 0.3s ease-in-out;
 
     &:hover {
-        background-color: darken(#b91212, 10%);
+        background-color: darken(#DC3545, 10%);
         transform:scale(1.1);
         color: white;
     }
 
     &:focus {
-        outline: 3px solid lighten(#b33a0a, 30%);
+        outline: 3px solid lighten(#DC3545, 30%);
         color: white;
     }
 }
 
 .boton-regresar{
-   
+    float: left;
     margin-right: 10px;
-    background-color:#dfdc04;
+    background-color:#6C757D;
     color: white;
     border-radius: 10px; // Hace los botones ovalados
     padding: 8px 16px;
@@ -53,21 +53,20 @@
     transition: all 0.3s ease-in-out;
 
     &:hover {
-        background-color: darken(#dfdc04, 10%);
+        background-color: darken(#6C757D, 10%);
         transform:scale(1.1);
         color: white;
     }
 
     &:focus {
-        outline: 3px solid lighten(#dfdc04, 30%);
+        outline: 3px solid lighten(#6C757D, 30%);
         color: white;
     }
 }
 
 .boton-descargar{
-   
     margin-right: 10px;
-    background-color:#00be29;
+    background-color:#198754;
     color: white;
     border-radius: 10px; // Hace los botones ovalados
     padding: 8px 16px;
@@ -75,13 +74,13 @@
     transition: all 0.3s ease-in-out;
 
     &:hover {
-        background-color: darken(#00be29, 10%);
+        background-color: darken(#198754, 10%);
         transform:scale(1.1);
         color: white;
     }
 
     &:focus {
-        outline: 3px solid lighten(#00be29, 30%);
+        outline: 3px solid lighten(#198754, 30%);
         color: white;
     }
 }

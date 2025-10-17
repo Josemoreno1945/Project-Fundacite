@@ -3,9 +3,11 @@ import {
   getProyects,
   getidProyects,
   aprobarproyecto,
+  archivarproyecto,
   getProyectsA,
   postProyectWithPdf,
   deleteProyectAndDoc,
+  getProyectsArc,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -18,6 +20,8 @@ router.get("/proyectos", getProyects);
 
 router.get("/proyectosA", getProyectsA);
 
+router.get("/proyectosArc", getProyectsArc);
+
 router.get("/proyectos/:id", getidProyects);
 
 router.post(
@@ -29,5 +33,6 @@ router.post(
 
 router.delete("/proyectos/:id", verifyToken, isAdmin, deleteProyectAndDoc);
 router.put("/aprobar", verifyToken, isAdmin, aprobarproyecto);
+router.put("/archivar", verifyToken, isAdmin, archivarproyecto);
 
 export default router;

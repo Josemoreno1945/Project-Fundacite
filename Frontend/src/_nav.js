@@ -67,13 +67,18 @@ const _nav_admin = [
       },
       {
         component: CNavItem,
+        name: 'Lista de Proyectos',
+        to: '/components/Proyectos',
+      },
+      {
+        component: CNavItem,
         name: 'Proyectos Pendientes',
         to: '/components/ProyectosPendientes',
       },
       {
         component: CNavItem,
-        name: 'Lista de Proyectos',
-        to: '/components/Proyectos',
+        name: 'Proyectos Archivados',
+        to: '/components/proyecto-archivados',
       },
     ],
   },

@@ -5,6 +5,8 @@ import {
   putProy,
   getPA,
   deleteProyById,
+  putProy_archivado,
+  getArch,
 } from "../models/proy.model.js";
 import { getPdfByProyId, deleteDocsByProyId } from "../models/doc.model.js";
 import { postDoc } from "../models/doc.model.js";
@@ -45,9 +47,30 @@ export const aprobarproyecto = async (req, res) => {
   }
 };
 
+export const archivarproyecto = async (req, res) => {
+  try {
+    const data = req.body;
+    const rows = await putProy_archivado(data);
+    res.json(rows);
+  } catch (error) {
+    console.error("Error actualizando proyectos:", error);
+    res.status(500).send("Error actualizandoproyectos");
+  }
+};
+
 export const getProyectsA = async (req, res) => {
   try {
     const rows = await getPA();
+    res.json(rows);
+  } catch (error) {
+    console.error("Error obteniendo proyectos:", error);
+    res.status(500).send("Error obteniendo proyectos");
+  }
+};
+
+export const getProyectsArc = async (req, res) => {
+  try {
+    const rows = await getArch();
     res.json(rows);
   } catch (error) {
     console.error("Error obteniendo proyectos:", error);
@@ -157,12 +180,10 @@ export const deleteProyectAndDoc = async (req, res) => {
         await deleteRemotePath(doc.Doc_RutaAr);
       } catch (err) {
         console.error("Error borrando archivo remoto:", err.message || err);
-        return res
-          .status(500)
-          .json({
-            error: "Error borrando archivo remoto",
-            detail: err.message,
-          });
+        return res.status(500).json({
+          error: "Error borrando archivo remoto",
+          detail: err.message,
+        });
       }
     }
 

@@ -53,11 +53,16 @@ const ProyectosDetalle = () => {
   const { id } = useParams()
   const [proyecto, setProyecto] = useState([])
   const [mensajeAprobado, setmensajeAprobado] = useState('')
+  const [mensajeArchivado, setmensajeArchivado] = useState('')
   const [mensajeEliminado, setmensajeEliminado] = useState('')
   const [ModalRealizadoAprobado, setModalRealizadoAprobado] = useState(false)
+
+  const [ModalRealizadoArchivado, setModalRealizadoArchivado] = useState(false)
+
   const [ModalRealizadoEliminado, setModalRealizadoEliminado] = useState(false)
   const [ModalmensajeEliminar, setModalmensajeEliminar] = useState(false)
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
+  const [ModalmensajeArchivado, setModalmensajeArchivado] = useState(false)
   const navigate = useNavigate()
 
   const location = useLocation()
@@ -96,6 +101,21 @@ const ProyectosDetalle = () => {
       })
       getidProyecto()
       setmensajeAprobado(response.data.message)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const Archivarproyecto = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.put('http://localhost:4000/archivar', proyecto[0], {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      getidProyecto()
+      setmensajeArchivado(response.data.message)
     } catch (err) {
       console.log(err)
     }
@@ -214,6 +234,50 @@ const ProyectosDetalle = () => {
               Aprobar
             </CButton>
             <CButton className="boton-regresar" onClick={() => setModalmensajeAprobado(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <CModal visible={ModalmensajeArchivado} onClose={() => setModalmensajeArchivado(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>Desea archivar el proyecto?</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-eliminar"
+              onClick={() => {
+                Archivarproyecto()
+                setModalmensajeArchivado(false)
+                setModalRealizadoArchivado(true)
+                navigate('../components/Proyectos')
+              }}
+            >
+              Archivar
+            </CButton>
+            <CButton className="boton-regresar" onClick={() => setModalmensajeArchivado(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <CModal visible={ModalRealizadoArchivado} onClose={() => setModalRealizadoArchivado(false)}>
+        <CModalHeader>Mensaje</CModalHeader>
+        <CModalBody>
+          <div>{String(mensajeArchivado)}</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalRealizadoArchivado(false)
+              }}
+            >
               Cerrar
             </CButton>
           </div>
@@ -370,9 +434,19 @@ const ProyectosDetalle = () => {
                     setModalmensajeEliminar(true)
                   }}
                 >
-                  Eliminar
+                  Rechazar
                 </CButton>
               </>
+            )}
+            {proyecto[0]?.proy_statu === 'aprobado' && (
+              <CButton
+                className="boton-eliminar"
+                onClick={() => {
+                  setModalmensajeArchivado(true)
+                }}
+              >
+                Archivar
+              </CButton>
             )}
             <CButton className="boton-descargar" onClick={openPdf}>
               Descargar PDF

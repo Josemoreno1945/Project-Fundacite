@@ -42,6 +42,7 @@ export const postP = async (data) => {
   return result.rows;
 };
 
+//----------------------------------------------------------put , pasar a aprobado
 export const putProy = async (data) => {
   const client = await pool.connect();
 
@@ -74,6 +75,49 @@ export const putProy = async (data) => {
   }
 };
 
+//----------------------------------------------------------put , pasar a archivado
+
+export const putProy_archivado = async (data) => {
+  const client = await pool.connect();
+
+  try {
+    console.log(data);
+    const updateStatusQuery = `
+      UPDATE "FPT_Proyec"
+      SET proy_statu = 'archivado'
+      WHERE "Proy_Id" = $1
+    `;
+    await client.query(updateStatusQuery, [data.Proy_Id]);
+
+    // 2. Eliminar el proyecto de la tabla de proyectos aceptados
+    const deleteAceQuery = `
+      DELETE FROM "FPT_ProAce"
+      WHERE "ProyA_PrId" = $1
+    `;
+    await client.query(deleteAceQuery, [data.Proy_Id]);
+
+    // 3.Registrar el archivado en otra tabla si lo deseas
+    const insertArchivadoQuery = `
+      INSERT INTO "FPT_ProArc"("ProyAr_PrId", "ProyAr_Fec", "ProyAr_Mot")
+      VALUES ($1, $2, $3)
+    `;
+    const archivadoValues = [
+      data.Proy_Id,
+      new Date(),
+      "Archivado por decisión institucional",
+    ];
+    await client.query(insertArchivadoQuery, archivadoValues);
+
+    return {
+      message: "Proyecto archivado y eliminado de aceptados exitosamente.",
+    };
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 export const getPA = async () => {
   const query = `
     SELECT 
@@ -88,6 +132,25 @@ export const getPA = async () => {
       p."Proy_NomAu"
     FROM "FPT_ProAce" a
     JOIN "FPT_Proyec" p ON a."ProyA_PrId" = p."Proy_Id"
+  `;
+  const result = await pool.query(query);
+  return result.rows;
+};
+
+export const getArch = async () => {
+  const query = `
+    SELECT 
+      p."Proy_Id",
+      p."Proy_Titul",
+      p."Proy_Descr",
+      p."Proy_Resum",
+      p."Proy_FecRe",
+      p.proy_statu,
+      p."Proy_UsuId",
+      p."Proy_CatId",
+      p."Proy_NomAu"
+    FROM "FPT_ProArc" a
+    JOIN "FPT_Proyec" p ON a."ProyAr_PrId" = p."Proy_Id"
   `;
   const result = await pool.query(query);
   return result.rows;
