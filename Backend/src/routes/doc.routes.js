@@ -7,7 +7,7 @@ import {
 } from "../controllers/doc.controllers.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
-import { generatePdfDownload } from "../controllers/pdf.controllers.js";
+import { generatePdfDownload } from "../controllers/Pdf.controllers.js";
 
 const router = Router();
 const upload = multer();
