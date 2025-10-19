@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import app from "./app.js";
 import cors from "cors";
 import express from "express";
@@ -10,9 +13,13 @@ import TaRoutes from "./routes/TipoArch.routes.js";
 import RolRoutes from "./routes/roles.routes.js";
 
 import morgan from "morgan";
-import dotenv from "dotenv";
+console.log(
+  "PORT (env):",
+  process.env.PORT || PORT ? process.env.PORT || PORT : "<no-port>"
+);
+// opcional: mostrar si existe DATABASE_URL (no imprimirla completa por seguridad)
+console.log("DATABASE_URL set:", !!process.env.DATABASE_URL);
 
-dotenv.config();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
