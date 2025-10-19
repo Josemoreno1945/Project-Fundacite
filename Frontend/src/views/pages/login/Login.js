@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import api from '../../../services/api'
 import {
   CButton,
   CCard,
@@ -52,7 +53,7 @@ const Login = () => {
 
   const postLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/login', formData, {
+      const response = await api.post('/login', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
