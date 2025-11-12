@@ -19,9 +19,9 @@ const router = Router();
 //---------------------------------Get---------------------------------------
 router.get("/users", verifyToken, isAdmin, getUsers);
 
-router.get("/check_email/:email", verifyToken, isAdmin, check_Email);
+router.get("/check_email/:email", check_Email);
 
-router.get("/check_username/:username", verifyToken, isAdmin, check_username);
+router.get("/check_username/:username", check_username);
 
 router.post("/users", verifyToken, isAdmin, upload.none(), postUsers);
 

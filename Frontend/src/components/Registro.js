@@ -19,6 +19,7 @@ import {
   CModalBody,
   CModalFooter,
   CModalHeader,
+  CPopover,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -31,6 +32,7 @@ import {
   cilLockUnlocked,
 } from '@coreui/icons'
 import '../scss/registro-u.scss'
+import '../scss/botones.scss'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
@@ -39,6 +41,9 @@ const Registro = () => {
   const [emailAvailable, setEmailAvailable] = useState(null)
   const [mensajeAprobado, setmensajeAprobado] = useState('')
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
+
+  const [mensajeError, setmensajeError] = useState('')
+  const [ModalmensajeError, setModalmensajeError] = useState(false)
   const navigate = useNavigate()
   const [roles, Setroles] = useState([])
   const [formData, setFormData] = useState({
@@ -58,36 +63,34 @@ const Registro = () => {
     }))
 
     // Validación dinámica
-    if (name === 'Usua_NomUs' && value) {
-      const token = localStorage.getItem('token')
-      const res = await axios.get(`http://localhost:4000/check_username/${value}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      if (res.data.exists === true) {
-        setUsernameAvailable(false)
-        console.log('Usuario ya en uso ❌')
+    if (name === 'Usua_NomUs') {
+      if (value.trim() === '') {
+        setUsernameAvailable('')
+        console.log('nada')
       }
-      if (res.data.exists === false) {
-        setUsernameAvailable(true)
-        console.log('Usuario disponible ✅')
+      if (value) {
+        const res = await axios.get(`http://localhost:4000/check_username/${value}`)
+        if (res.data.exists === true) {
+          setUsernameAvailable(false)
+        }
+        if (res.data.exists === false) {
+          setUsernameAvailable(true)
+        }
       }
     }
-    if (name === 'Usua_Email' && value) {
-      const token = localStorage.getItem('token')
-      const res = await axios.get(`http://localhost:4000/check_email/${value}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      if (res.data.exists === true) {
-        setEmailAvailable(false)
-        console.log('Correo ya registrado ❌')
+    if (name === 'Usua_Email') {
+      if (value.trim() === '') {
+        setEmailAvailable('')
+        console.log('nada')
       }
-      if (res.data.exists === false) {
-        setEmailAvailable(true)
-        console.log('Correo válido ✅')
+      if (value) {
+        const res = await axios.get(`http://localhost:4000/check_email/${value}`)
+        if (res.data.exists === true) {
+          setEmailAvailable(false)
+        }
+        if (res.data.exists === false) {
+          setEmailAvailable(true)
+        }
       }
     }
   }
@@ -103,17 +106,9 @@ const Registro = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const formDataToSend = new FormData()
-
-    formDataToSend.append('Usua_PrimN', formData.Usua_PrimN)
-    formDataToSend.append('Usua_PrimA', formData.Usua_PrimA)
-    formDataToSend.append('Usua_NomUs', formData.Usua_NomUs)
-    formDataToSend.append('Usua_Email', formData.Usua_Email)
-    formDataToSend.append('Usua_Contr', formData.Usua_Contr)
-    formDataToSend.append('Usua_RolId', formData.Usua_RolId)
     try {
       const token = localStorage.getItem('token')
-      const postUsers = await axios.post('http://localhost:4000/users', formDataToSend, {
+      const postUsers = await axios.post('http://localhost:4000/users', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -122,6 +117,7 @@ const Registro = () => {
       setmensajeAprobado(postUsers.data.message)
       setModalmensajeAprobado(true)
     } catch (err) {
+      setModalmensajeError(true)
       console.error('Error al registrar usuario:', err)
     }
   }
@@ -135,7 +131,31 @@ const Registro = () => {
         </CModalBody>
         <CModalFooter>
           <div className="button-box">
-            <CButton className="boton-regresar" onClick={() => setModalmensajeAprobado(false)}>
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalmensajeAprobado(false), navigate('/components/Usuarios')
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <CModal visible={ModalmensajeError} onClose={() => setModalmensajeError(false)}>
+        <CModalHeader>Error</CModalHeader>
+        <CModalBody>
+          <div>Error al registrar el usuario</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalmensajeError(false)
+              }}
+            >
               Cerrar
             </CButton>
           </div>
@@ -218,6 +238,12 @@ const Registro = () => {
                         name="Usua_Email"
                         onChange={handleInputChange}
                       ></CFormInput>
+                      {emailAvailable === false && (
+                        <small style={{ color: 'red' }}>Email ya en uso</small>
+                      )}
+                      {emailAvailable === true && (
+                        <small style={{ color: 'green' }}>Email disponible</small>
+                      )}
                     </CInputGroup>
                   </div>
                 </div>
@@ -269,7 +295,7 @@ const Registro = () => {
           </CCardBody>
           <CCardFooter>
             <div className="caja-boton">
-              <CButton className="boton-registro" onClick={handleSubmit}>
+              <CButton className="boton-generar" onClick={handleSubmit}>
                 Registrar
               </CButton>
             </div>

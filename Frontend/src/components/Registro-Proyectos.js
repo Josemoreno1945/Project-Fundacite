@@ -96,14 +96,6 @@ const Registro_Proyectos = () => {
 
   //-----------------------------------------------------------------------------------------------------
 
-  const cargarTarchivos = async () => {
-    try {
-      const result = await axios.get('http://localhost:4000/tipoArchivos')
-      setTipoArchivos(result.data)
-    } catch (error) {
-      console.error('Error al obtener los tipos', error)
-    }
-  }
   //--------------------------------------------------------------------------------------------------------------
 
   const handleSubmit = async (e) => {
