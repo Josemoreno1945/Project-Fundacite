@@ -6,6 +6,8 @@ import {
   deleteUsers,
   login,
   register,
+  check_Email,
+  check_username,
 } from "../controllers/users.controllers.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
@@ -16,6 +18,10 @@ const router = Router();
 
 //---------------------------------Get---------------------------------------
 router.get("/users", verifyToken, isAdmin, getUsers);
+
+router.get("/check_email/:email", verifyToken, isAdmin, check_Email);
+
+router.get("/check_username/:username", verifyToken, isAdmin, check_username);
 
 router.post("/users", verifyToken, isAdmin, upload.none(), postUsers);
 

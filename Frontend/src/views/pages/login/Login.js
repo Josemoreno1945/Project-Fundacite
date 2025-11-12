@@ -50,10 +50,11 @@ const Login = () => {
       [name]: value,
     }))
   }
-
+  //axios.post('http://localhost:4000/login
+  //const response = await api.post('/login', formData, {
   const postLogin = async () => {
     try {
-      const response = await api.post('/login', formData, {
+      const response = await axios.post('http://localhost:4000/login', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
