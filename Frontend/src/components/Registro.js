@@ -35,6 +35,8 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 const Registro = () => {
+  const [usernameAvailable, setUsernameAvailable] = useState(null)
+  const [emailAvailable, setEmailAvailable] = useState(null)
   const [mensajeAprobado, setmensajeAprobado] = useState('')
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
   const navigate = useNavigate()
@@ -48,12 +50,46 @@ const Registro = () => {
     Usua_RolId: '',
   })
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value } = e.target
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }))
+
+    // Validación dinámica
+    if (name === 'Usua_NomUs' && value) {
+      const token = localStorage.getItem('token')
+      const res = await axios.get(`http://localhost:4000/check_username/${value}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (res.data.exists === true) {
+        setUsernameAvailable(false)
+        console.log('Usuario ya en uso ❌')
+      }
+      if (res.data.exists === false) {
+        setUsernameAvailable(true)
+        console.log('Usuario disponible ✅')
+      }
+    }
+    if (name === 'Usua_Email' && value) {
+      const token = localStorage.getItem('token')
+      const res = await axios.get(`http://localhost:4000/check_email/${value}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (res.data.exists === true) {
+        setEmailAvailable(false)
+        console.log('Correo ya registrado ❌')
+      }
+      if (res.data.exists === false) {
+        setEmailAvailable(true)
+        console.log('Correo válido ✅')
+      }
+    }
   }
 
   const cargarRoles = async () => {
@@ -161,6 +197,12 @@ const Registro = () => {
                         name="Usua_NomUs"
                         onChange={handleInputChange}
                       ></CFormInput>
+                      {usernameAvailable === false && (
+                        <small style={{ color: 'red' }}>Usuario ya en uso</small>
+                      )}
+                      {usernameAvailable === true && (
+                        <small style={{ color: 'green' }}>Usuario disponible</small>
+                      )}
                     </CInputGroup>
                   </div>
                   <div className="w-50">

@@ -10,16 +10,22 @@ export const getU = async () => {
   return result.rows;
 };
 
-/*
-//---------------------------------Get---------------------------------------
-export const getDeptid = async(id)=>{
-        const query = "SELECT * FROM departments WHERE id_departments=$1"
-        const result =await pool.query(query,[id])
-        return result.rows
-}
+//---------------------------------Get email---------------------------------------
+export const getUserbyemail = async (Usua_Email) => {
+  const query = 'SELECT * FROM "FPM_Usuari" WHERE "Usua_Email" = $1';
+  const result = await pool.query(query, [Usua_Email]);
+  return result.rows[0];
+};
+
+//---------------------------------Get username---------------------------------------
+export const getUserbyusername = async (Usua_NomUs) => {
+  const query = 'SELECT * FROM "FPM_Usuari" WHERE "Usua_NomUs" = $1';
+  const result = await pool.query(query, [Usua_NomUs]);
+  return result.rows[0];
+};
 
 //-------------------------------Post-----------------------------------------
-*/
+
 export const postU = async (data) => {
   const query = `INSERT INTO "FPM_Usuari"("Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_Contr", "Usua_RolId") VALUES ($1, $2, $3, $4, $5, $6)`;
 

@@ -5,6 +5,8 @@ import {
   putU,
   getUserByusername,
   postRegister,
+  getUserbyemail,
+  getUserbyusername,
 } from "../models/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -20,6 +22,28 @@ export const getUsers = async (req, res) => {
   }
 };
 
+//--------------------------------------get por email---------------------------
+export const check_Email = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const rows = await getUserbyemail(email);
+    return res.json({ exists: !!rows });
+  } catch (error) {
+    console.error("Error getting user:", error);
+    res.status(500).send("Error getting user");
+  }
+};
+//--------------------------------------get por usuario---------------------------
+export const check_username = async (req, res) => {
+  try {
+    const username = req.params.username;
+    const rows = await getUserbyusername(username);
+    return res.json({ exists: !!rows });
+  } catch (error) {
+    console.error("Error getting user:", error);
+    res.status(500).send("Error getting user");
+  }
+};
 /*
 //---------------------------------Get---------------------------------------
 export const getDepartmentsId = async(req,res)=>{
