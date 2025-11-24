@@ -1,25 +1,25 @@
 import { z } from "zod";
 
 const userSchema = z.object({
-  first_name: z
+  Usua_PrimN: z
     .string()
-    .min(1, "The first name cannot be empty")
-    .max(100, "The first name cannot exceed 100 characters"),
-  last_name: z
+    .min(1, "El primer nombre no puede estar vacío")
+    .max(100, "El primer nombre no debe exceder los 100 caracteres"),
+  Usua_PrimA: z
     .string()
-    .min(1, "The last name cannot be empty")
-    .max(100, "The last name cannot exceed 100 characters"),
-  user_name: z
+    .min(1, "El primer apellido no debe estar vacio")
+    .max(100, "El primer apellido no debe superar los 100 caracteres"),
+  Usua_NomUs: z
     .string()
-    .min(1, "The user name cannot be empty")
-    .max(100, "The user name cannot exceed 100 characters"),
-  password: z
+    .min(1, "El nombre de usuario no debe estar vacio")
+    .max(100, "El nombre de usuario no debe exceder los 100 caracteres"),
+  Usua_Contr: z
     .string()
-    .min(8, "The password must be at least 8 characters long")
-    .regex(/[A-Z]/, "The password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "The password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "The password must contain at least one number"),
-  email: z.string().email("Must be a valid email"),
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .regex(/[A-Z]/, "La contraseña debe contener al menos una letra mayúscula")
+    .regex(/[a-z]/, "La contraseña debe contener al menos una letra minúscula")
+    .regex(/[0-9]/, "La contraseña debe contener al menos un número"),
+  Usua_Email: z.string().email("Debe ser un correo electrónico válido"),
   // status: z
   // .enum(["active", "inactive"]),
 });

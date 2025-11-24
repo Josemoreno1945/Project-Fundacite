@@ -12,34 +12,11 @@ export const errors = {
   },
   userDuplicated: {
     status: 409,
-    message: "The user is already registered",
+    message: "El usuario ya esta registrado",
   },
   User_emailDuplicated: {
     status: 409,
-    message: "the email is already registered",
-  },
-  // Departamentos
-  departmentNotFound: {
-    status: 404,
-    message: "Department not found",
-  },
-  departmentDuplicated: {
-    status: 409,
-    message: "The department is already registered",
-  },
-  Dpt_emailDuplicated: {
-    status: 409,
-    message: "the email is already registered",
-  },
-  // Assets
-  assetNotFound: {
-    status: 404,
-    message: "Asset not found",
-  },
-  // Reportes
-  reportNotFound: {
-    status: 404,
-    message: "Report not found",
+    message: "El email ya esta registrado",
   },
 
   //login

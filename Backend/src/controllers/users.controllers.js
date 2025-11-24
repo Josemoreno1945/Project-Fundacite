@@ -67,9 +67,18 @@ export const getDepartmentsId = async(req,res)=>{
 */
 
 //-------------------------------Post-----------------------------------------
-export const postUsers = async (req, res) => {
+export const postUsers = async (req, res, next) => {
   try {
     const data = req.body;
+
+    const parseU = userSchema.safeParse(data);
+
+    if (!parseU.success) {
+      console.log("Errores de validación:", parseU.error.issues);
+      return res.status(400).json({
+        errors: parseU.error.errors,
+      });
+    }
 
     if (data.Usua_Contr) {
       const salt = await bcrypt.genSalt(10);
@@ -79,8 +88,7 @@ export const postUsers = async (req, res) => {
     const rows = await postU(data);
     return res.json({ rows, message: "Usuario registrado con exito" });
   } catch (error) {
-    console.error("Error when post users:", error);
-    res.status(500).send("Error when post users");
+    next(error);
   }
 };
 
