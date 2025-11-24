@@ -10,6 +10,8 @@ import {
 } from "../models/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import userSchema from "../schemas/users.schemas.js";
+import { errors, throwError } from "../utils/errors.js";
 
 //---------------------------------Get---------------------------------------
 export const getUsers = async (req, res) => {
@@ -113,7 +115,43 @@ export const deleteUsers = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
+  try {
+    const { Usua_NomUs, Usua_Contr } = req.body;
+    console.log(req.body);
+
+    if (!req.body.Usua_NomUs || !req.body.Usua_Contr) {
+      throwError(errors.missingFields);
+    }
+
+    const user = await getUserByusername(Usua_NomUs);
+
+    if (!user) {
+      throwError(errors.userNotFound);
+    }
+    const valid = await bcrypt.compare(Usua_Contr, user.Usua_Contr);
+
+    if (!valid) {
+      throwError(errors.InvalidPassword);
+    }
+
+    const token = jwt.sign(
+      { id: user.Usua_Id, username: user.Usua_NomUs, rol: user.Usua_RolId },
+      process.env.JWT_SECRET,
+      { expiresIn: "23h" }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user.Usua_Id,
+        username: user.Usua_NomUs,
+        rol: user.Usua_RolId,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
   const { Usua_NomUs, Usua_Contr } = req.body;
   console.log(req.body);
   const user = await getUserByusername(Usua_NomUs);

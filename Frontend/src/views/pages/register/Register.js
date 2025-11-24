@@ -32,6 +32,8 @@ import axios from 'axios'
 
 const Register = () => {
   const navigate = useNavigate()
+  const [usernameAvailable, setUsernameAvailable] = useState(null)
+  const [emailAvailable, setEmailAvailable] = useState(null)
   const [formData, setFormData] = useState({
     Usua_PrimN: '',
     Usua_PrimA: '',
@@ -40,12 +42,45 @@ const Register = () => {
     Usua_Contr: '',
   })
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value } = e.target
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }))
+
+    // Validación dinámica
+    if (name === 'Usua_NomUs') {
+      if (value.trim() === '') {
+        setUsernameAvailable('')
+        console.log('nada')
+      }
+      if (value) {
+        const res = await axios.get(`http://localhost:4000/check_username/${value}`)
+        if (res.data.exists === true) {
+          setUsernameAvailable(false)
+        }
+        if (res.data.exists === false) {
+          setUsernameAvailable(true)
+        }
+      }
+    }
+
+    if (name === 'Usua_Email') {
+      if (value.trim() === '') {
+        setEmailAvailable('')
+        console.log('nada')
+      }
+      if (value) {
+        const res = await axios.get(`http://localhost:4000/check_email/${value}`)
+        if (res.data.exists === true) {
+          setEmailAvailable(false)
+        }
+        if (res.data.exists === false) {
+          setEmailAvailable(true)
+        }
+      }
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -118,6 +153,12 @@ const Register = () => {
                         name="Usua_NomUs"
                         onChange={handleInputChange}
                       ></CFormInput>
+                      {usernameAvailable === false && (
+                        <small style={{ color: 'red' }}>Usuario ya en uso</small>
+                      )}
+                      {usernameAvailable === true && (
+                        <small style={{ color: 'green' }}>Usuario disponible</small>
+                      )}
                     </CInputGroup>
                   </div>
                   <div className="w-50">
@@ -133,6 +174,12 @@ const Register = () => {
                         name="Usua_Email"
                         onChange={handleInputChange}
                       ></CFormInput>
+                      {emailAvailable === false && (
+                        <small style={{ color: 'red' }}>Email ya en uso</small>
+                      )}
+                      {emailAvailable === true && (
+                        <small style={{ color: 'green' }}>Email disponible</small>
+                      )}
                     </CInputGroup>
                   </div>
                 </div>

@@ -11,7 +11,7 @@ import proyRoutes from "./routes/proy.routes.js";
 import catRoutes from "./routes/cate.routes.js";
 import TaRoutes from "./routes/TipoArch.routes.js";
 import RolRoutes from "./routes/roles.routes.js";
-
+import { errorHandler } from "./middlewares/errorHandler.js";
 import morgan from "morgan";
 console.log(
   "PORT (env):",
@@ -29,5 +29,6 @@ app.use(proyRoutes);
 app.use(catRoutes);
 app.use(TaRoutes);
 app.use(RolRoutes);
+app.use(errorHandler);
 app.listen(PORT);
 console.log("Server on port", PORT);
