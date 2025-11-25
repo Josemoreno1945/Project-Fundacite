@@ -11,16 +11,17 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userSchema from "../schemas/users.schemas.js";
+import loginSchema from "../schemas/login.schemas.js";
 import { errors, throwError } from "../utils/errors.js";
+import { da } from "zod/v4/locales";
 
 //---------------------------------Get---------------------------------------
-export const getUsers = async (req, res) => {
+export const getUsers = async (req, res, next) => {
   try {
     const rows = await getU();
     res.json(rows);
   } catch (error) {
-    console.error("Error getting user:", error);
-    res.status(500).send("Error getting user");
+    next(error);
   }
 };
 
@@ -73,10 +74,20 @@ export const postUsers = async (req, res, next) => {
 
     const parseU = userSchema.safeParse(data);
 
+    if (
+      !data.Usua_PrimN &&
+      !data.Usua_PrimA &&
+      !data.Usua_NomUs &&
+      !data.Usua_Email &&
+      !data.Usua_Contr &&
+      !data.Usua_RolId
+    ) {
+      throwError(errors.missingFields);
+    }
+
     if (!parseU.success) {
-      console.log("Errores de validación:", parseU.error.issues);
       return res.status(400).json({
-        errors: parseU.error.errors,
+        errors: parseU.error.issues,
       });
     }
 
@@ -125,20 +136,24 @@ export const deleteUsers = async (req, res) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { Usua_NomUs, Usua_Contr } = req.body;
-    console.log(req.body);
-
-    if (!req.body.Usua_NomUs || !req.body.Usua_Contr) {
+    const data = req.body;
+    if (!data.Usua_NomUs && !data.Usua_Contr) {
       throwError(errors.missingFields);
     }
+    const parseU = loginSchema.safeParse(data);
+    if (!parseU.success) {
+      return res.status(400).json({
+        errors: parseU.error.issues,
+      });
+    }
+    //-------------------------------------------------
 
-    const user = await getUserByusername(Usua_NomUs);
-
+    const user = await getUserByusername(data.Usua_NomUs);
     if (!user) {
       throwError(errors.userNotFound);
     }
-    const valid = await bcrypt.compare(Usua_Contr, user.Usua_Contr);
 
+    const valid = await bcrypt.compare(data.Usua_Contr, user.Usua_Contr);
     if (!valid) {
       throwError(errors.InvalidPassword);
     }
@@ -180,9 +195,25 @@ export const login = async (req, res, next) => {
   });
 };
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   try {
     const data = req.body;
+    if (
+      !data.Usua_PrimN &&
+      !data.Usua_PrimA &&
+      !data.Usua_NomUs &&
+      !data.Usua_Email &&
+      !data.Usua_Contr
+    ) {
+      throwError(errors.missingFields);
+    }
+
+    const parseU = userSchema.safeParse(data);
+    if (!parseU.success) {
+      return res.status(400).json({
+        errors: parseU.error.issues,
+      });
+    }
 
     if (data.Usua_Contr) {
       const salt = await bcrypt.genSalt(10);
@@ -192,7 +223,6 @@ export const register = async (req, res) => {
     const rows = await postRegister(data);
     return res.json(rows);
   } catch (error) {
-    console.error("Error when post users:", error);
-    res.status(500).send("Error when post users");
+    next(error);
   }
 };

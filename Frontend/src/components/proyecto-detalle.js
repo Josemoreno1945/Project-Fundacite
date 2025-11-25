@@ -54,7 +54,7 @@ const ProyectosDetalle = () => {
   const [proyecto, setProyecto] = useState([])
   const [mensajeAprobado, setmensajeAprobado] = useState('')
   const [mensajeArchivado, setmensajeArchivado] = useState('')
-  const [mensajeEliminado, setmensajeEliminado] = useState('')
+  const [mensajeRechazado, setmensajeRechazado] = useState('')
   const [ModalRealizadoAprobado, setModalRealizadoAprobado] = useState(false)
 
   const [ModalRealizadoArchivado, setModalRealizadoArchivado] = useState(false)
@@ -121,6 +121,21 @@ const ProyectosDetalle = () => {
     }
   }
 
+  const Rechazarproyecto = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.put('http://localhost:4000/rechazar', proyecto[0], {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      getidProyecto()
+      setmensajeRechazado(response.data.message)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   const openPdf = async () => {
     try {
       const token = localStorage.getItem('token')
@@ -156,7 +171,7 @@ const ProyectosDetalle = () => {
       <CModal visible={ModalRealizadoEliminado} onClose={() => setModalRealizadoEliminado(false)}>
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
-          <div>Proyecto Eliminado</div>
+          <div>{String(mensajeRechazado)}</div>
         </CModalBody>
         <CModalFooter>
           <div className="button-box">
@@ -176,19 +191,19 @@ const ProyectosDetalle = () => {
       <CModal visible={ModalmensajeEliminar} onClose={() => setModalmensajeEliminar(false)}>
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
-          <div>Desea eliminar el proyecto?</div>
+          <div>Desea rechazar el proyecto?</div>
         </CModalBody>
         <CModalFooter>
           <div className="button-box">
             <CButton
               className="boton-eliminar"
               onClick={() => {
-                handleDeleteProject()
+                Rechazarproyecto()
                 setModalmensajeEliminar(false)
                 setModalRealizadoEliminado(true)
               }}
             >
-              Eliminar
+              Rechazar
             </CButton>
             <CButton className="boton-regresar" onClick={() => setModalmensajeEliminar(false)}>
               Cerrar
@@ -418,7 +433,8 @@ const ProyectosDetalle = () => {
             ))}
           </CCardBody>
           <CCardFooter>
-            {proyecto[0]?.proy_statu !== 'aprobado' && (
+            {(proyecto[0]?.proy_statu === 'pendiente' ||
+              proyecto[0]?.proy_statu === 'archivado') && (
               <>
                 <CButton
                   className="boton-generar"
@@ -448,6 +464,7 @@ const ProyectosDetalle = () => {
                 Archivar
               </CButton>
             )}
+
             <CButton className="boton-descargar" onClick={openPdf}>
               Descargar PDF
             </CButton>

@@ -8,6 +8,8 @@ import {
   postProyectWithPdf,
   deleteProyectAndDoc,
   getProyectsArc,
+  rechazarproyecto,
+  getProyectsRech,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -19,6 +21,7 @@ const upload = multer();
 router.get("/proyectos", getProyects);
 
 router.get("/proyectosA", getProyectsA);
+router.get("/proyectosRechazados", getProyectsRech);
 
 router.get("/proyectosArc", getProyectsArc);
 
@@ -34,5 +37,6 @@ router.post(
 router.delete("/proyectos/:id", verifyToken, isAdmin, deleteProyectAndDoc);
 router.put("/aprobar", verifyToken, isAdmin, aprobarproyecto);
 router.put("/archivar", verifyToken, isAdmin, archivarproyecto);
+router.put("/rechazar", verifyToken, isAdmin, rechazarproyecto);
 
 export default router;

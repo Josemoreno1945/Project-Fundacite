@@ -6,10 +6,14 @@ import {
   getPA,
   deleteProyById,
   putProy_archivado,
+  putProy_rechazado,
   getArch,
+  getRech,
 } from "../models/proy.model.js";
 import { getPdfByProyId, deleteDocsByProyId } from "../models/doc.model.js";
 import { postDoc } from "../models/doc.model.js";
+import proyectoSchema from "../schemas/proyecto.schemas.js";
+import { errors, throwError } from "../utils/errors.js";
 import { uploadBuffer, deleteRemotePath } from "../services/icedrive.js";
 import PDFDocument from "pdfkit";
 
@@ -40,6 +44,17 @@ export const aprobarproyecto = async (req, res) => {
   try {
     const data = req.body;
     const rows = await putProy(data);
+    res.json(rows);
+  } catch (error) {
+    console.error("Error actualizando proyectos:", error);
+    res.status(500).send("Error actualizandoproyectos");
+  }
+};
+
+export const rechazarproyecto = async (req, res) => {
+  try {
+    const data = req.body;
+    const rows = await putProy_rechazado(data);
     res.json(rows);
   } catch (error) {
     console.error("Error actualizando proyectos:", error);
@@ -78,12 +93,37 @@ export const getProyectsArc = async (req, res) => {
   }
 };
 
+export const getProyectsRech = async (req, res) => {
+  try {
+    const rows = await getRech();
+    res.json(rows);
+  } catch (error) {
+    console.error("Error obteniendo proyectos:", error);
+    res.status(500).send("Error obteniendo proyectos");
+  }
+};
+
 //------------------------------Post-----------------------------------------
 //---------------------------------------------------------------------------
-export const postProyectWithPdf = async (req, res) => {
+export const postProyectWithPdf = async (req, res, next) => {
   try {
     const files = req.files || [];
     const body = req.body || {};
+    if (
+      !body.Proy_Titul &&
+      !body.Proy_Descr &&
+      !body.Proy_Resum &&
+      !body.Proy_NomAu
+    ) {
+      throwError(errors.missingFields);
+    }
+    const parseU = proyectoSchema.safeParse(body);
+
+    if (!parseU.success) {
+      return res.status(400).json({
+        errors: parseU.error.issues,
+      });
+    }
 
     // 1) crear proyecto en BD-----------
     const result = await postP(body);
@@ -160,10 +200,7 @@ export const postProyectWithPdf = async (req, res) => {
 
     pdfDoc.end();
   } catch (err) {
-    console.error("Error en postProyectWithPdf:", err);
-    res
-      .status(500)
-      .json({ error: "Error creando proyecto y PDF", detail: err.message });
+    next(err);
   }
 };
 

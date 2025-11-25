@@ -8,6 +8,10 @@ import {
   CCardHeader,
   CCol,
   CContainer,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
   CForm,
   CFormInput,
   CInputGroup,
@@ -33,10 +37,13 @@ import {
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import '../../../scss/login.scss'
+import '../../../scss/botones.scss'
 import axios from 'axios'
 
 const Login = () => {
   const navigate = useNavigate()
+  const [mensajeError, setmensajeError] = useState('')
+  const [ModalmensajeError, setModalmensajeError] = useState(false)
 
   const [formData, setFormData] = useState({
     Usua_NomUs: '',
@@ -62,12 +69,46 @@ const Login = () => {
       localStorage.setItem('token', response.data.token)
       navigate('/Inicio')
     } catch (err) {
-      console.error('Error al iniciar sesion:', err)
+      if (err.response.data.error) {
+        setmensajeError(err.response.data.error)
+      } else {
+        setmensajeError('')
+        const mensajes = err.response.data.errors.map((issue) => issue.message)
+        setmensajeError(mensajes)
+      }
+
+      setModalmensajeError(true)
     }
   }
 
   return (
     <>
+      <CModal visible={ModalmensajeError} onClose={() => setModalmensajeError(false)}>
+        <CModalHeader>Error</CModalHeader>
+        <CModalBody>
+          {Array.isArray(mensajeError) ? (
+            <ul>
+              {mensajeError.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
+          ) : (
+            <div>{String(mensajeError)}</div>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalmensajeError(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
       <div className="login-container">
         <CCard>
           <CCardBody>

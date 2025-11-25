@@ -117,8 +117,15 @@ const Registro = () => {
       setmensajeAprobado(postUsers.data.message)
       setModalmensajeAprobado(true)
     } catch (err) {
+      if (err.response.data.error) {
+        setmensajeError(err.response.data.error)
+      } else {
+        setmensajeError('')
+        const mensajes = err.response.data.errors.map((issue) => issue.message)
+        setmensajeError(mensajes)
+      }
+
       setModalmensajeError(true)
-      console.error('Error al registrar usuario:', err)
     }
   }
 
@@ -146,7 +153,15 @@ const Registro = () => {
       <CModal visible={ModalmensajeError} onClose={() => setModalmensajeError(false)}>
         <CModalHeader>Error</CModalHeader>
         <CModalBody>
-          <div>Error al registrar el usuario</div>
+          {Array.isArray(mensajeError) ? (
+            <ul>
+              {mensajeError.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
+          ) : (
+            <div>{String(mensajeError)}</div>
+          )}
         </CModalBody>
         <CModalFooter>
           <div className="button-box">

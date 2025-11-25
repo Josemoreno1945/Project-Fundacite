@@ -7,6 +7,10 @@ import {
   CCol,
   CContainer,
   CForm,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
   CFormInput,
   CInputGroup,
   CInputGroupText,
@@ -34,6 +38,10 @@ const Register = () => {
   const navigate = useNavigate()
   const [usernameAvailable, setUsernameAvailable] = useState(null)
   const [emailAvailable, setEmailAvailable] = useState(null)
+  const [mensajeAprobado, setmensajeAprobado] = useState('')
+  const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
+  const [mensajeError, setmensajeError] = useState('')
+  const [ModalmensajeError, setModalmensajeError] = useState(false)
   const [formData, setFormData] = useState({
     Usua_PrimN: '',
     Usua_PrimA: '',
@@ -86,14 +94,51 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.post('http://localhost:4000/register', formData)
+      const postUsers = await axios.post('http://localhost:4000/register', formData)
       navigate('/login')
+      setmensajeAprobado(postUsers.data.message)
+      setModalmensajeAprobado(true)
     } catch (err) {
-      console.error('Error al registrar usuario:', err)
+      console.log(err)
+      if (err.response.data.error) {
+        setmensajeError(err.response.data.error)
+      } else {
+        setmensajeError('')
+        const mensajes = err.response.data.errors.map((issue) => issue.message)
+        setmensajeError(mensajes)
+      }
+
+      setModalmensajeError(true)
     }
   }
   return (
     <>
+      <CModal visible={ModalmensajeError} onClose={() => setModalmensajeError(false)}>
+        <CModalHeader>Error</CModalHeader>
+        <CModalBody>
+          {Array.isArray(mensajeError) ? (
+            <ul>
+              {mensajeError.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
+          ) : (
+            <div>{String(mensajeError)}</div>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalmensajeError(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
       <div className="login-container">
         <CCard className="mb-4">
           <CCardBody>

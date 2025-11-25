@@ -42,6 +42,9 @@ import { useNavigate } from 'react-router-dom'
 
 const Registro_Proyectos = () => {
   const [mensajeAprobado, setmensajeAprobado] = useState('')
+
+  const [mensajeError, setmensajeError] = useState('')
+  const [ModalmensajeError, setModalmensajeError] = useState(false)
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
   const [documentos, setDocumentos] = useState([]) // Array para almacenar archivos seleccionados
   const [categorias, setCategorias] = useState([])
@@ -119,7 +122,14 @@ const Registro_Proyectos = () => {
       setmensajeAprobado(postProyect.data.Message)
       setModalmensajeAprobado(true)
     } catch (err) {
-      console.error('Error al registrar proyecto o documentos:', err)
+      if (err.response.data.error) {
+        setmensajeError(err.response.data.error)
+      } else {
+        setmensajeError('')
+        const mensajes = err.response.data.errors.map((issue) => issue.message)
+        setmensajeError(mensajes)
+      }
+      setModalmensajeError(true)
     }
   }
 
@@ -158,6 +168,33 @@ const Registro_Proyectos = () => {
         <CModalFooter>
           <div className="button-box">
             <CButton className="boton-regresar" onClick={() => setModalmensajeAprobado(false)}>
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <CModal visible={ModalmensajeError} onClose={() => setModalmensajeError(false)}>
+        <CModalHeader>Error</CModalHeader>
+        <CModalBody>
+          {Array.isArray(mensajeError) ? (
+            <ul>
+              {mensajeError.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
+          ) : (
+            <div>{String(mensajeError)}</div>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalmensajeError(false)
+              }}
+            >
               Cerrar
             </CButton>
           </div>

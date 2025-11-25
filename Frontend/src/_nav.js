@@ -80,6 +80,11 @@ const _nav_admin = [
         name: 'Proyectos Archivados',
         to: '/components/proyecto-archivados',
       },
+      {
+        component: CNavItem,
+        name: 'Proyectos Rechazados',
+        to: '/components/proyecto-rechazados',
+      },
     ],
   },
   {

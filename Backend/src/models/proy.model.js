@@ -118,6 +118,45 @@ export const putProy_archivado = async (data) => {
   }
 };
 
+export const putProy_rechazado = async (data) => {
+  const client = await pool.connect();
+
+  try {
+    // 1. Actualizar estado a rechazado
+    const updateStatusQuery = `
+      UPDATE "FPT_Proyec"
+      SET proy_statu = 'rechazado'
+      WHERE "Proy_Id" = $1
+    `;
+    await client.query(updateStatusQuery, [data.Proy_Id]);
+
+    // 2. Eliminar el proyecto de la tabla de proyectos aceptados
+    const deleteAceQuery = `
+    DELETE FROM "FPT_ProArc" 
+    WHERE "ProyAr_PrId" = $1`;
+    await client.query(deleteAceQuery, [data.Proy_Id]);
+    // 3. Registrar el rechazo en la tabla de rechazados
+    const insertRechazadoQuery = `
+      INSERT INTO "FPT_ProRech"("ProyRech_PrId", "ProyRech_Fec", "ProyRech_Mot")
+      VALUES ($1, $2, $3)
+    `;
+    const rechazadoValues = [
+      data.Proy_Id,
+      new Date(),
+      data.motivo || "Rechazado por decisión institucional",
+    ];
+    await client.query(insertRechazadoQuery, rechazadoValues);
+
+    return {
+      message: "Proyecto rechazado",
+    };
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 export const getPA = async () => {
   const query = `
     SELECT 
@@ -151,6 +190,30 @@ export const getArch = async () => {
       p."Proy_NomAu"
     FROM "FPT_ProArc" a
     JOIN "FPT_Proyec" p ON a."ProyAr_PrId" = p."Proy_Id"
+    WHERE p.proy_statu = 'archivado'
+  `;
+  const result = await pool.query(query);
+  return result.rows;
+};
+
+export const getRech = async () => {
+  const query = `
+    SELECT 
+      p."Proy_Id",
+      p."Proy_Titul",
+      p."Proy_Descr",
+      p."Proy_Resum",
+      p."Proy_FecRe",
+      p.proy_statu,
+      p."Proy_UsuId",
+      p."Proy_CatId",
+      p."Proy_NomAu",
+      r."ProyRech_Id",
+      r."ProyRech_Fec",
+      r."ProyRech_Mot"
+    FROM "FPT_ProRech" r
+    JOIN "FPT_Proyec" p ON r."ProyRech_PrId" = p."Proy_Id"
+    ORDER BY r."ProyRech_Fec" DESC
   `;
   const result = await pool.query(query);
   return result.rows;
