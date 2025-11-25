@@ -45,8 +45,8 @@ export const postU = async (data) => {
 export const putU = async (id, data) => {
   const query = `
         UPDATE "FPM_Usuari"
-        SET "Usua_PrimN"=$1, "Usua_PrimA"=$2, "Usua_NomUs"=$3, "Usua_Email"=$4, "Usua_Contr"=$5, "Usua_RolId"=$6
-        WHERE "Usua_Id"=$7  RETURNING * ;
+        SET "Usua_PrimN"=$1, "Usua_PrimA"=$2, "Usua_NomUs"=$3, "Usua_Email"=$4, "Usua_RolId"=$5
+        WHERE "Usua_Id"=$6  RETURNING * ;
         `;
 
   const values = [
@@ -54,7 +54,6 @@ export const putU = async (id, data) => {
     data.Usua_PrimA,
     data.Usua_NomUs,
     data.Usua_Email,
-    data.Usua_Contr,
     data.Usua_RolId,
     id,
   ];

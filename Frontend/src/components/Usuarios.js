@@ -20,6 +20,7 @@ import {
   cilXCircle,
   cilSearch,
   cilLowVision,
+  cilEnvelopeClosed,
 } from '@coreui/icons'
 import {
   CButton,
@@ -54,15 +55,81 @@ import {
 import '../scss/buscador.scss'
 import '../scss/lista-usuarios.scss'
 import axios from 'axios'
-
+import '../scss/botones.scss'
 import Paginacion from './paginacion'
 
 const Usuarios = () => {
+  const [roles, Setroles] = useState([])
   const [userID, setuserID] = useState(null)
   const [Modal_eli, setModal_eli] = useState(false)
   const [carga, setcarga] = useState(true)
   const [users, setUsers] = useState([])
   const [deleteMensaje, SetdeleteMensaje] = useState(false)
+
+  const [editingUserId, setEditingUserId] = useState(null)
+  const [editModalVisible, setEditModalVisible] = useState(false)
+  const [editFormData, setEditFormData] = useState({
+    Usua_PrimN: '',
+    Usua_PrimA: '',
+    Usua_NomUs: '',
+    Usua_Email: '',
+    Usua_RolId: '',
+  })
+  const openEditModal = (user) => {
+    setEditingUserId(user.Usua_Id)
+    setEditFormData({
+      Usua_PrimN: user.Usua_PrimN || '',
+      Usua_PrimA: user.Usua_PrimA || '',
+      Usua_NomUs: user.Usua_NomUs || '',
+      Usua_Email: user.Usua_Email || '',
+      Usua_RolId: user.Usua_RolId || '',
+    })
+    setEditModalVisible(true)
+  }
+
+  const closeEditModal = () => {
+    setEditModalVisible(false)
+    setEditingUserId(null)
+    setEditFormData({
+      Usua_PrimN: '',
+      Usua_PrimA: '',
+      Usua_NomUs: '',
+      Usua_Email: '',
+      Usua_RolId: '',
+    })
+  }
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target
+    setEditFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const submitEdit = async (e) => {
+    // si lo llamas desde onClick sin evento, permite e ser opcional
+    if (e && e.preventDefault) e.preventDefault()
+    try {
+      const token = localStorage.getItem('token')
+      const payload = { ...editFormData }
+      await axios.put(`http://localhost:4000/users/${editingUserId}`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      cargarusuarios()
+      closeEditModal()
+    } catch (err) {
+      console.error('Error actualizando usuario:', err)
+    }
+  }
+
+  const cargarRoles = async () => {
+    try {
+      const result = await axios.get('http://localhost:4000/roles')
+      Setroles(result.data)
+    } catch (error) {
+      console.error('Error al obtener los roles', error)
+    }
+  }
 
   useEffect(() => {
     const usuarios = async () => {
@@ -123,6 +190,114 @@ const Usuarios = () => {
 
   return (
     <>
+      <CModal visible={editModalVisible} onClose={closeEditModal}>
+        <CModalHeader>Editar usuario</CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CInputGroup className="mb-3">
+              <div className="d-flex  w-100 gap-3">
+                <div className="w-50">
+                  <CFormLabel>Primer Nombre</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilPencil} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Primer Nombre"
+                      name="Usua_PrimN"
+                      value={editFormData.Usua_PrimN}
+                      onChange={handleEditChange}
+                    />
+                  </CInputGroup>
+                </div>
+                <div className="w-50">
+                  <CFormLabel>Primer Apellido</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilPencil} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Primer Apellido"
+                      name="Usua_PrimA"
+                      value={editFormData.Usua_PrimA}
+                      onChange={handleEditChange}
+                    />
+                  </CInputGroup>
+                </div>
+              </div>
+            </CInputGroup>
+
+            <CInputGroup className="mb-3">
+              <div className="d-flex  w-100 gap-3">
+                <div className="w-50">
+                  <CFormLabel>Nombre de Usuario</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Nombre de usuario"
+                      name="Usua_NomUs"
+                      value={editFormData.Usua_NomUs}
+                      onChange={handleEditChange}
+                    />
+                  </CInputGroup>
+                </div>
+                <div className="w-50">
+                  <CFormLabel>Correo electronico</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilEnvelopeClosed} />
+                    </CInputGroupText>
+                    <CFormInput
+                      placeholder="Correo electrónico"
+                      name="Usua_Email"
+                      value={editFormData.Usua_Email}
+                      onChange={handleEditChange}
+                    />
+                  </CInputGroup>
+                </div>
+              </div>
+            </CInputGroup>
+
+            <CInputGroup className="mb-3">
+              <div className="d-flex  w-100 gap-3">
+                <div className="w-50">
+                  <CFormLabel>Rol</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilGroup} />
+                    </CInputGroupText>
+                    <CFormSelect
+                      name="Usua_RolId"
+                      value={editFormData.Usua_RolId}
+                      onChange={handleEditChange}
+                      className="input-tamaño"
+                      onFocus={cargarRoles}
+                    >
+                      <option value="">Seleccionar rol</option>
+                      {roles.map((r) => (
+                        <option key={r.Rol_Id} value={r.Rol_Id}>
+                          {r.Rol_Nombre}
+                        </option>
+                      ))}
+                    </CFormSelect>
+                  </CInputGroup>
+                </div>
+              </div>
+            </CInputGroup>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <CButton className="boton-eliminar" onClick={closeEditModal}>
+            Cancelar
+          </CButton>
+          <CButton className="boton-generar" onClick={submitEdit}>
+            Guardar
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
       <CModal visible={deleteMensaje} onClose={() => SetdeleteMensaje(false)}>
         <CModalHeader></CModalHeader>
         <CModalBody>
@@ -215,8 +390,8 @@ const Usuarios = () => {
                     </CButton>
                   </CTableDataCell>
                   <CTableDataCell>
-                    <CButton className="botonhover">
-                      <CIcon icon={cilPencil} style={{ color: 'blue' }}></CIcon>
+                    <CButton className="botonhover" onClick={() => openEditModal(u)}>
+                      <CIcon icon={cilPencil} style={{ color: 'blue' }} />
                     </CButton>
                   </CTableDataCell>
                   <CTableDataCell>

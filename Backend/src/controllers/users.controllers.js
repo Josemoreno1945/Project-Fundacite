@@ -85,6 +85,11 @@ export const postUsers = async (req, res, next) => {
       throwError(errors.missingFields);
     }
 
+    const emailExist = await getUserbyemail(data.Usua_Email);
+    if (emailExist) {
+      throwError(errors.User_emailDuplicated);
+    }
+
     if (!parseU.success) {
       return res.status(400).json({
         errors: parseU.error.issues,
@@ -104,15 +109,25 @@ export const postUsers = async (req, res, next) => {
 };
 
 //--------------------------------Put----------------------------------------
-export const putUsers = async (req, res) => {
+export const putUsers = async (req, res, next) => {
   try {
     const id = req.params.id;
     const data = req.body;
+
+    if (
+      !data.Usua_PrimN &&
+      !data.Usua_PrimA &&
+      !data.Usua_NomUs &&
+      !data.Usua_Email &&
+      !data.Usua_RolId
+    ) {
+      throwError(errors.missingFields);
+    }
+
     const rows = await putU(id, data);
-    res.json(rows);
+    res.json({ rows, message: "Usuario actualizado con exito" });
   } catch (error) {
-    console.error("Error actualizando usuario:", error);
-    res.status(500).send("Error actualizando usuario");
+    next(error);
   }
 };
 
@@ -206,6 +221,10 @@ export const register = async (req, res, next) => {
       !data.Usua_Contr
     ) {
       throwError(errors.missingFields);
+    }
+    const emailExist = await getUserbyemail(data.Usua_Email);
+    if (emailExist) {
+      throwError(errors.User_emailDuplicated);
     }
 
     const parseU = userSchema.safeParse(data);
