@@ -179,7 +179,7 @@ const ProyectosDetalle = () => {
               className="boton-regresar"
               onClick={() => {
                 setModalRealizadoEliminado(false)
-                navigate('../components/ProyectosPendientes')
+                navigate(origen)
               }}
             >
               Cerrar
@@ -223,6 +223,7 @@ const ProyectosDetalle = () => {
               className="boton-regresar"
               onClick={() => {
                 setModalRealizadoAprobado(false)
+                navigate(origen)
               }}
             >
               Cerrar
@@ -291,6 +292,7 @@ const ProyectosDetalle = () => {
               className="boton-regresar"
               onClick={() => {
                 setModalRealizadoArchivado(false)
+                navigate(origen)
               }}
             >
               Cerrar

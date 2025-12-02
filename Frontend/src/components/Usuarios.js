@@ -59,6 +59,8 @@ import '../scss/botones.scss'
 import Paginacion from './paginacion'
 
 const Usuarios = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 5
   const [roles, Setroles] = useState([])
   const [userID, setuserID] = useState(null)
   const [Modal_eli, setModal_eli] = useState(false)
@@ -188,9 +190,18 @@ const Usuarios = () => {
     }
   }
 
+  const totalPages = Math.max(1, Math.ceil(users.length / pageSize))
+  const start = (currentPage - 1) * pageSize
+  const paginatedUsers = users.slice(start, start + pageSize)
+
   return (
     <>
-      <CModal visible={editModalVisible} onClose={closeEditModal}>
+      <CModal
+        visible={editModalVisible}
+        onClose={closeEditModal}
+        backdrop="static"
+        keyboard={false}
+      >
         <CModalHeader>Editar usuario</CModalHeader>
         <CModalBody>
           <CForm>
@@ -379,7 +390,7 @@ const Usuarios = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {users.map((u, index) => (
+              {paginatedUsers.map((u, index) => (
                 <CTableRow key={index}>
                   <CTableDataCell>{u.Usua_NomUs}</CTableDataCell>
                   <CTableDataCell>{u.Rol_Nombre}</CTableDataCell>
@@ -412,7 +423,11 @@ const Usuarios = () => {
           </CTable>
         </CCardBody>
         <CCardFooter>
-          <Paginacion />
+          <Paginacion
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </CCardFooter>
       </CCard>
     </>

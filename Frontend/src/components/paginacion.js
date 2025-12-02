@@ -1,40 +1,38 @@
-import React, { useState } from 'react';
-import { CPagination, CPaginationItem } from '@coreui/react';
+import React from 'react'
+import { CPagination, CPaginationItem } from '@coreui/react'
 import '../scss/paginacion.scss'
 
-const Paginacion = () => {
-const [paginaactual, setpaginaactual] = useState(1);
-const totalpaginas = 10;
+const Paginacion = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
+  if (!totalPages || totalPages <= 1) return null
 
-return (
+  const goTo = (p) => {
+    if (!onPageChange) return
+    if (p < 1 || p > totalPages) return
+    onPageChange(p)
+  }
+
+  return (
     <CPagination align="center">
-    <CPaginationItem 
-        disabled={paginaactual === 1} 
-        onClick={() => setpaginaactual(paginaactual - 1)}
-    >
+      <CPaginationItem disabled={currentPage === 1} onClick={() => goTo(currentPage - 1)}>
         Anterior
-    </CPaginationItem>
+      </CPaginationItem>
 
-    {[...Array(totalpaginas)].map((_, index) => (
+      {[...Array(totalPages)].map((_, i) => (
         <CPaginationItem
-        className='select'
-        key={index}
-        active={index + 1 === paginaactual}
-        onClick={() => setpaginaactual(index + 1)}
-
+          className="select"
+          key={i}
+          active={i + 1 === currentPage}
+          onClick={() => goTo(i + 1)}
         >
-        {index + 1}
+          {i + 1}
         </CPaginationItem>
-    ))}
+      ))}
 
-    <CPaginationItem 
-        disabled={paginaactual === totalpaginas} 
-        onClick={() => setpaginaactual(paginaactual + 1)}
-    >
+      <CPaginationItem disabled={currentPage === totalPages} onClick={() => goTo(currentPage + 1)}>
         Siguiente
-    </CPaginationItem>
+      </CPaginationItem>
     </CPagination>
-);
-};
+  )
+}
 
-export default Paginacion;
+export default Paginacion

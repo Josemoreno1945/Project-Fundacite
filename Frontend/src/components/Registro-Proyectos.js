@@ -1,4 +1,4 @@
-import { React, use, useState } from 'react'
+import { React, use, useState, useEffect } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilLockLocked,
@@ -41,28 +41,30 @@ import MyDropzone from './subirarchivos'
 import { useNavigate } from 'react-router-dom'
 
 const Registro_Proyectos = () => {
+  const now = new Date()
+  const yyyy = now.getFullYear()
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const dd = String(now.getDate()).padStart(2, '0')
+  const today = `${yyyy}-${mm}-${dd}` // 'YYYY-MM-DD' en hora local
+
   const [mensajeAprobado, setmensajeAprobado] = useState('')
+
+  const [previewUrls, setPreviewUrls] = useState([])
+  const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0)
 
   const [mensajeError, setmensajeError] = useState('')
   const [ModalmensajeError, setModalmensajeError] = useState(false)
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
   const [documentos, setDocumentos] = useState([]) // Array para almacenar archivos seleccionados
   const [categorias, setCategorias] = useState([])
-  const [TipoArchivos, setTipoArchivos] = useState([])
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     Proy_Titul: '',
     Proy_Descr: '',
     Proy_Resum: '',
-    Proy_FecRe: '',
+    Proy_FecRe: today,
     Proy_NomAu: '',
     Proy_CatId: '',
-  })
-
-  const [formData_doc, setFormData_doc] = useState({
-    Doc_NomArc: '',
-    Doc_RutaAr: '',
-    Doc_TiArId: '',
   })
 
   const handleInputChange = (e) => {
@@ -74,16 +76,45 @@ const Registro_Proyectos = () => {
   }
 
   const handleDocumentChange = (files) => {
-    setDocumentos(files)
+    const newFiles = Array.from(files)
+    setDocumentos((prev) => [...prev, ...newFiles])
+    const newUrls = newFiles.map((f) => URL.createObjectURL(f))
+    setPreviewUrls((prev) => [...prev, ...newUrls])
+    if (newUrls.length > 0) {
+      setCurrentPreviewIndex((prev) => Math.max(prev, prev === 0 ? 0 : prev))
+    }
   }
 
-  const handleDocInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData_doc((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
+  const removeDocument = (index) => {
+    setDocumentos((prev) => {
+      const copy = [...prev]
+      copy.splice(index, 1)
+      return copy
+    })
+    setPreviewUrls((prev) => {
+      const copy = [...prev]
+      const url = copy[index]
+      if (url) URL.revokeObjectURL(url)
+      copy.splice(index, 1)
+      return copy
+    })
+    setCurrentPreviewIndex((ci) => {
+      const newLen = Math.max(0, previewUrls.length - 1)
+      if (newLen === 0) return 0
+      if (ci >= newLen) return newLen - 1
+      return ci
+    })
   }
+
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((u) => {
+        try {
+          URL.revokeObjectURL(u)
+        } catch (e) {}
+      })
+    }
+  }, [previewUrls])
 
   //-----------------------------------------------------------------------------------------------------
 
@@ -286,13 +317,7 @@ const Registro_Proyectos = () => {
                       <CInputGroupText>
                         <CIcon icon={cilCalendar} />
                       </CInputGroupText>
-                      <CFormInput
-                        type="date"
-                        placeholder="Fecha"
-                        name="Proy_FecRe"
-                        className="input-tamaño"
-                        onChange={handleInputChange}
-                      ></CFormInput>
+                      <CFormInput value={formData.Proy_FecRe} readOnly></CFormInput>
                     </CInputGroup>
                   </div>
 
@@ -325,7 +350,6 @@ const Registro_Proyectos = () => {
                 <CCardHeader>Anexar Documentos</CCardHeader>
                 <CCardBody>
                   <MyDropzone onFilesAccepted={handleDocumentChange} />
-
                   <div>
                     {documentos && documentos.length > 0 && (
                       <ul>
@@ -335,6 +359,56 @@ const Registro_Proyectos = () => {
                       </ul>
                     )}
                   </div>
+                  {/* Preview / Carrusel */}
+                  {previewUrls.length > 0 && (
+                    <div className="caja-preview">
+                      <div className="preview">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setCurrentPreviewIndex(
+                              (i) => (i - 1 + previewUrls.length) % previewUrls.length,
+                            )
+                          }
+                        >
+                          ◀
+                        </button>
+                        <div
+                          style={{
+                            width: '320px',
+                            height: '220px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: '1px solid #ddd',
+                          }}
+                        >
+                          <img
+                            src={previewUrls[currentPreviewIndex]}
+                            alt={`preview-${currentPreviewIndex}`}
+                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setCurrentPreviewIndex((i) => (i + 1) % previewUrls.length)
+                          }
+                        >
+                          ▶
+                        </button>
+                      </div>
+                      <div className="caja-boton-preview">
+                        <button
+                          type="button"
+                          onClick={() => removeDocument(currentPreviewIndex)}
+                          className="boton-eliminar"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </CCardBody>
               </CCard>
             </CForm>

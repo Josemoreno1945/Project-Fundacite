@@ -33,6 +33,8 @@ import Paginacion from './paginacion'
 import axios from 'axios'
 
 const Proyectos = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 8
   const [proyectos, setProyectos] = useState([])
   const navigate = useNavigate()
 
@@ -53,13 +55,17 @@ const Proyectos = () => {
     obtenerProyectos()
   }, [])
 
+  const totalPages = Math.max(1, Math.ceil(proyectos.length / pageSize))
+  const start = (currentPage - 1) * pageSize
+  const paginateProyectos = proyectos.slice(start, start + pageSize)
+
   return (
     <>
       <CCard className="mb-4">
         <CCardHeader>Lista de Proyectos Rechazados</CCardHeader>
         <CCardBody>
           <div className="cuadros">
-            {proyectos.map((p, index) => (
+            {paginateProyectos.map((p, index) => (
               <CCard
                 className="cuadro2"
                 key={p.Proy_Id}
@@ -76,7 +82,11 @@ const Proyectos = () => {
           </div>
         </CCardBody>
         <CCardFooter>
-          <Paginacion />
+          <Paginacion
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </CCardFooter>
       </CCard>
     </>
