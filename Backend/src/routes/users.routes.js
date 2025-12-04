@@ -8,6 +8,7 @@ import {
   register,
   check_Email,
   check_username,
+  FNomusuario,
 } from "../controllers/users.controllers.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
@@ -17,6 +18,9 @@ const upload = multer();
 const router = Router();
 
 //---------------------------------Get---------------------------------------
+
+router.post("/FNombreUsuario", verifyToken, isAdmin, FNomusuario);
+
 router.get("/users", verifyToken, isAdmin, getUsers);
 
 router.get("/check_email/:email", check_Email);

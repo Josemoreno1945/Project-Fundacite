@@ -9,6 +9,10 @@ import {
   putProy_rechazado,
   getArch,
   getRech,
+  CountRech,
+  CountArch,
+  CountProyAp,
+  CountProyPen,
 } from "../models/proy.model.js";
 import { getPdfByProyId, deleteDocsByProyId } from "../models/doc.model.js";
 import { postDoc } from "../models/doc.model.js";
@@ -100,6 +104,42 @@ export const getProyectsRech = async (req, res) => {
   } catch (error) {
     console.error("Error obteniendo proyectos:", error);
     res.status(500).send("Error obteniendo proyectos");
+  }
+};
+//------------------------------Contadores-----------------------------------
+export const getCountProyectsRech = async (req, res, next) => {
+  try {
+    const rows = await CountRech();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountProyectsArch = async (req, res, next) => {
+  try {
+    const rows = await CountArch();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountProyectsAp = async (req, res, next) => {
+  try {
+    const rows = await CountProyAp();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountProyectsPen = async (req, res, next) => {
+  try {
+    const rows = await CountProyPen();
+    res.json(rows);
+  } catch (error) {
+    next(error);
   }
 };
 

@@ -218,6 +218,43 @@ export const getRech = async () => {
   const result = await pool.query(query);
   return result.rows;
 };
+//---------------------------------------------------------------
+export const CountRech = async () => {
+  const query = `
+    SELECT COUNT(*)
+    FROM "FPT_ProRech"
+  `;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountArch = async () => {
+  const query = `
+    SELECT COUNT(*)
+    FROM "FPT_ProArc"
+  `;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProyAp = async () => {
+  const query = `
+    SELECT COUNT(*)
+    FROM "FPT_ProAce"
+  `;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProyPen = async () => {
+  const query = `
+  SELECT COUNT(*)
+  FROM "FPT_Proyec"
+  WHERE proy_statu = 'pendiente'
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
 
 //delete -------------------------------------------------------
 export const deleteProyById = async (proyId) => {

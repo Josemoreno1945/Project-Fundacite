@@ -52,13 +52,7 @@ const AppHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderNav className="d-none d-md-flex"></CHeaderNav>
-        <CHeaderNav className="ms-auto">
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-        </CHeaderNav>
+        <CHeaderNav className="ms-auto"></CHeaderNav>
         <CHeaderNav>
           {/*
           <li className="nav-item py-1">

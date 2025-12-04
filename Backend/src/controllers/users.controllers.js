@@ -7,6 +7,7 @@ import {
   postRegister,
   getUserbyemail,
   getUserbyusername,
+  FiltroNUsuario,
 } from "../models/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -14,6 +15,17 @@ import userSchema from "../schemas/users.schemas.js";
 import loginSchema from "../schemas/login.schemas.js";
 import { errors, throwError } from "../utils/errors.js";
 import { da } from "zod/v4/locales";
+
+//---------------------------------Filtro------------------------------------
+export const FNomusuario = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroNUsuario(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
 
 //---------------------------------Get---------------------------------------
 export const getUsers = async (req, res, next) => {

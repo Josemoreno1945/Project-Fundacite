@@ -10,6 +10,10 @@ import {
   getProyectsArc,
   rechazarproyecto,
   getProyectsRech,
+  getCountProyectsAp,
+  getCountProyectsArch,
+  getCountProyectsPen,
+  getCountProyectsRech,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -38,5 +42,10 @@ router.delete("/proyectos/:id", verifyToken, isAdmin, deleteProyectAndDoc);
 router.put("/aprobar", verifyToken, isAdmin, aprobarproyecto);
 router.put("/archivar", verifyToken, isAdmin, archivarproyecto);
 router.put("/rechazar", verifyToken, isAdmin, rechazarproyecto);
+
+router.get("/countRechazados", verifyToken, isAdmin, getCountProyectsRech);
+router.get("/countArchivados", verifyToken, isAdmin, getCountProyectsArch);
+router.get("/countPendientes", verifyToken, isAdmin, getCountProyectsPen);
+router.get("/countAprobados", verifyToken, isAdmin, getCountProyectsAp);
 
 export default router;

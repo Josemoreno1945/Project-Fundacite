@@ -62,6 +62,18 @@ export const putU = async (id, data) => {
   return result.rows;
 };
 
+//-------------------------------FILTROS----------------------------------------
+export const FiltroNUsuario = async (data) => {
+  const query = `
+  SELECT *
+	FROM public."FPM_Usuari"
+	WHERE "Usua_NomUs" = $1
+  `;
+  const values = [data.Usua_NomUs];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
+
 //-------------------------------Delete-----------------------------------------
 
 export const deleteU = async (id) => {

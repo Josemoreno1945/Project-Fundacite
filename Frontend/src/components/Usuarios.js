@@ -60,7 +60,7 @@ import Paginacion from './paginacion'
 
 const Usuarios = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 5
+  const pageSize = 2
   const [roles, Setroles] = useState([])
   const [userID, setuserID] = useState(null)
   const [Modal_eli, setModal_eli] = useState(false)
@@ -68,6 +68,11 @@ const Usuarios = () => {
   const [users, setUsers] = useState([])
   const [deleteMensaje, SetdeleteMensaje] = useState(false)
 
+  //FILTRO Y BUSQUEDA----------------------------------------------------------
+  const [Busqueda, setBusqueda] = useState('')
+  const [Filtro, setFiltro] = useState('')
+  const [username_buscado, setusername_buscado] = useState(null)
+  //---------------------------------------------------------------------------
   const [editingUserId, setEditingUserId] = useState(null)
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [editFormData, setEditFormData] = useState({
@@ -101,6 +106,47 @@ const Usuarios = () => {
     })
   }
 
+  //FILTRO Y BUSQUEDA-----------------------------------------------
+
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value)
+  }
+  const limpiarFiltro = () => {
+    setFiltro('')
+    cargarusuarios()
+  }
+  const handleBusquedaChange = (e) => {
+    setBusqueda(e.target.value)
+  }
+  console.log('busqueda', Busqueda)
+  console.log('filtro-limpiado', Filtro)
+  console.log('filtro', Filtro)
+  const HandleBuscar = async () => {
+    try {
+      if (Filtro === 'Nombre de usuario') {
+        const token = localStorage.getItem('token')
+        const result = await axios.post(
+          'http://localhost:4000/FNombreUsuario',
+          { Usua_NomUs: Busqueda },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        setusername_buscado(result.data)
+        setUsers(result.data)
+        setCurrentPage(1)
+      } else {
+        cargarusuarios()
+      }
+    } catch (error) {
+      console.error('Error al obtener el nombre de usuario:', error)
+    }
+  }
+
+  console.log('usuario', username_buscado)
+  //------------------------------------------------------------------
   const handleEditChange = (e) => {
     const { name, value } = e.target
     setEditFormData((prev) => ({ ...prev, [name]: value }))
@@ -352,8 +398,10 @@ const Usuarios = () => {
             className="input-buttom-search"
             type="text"
             placeholder="Buscar..."
+            name="busqueda"
+            onChange={handleBusquedaChange}
           ></CFormInput>
-          <CButton className="search-buttom">
+          <CButton className="search-buttom" onClick={HandleBuscar}>
             <CIcon className="icon-search" icon={cilSearch} />
           </CButton>
         </CForm>
@@ -363,9 +411,10 @@ const Usuarios = () => {
         <CCardHeader>
           <div className="box-buttom">
             <div>Usuarios</div>
+
             <div>
               <CForm>
-                <CFormSelect className="filter-input">
+                <CFormSelect className="filter-input" name="filtro" onChange={handleFiltroChange}>
                   <option>Filtrar</option>
                   <option>Nombre de usuario</option>
                   <option>Correo Electronico</option>
@@ -374,6 +423,9 @@ const Usuarios = () => {
                   <option>Apellido</option>
                 </CFormSelect>
               </CForm>
+              <CButton className="boton-eliminar" onClick={() => limpiarFiltro()}>
+                Limpiar Filtro
+              </CButton>
             </div>
           </div>
         </CCardHeader>
@@ -390,34 +442,42 @@ const Usuarios = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {paginatedUsers.map((u, index) => (
-                <CTableRow key={index}>
-                  <CTableDataCell>{u.Usua_NomUs}</CTableDataCell>
-                  <CTableDataCell>{u.Rol_Nombre}</CTableDataCell>
-                  <CTableDataCell>{u.Usua_Email}</CTableDataCell>
-                  <CTableDataCell>
-                    <CButton className="botonhover" onClick={() => {}}>
-                      <CIcon icon={cilLowVision} />
-                    </CButton>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <CButton className="botonhover" onClick={() => openEditModal(u)}>
-                      <CIcon icon={cilPencil} style={{ color: 'blue' }} />
-                    </CButton>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <CButton
-                      className="botonhover"
-                      onClick={() => {
-                        setuserID(u.Usua_Id)
-                        setModal_eli(true)
-                      }}
-                    >
-                      <CIcon icon={cilXCircle} style={{ color: 'red' }} />
-                    </CButton>
+              {paginatedUsers.length === 0 ? (
+                <CTableRow>
+                  <CTableDataCell colSpan={6} className="text-center">
+                    No hay usuarios
                   </CTableDataCell>
                 </CTableRow>
-              ))}
+              ) : (
+                paginatedUsers.map((u, index) => (
+                  <CTableRow key={index}>
+                    <CTableDataCell>{u.Usua_NomUs}</CTableDataCell>
+                    <CTableDataCell>{u.Rol_Nombre}</CTableDataCell>
+                    <CTableDataCell>{u.Usua_Email}</CTableDataCell>
+                    <CTableDataCell>
+                      <CButton className="botonhover" onClick={() => {}}>
+                        <CIcon icon={cilLowVision} />
+                      </CButton>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CButton className="botonhover" onClick={() => openEditModal(u)}>
+                        <CIcon icon={cilPencil} style={{ color: 'blue' }} />
+                      </CButton>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CButton
+                        className="botonhover"
+                        onClick={() => {
+                          setuserID(u.Usua_Id)
+                          setModal_eli(true)
+                        }}
+                      >
+                        <CIcon icon={cilXCircle} style={{ color: 'red' }} />
+                      </CButton>
+                    </CTableDataCell>
+                  </CTableRow>
+                ))
+              )}
             </CTableBody>
             <CTableFoot></CTableFoot>
           </CTable>
