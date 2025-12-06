@@ -1,3 +1,4 @@
+import { id } from "zod/v4/locales";
 import { pool } from "../db.js";
 
 //---------------------------------Get---------------------------------------
@@ -8,6 +9,17 @@ export const getU = async () => {
         `;
   const result = await pool.query(query);
   return result.rows;
+};
+
+//---------------------------------GetUser---------------------------------------
+export const getUser = async (id) => {
+  const query = `SELECT "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Rol_Nombre"
+        FROM "FPM_Usuari"
+        JOIN "FPM_Rol" ON "FPM_Rol"."Rol_Id" = "FPM_Usuari"."Usua_RolId"
+        WHERE "Usua_Id" = $1
+        `;
+  const result = await pool.query(query, [id]);
+  return result.rows[0];
 };
 
 //---------------------------------Get email---------------------------------------
@@ -65,11 +77,34 @@ export const putU = async (id, data) => {
 //-------------------------------FILTROS----------------------------------------
 export const FiltroNUsuario = async (data) => {
   const query = `
-  SELECT *
+  SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_RolId"
 	FROM public."FPM_Usuari"
-	WHERE "Usua_NomUs" = $1
+	WHERE LOWER("Usua_NomUs") LIKE LOWER('%' || $1 || '%')
   `;
   const values = [data.Usua_NomUs];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
+
+export const FiltroEmail = async (data) => {
+  const query = `
+  SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_RolId"
+	FROM public."FPM_Usuari"
+	WHERE LOWER("Usua_Email") LIKE LOWER('%' || $1 || '%')
+  `;
+  const values = [data.Usua_Email];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
+
+export const FiltroRol = async (data) => {
+  const query = ` 
+  SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email","Rol_Nombre"
+	FROM public."FPM_Usuari"
+	JOIN "FPM_Rol" ON "FPM_Usuari"."Usua_RolId"="FPM_Rol"."Rol_Id"
+	WHERE LOWER("Rol_Nombre") LIKE LOWER('%' || $1 || '%')
+  `;
+  const values = [data.Rol_Nombre];
   const result = await pool.query(query, values);
   return result.rows;
 };

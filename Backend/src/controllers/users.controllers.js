@@ -8,19 +8,41 @@ import {
   getUserbyemail,
   getUserbyusername,
   FiltroNUsuario,
+  FiltroEmail,
+  FiltroRol,
+  getUser,
 } from "../models/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userSchema from "../schemas/users.schemas.js";
 import loginSchema from "../schemas/login.schemas.js";
 import { errors, throwError } from "../utils/errors.js";
-import { da } from "zod/v4/locales";
 
 //---------------------------------Filtro------------------------------------
 export const FNomusuario = async (req, res, next) => {
   try {
     const data = req.body;
     const rows = await FiltroNUsuario(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const FEmail = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroEmail(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const FRol = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroRol(data);
     res.json(rows);
   } catch (error) {
     next(error);
@@ -36,7 +58,15 @@ export const getUsers = async (req, res, next) => {
     next(error);
   }
 };
-
+export const getUsersVer = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const rows = await getUser(id);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
 //--------------------------------------get por email---------------------------
 export const check_Email = async (req, res) => {
   try {
@@ -59,25 +89,6 @@ export const check_username = async (req, res) => {
     res.status(500).send("Error getting user");
   }
 };
-/*
-//---------------------------------Get---------------------------------------
-export const getDepartmentsId = async(req,res)=>{
-    try{
-        const id=req.params.id
-        const rows = await getDeptid(id)
-
-        if (!rows || rows.length === 0){
-            return res.status(404).json({ messaje : "Department not found"});
-        }
-        res.json(rows);
-
-    }catch(error){
-        console.error("Error getting department:", error);
-        res.status(500).send("Error getting department");
-    }
-}
-
-*/
 
 //-------------------------------Post-----------------------------------------
 export const postUsers = async (req, res, next) => {
@@ -100,6 +111,10 @@ export const postUsers = async (req, res, next) => {
     const emailExist = await getUserbyemail(data.Usua_Email);
     if (emailExist) {
       throwError(errors.User_emailDuplicated);
+    }
+    const usernameExist = await getUserByusername(data.Usua_NomUs);
+    if (usernameExist) {
+      throwError(errors.userDuplicated);
     }
 
     if (!parseU.success) {

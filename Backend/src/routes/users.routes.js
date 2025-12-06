@@ -9,6 +9,9 @@ import {
   check_Email,
   check_username,
   FNomusuario,
+  FEmail,
+  FRol,
+  getUsersVer,
 } from "../controllers/users.controllers.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
@@ -20,8 +23,11 @@ const router = Router();
 //---------------------------------Get---------------------------------------
 
 router.post("/FNombreUsuario", verifyToken, isAdmin, FNomusuario);
+router.post("/FEmail", verifyToken, isAdmin, FEmail);
+router.post("/FRol", verifyToken, isAdmin, FRol);
 
 router.get("/users", verifyToken, isAdmin, getUsers);
+router.get("/usersVer/:id", verifyToken, isAdmin, getUsersVer);
 
 router.get("/check_email/:email", check_Email);
 

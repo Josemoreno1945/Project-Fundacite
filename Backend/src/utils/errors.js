@@ -19,6 +19,11 @@ export const errors = {
     message: "El email ya esta registrado",
   },
 
+  ProyectotituloDuplicated: {
+    status: 409,
+    message: "El titulo del proyecto ya esta registrado",
+  },
+
   //login
   InvalidPassword: {
     status: 401,

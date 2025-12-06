@@ -49,6 +49,8 @@ const Registro_Proyectos = () => {
 
   const [mensajeAprobado, setmensajeAprobado] = useState('')
 
+  const [TituloAvailable, setTituloAvailable] = useState(null)
+
   const [previewUrls, setPreviewUrls] = useState([])
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0)
 
@@ -67,12 +69,22 @@ const Registro_Proyectos = () => {
     Proy_CatId: '',
   })
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value } = e.target
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }))
+
+    if (value) {
+      const res = await axios.get(`http://localhost:4000/check_titulo/${value}`)
+      if (res.data.exists === true) {
+        setTituloAvailable(false)
+      }
+      if (res.data.exists === false) {
+        setTituloAvailable(true)
+      }
+    }
   }
 
   const handleDocumentChange = (files) => {
@@ -267,6 +279,12 @@ const Registro_Proyectos = () => {
                         placeholder="Titulo"
                         className="input-tamaño"
                       ></CFormInput>
+                      {TituloAvailable === false && (
+                        <small style={{ color: 'red' }}>Titulo ya en uso</small>
+                      )}
+                      {TituloAvailable === true && (
+                        <small style={{ color: 'green' }}>Titulo disponible</small>
+                      )}
                     </CInputGroup>
                   </div>
                 </div>

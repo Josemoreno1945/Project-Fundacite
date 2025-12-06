@@ -14,6 +14,7 @@ import {
   getCountProyectsArch,
   getCountProyectsPen,
   getCountProyectsRech,
+  check_titulo,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -47,5 +48,7 @@ router.get("/countRechazados", verifyToken, isAdmin, getCountProyectsRech);
 router.get("/countArchivados", verifyToken, isAdmin, getCountProyectsArch);
 router.get("/countPendientes", verifyToken, isAdmin, getCountProyectsPen);
 router.get("/countAprobados", verifyToken, isAdmin, getCountProyectsAp);
+
+router.get("/check_titulo/:titulo", check_titulo);
 
 export default router;

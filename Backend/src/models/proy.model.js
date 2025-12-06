@@ -1,5 +1,13 @@
 import { pool } from "../db.js";
 
+//---------------------------------GetTitulo---------------------------------
+
+export const getProyectobytitulo = async (Proy_Titul) => {
+  const query = 'SELECT * FROM "FPT_Proyec" WHERE "Proy_Titul" = $1';
+  const result = await pool.query(query, [Proy_Titul]);
+  return result.rows[0];
+};
+
 //---------------------------------Get---------------------------------------
 export const getP = async () => {
   const query = `

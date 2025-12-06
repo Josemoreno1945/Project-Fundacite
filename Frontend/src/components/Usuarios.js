@@ -60,7 +60,7 @@ import Paginacion from './paginacion'
 
 const Usuarios = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 2
+  const pageSize = 5
   const [roles, Setroles] = useState([])
   const [userID, setuserID] = useState(null)
   const [Modal_eli, setModal_eli] = useState(false)
@@ -68,10 +68,16 @@ const Usuarios = () => {
   const [users, setUsers] = useState([])
   const [deleteMensaje, SetdeleteMensaje] = useState(false)
 
+  //Modal de ver --------------------------------------------------------------
+  const [Modal_ver, setModal_ver] = useState(false)
+  const [UserName, setUserName] = useState(null)
+
+  //---------------------------------------------------------------------------
+
   //FILTRO Y BUSQUEDA----------------------------------------------------------
   const [Busqueda, setBusqueda] = useState('')
   const [Filtro, setFiltro] = useState('')
-  const [username_buscado, setusername_buscado] = useState(null)
+  const [usersVer, setusersVer] = useState([])
   //---------------------------------------------------------------------------
   const [editingUserId, setEditingUserId] = useState(null)
   const [editModalVisible, setEditModalVisible] = useState(false)
@@ -107,20 +113,21 @@ const Usuarios = () => {
   }
 
   //FILTRO Y BUSQUEDA-----------------------------------------------
+  const Filtroactivo = Filtro && Filtro !== 'Filtrar'
+  const Buscaractivo = Filtroactivo && Busqueda.trim().length > 0
 
   const handleFiltroChange = (e) => {
     setFiltro(e.target.value)
   }
   const limpiarFiltro = () => {
     setFiltro('')
+    setBusqueda('')
     cargarusuarios()
   }
   const handleBusquedaChange = (e) => {
     setBusqueda(e.target.value)
   }
-  console.log('busqueda', Busqueda)
-  console.log('filtro-limpiado', Filtro)
-  console.log('filtro', Filtro)
+
   const HandleBuscar = async () => {
     try {
       if (Filtro === 'Nombre de usuario') {
@@ -134,7 +141,32 @@ const Usuarios = () => {
             },
           },
         )
-        setusername_buscado(result.data)
+        setUsers(result.data)
+        setCurrentPage(1)
+      } else if (Filtro === 'Correo Electronico') {
+        const token = localStorage.getItem('token')
+        const result = await axios.post(
+          'http://localhost:4000/FEmail',
+          { Usua_Email: Busqueda },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        setUsers(result.data)
+        setCurrentPage(1)
+      } else if (Filtro === 'Rol') {
+        const token = localStorage.getItem('token')
+        const result = await axios.post(
+          'http://localhost:4000/FRol',
+          { Rol_Nombre: Busqueda },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
         setUsers(result.data)
         setCurrentPage(1)
       } else {
@@ -144,8 +176,23 @@ const Usuarios = () => {
       console.error('Error al obtener el nombre de usuario:', error)
     }
   }
+  //VER-------------------------------------------------------------------
 
-  console.log('usuario', username_buscado)
+  const UsuarioVer = async (id) => {
+    try {
+      const token = localStorage.getItem('token')
+      const result = await axios.get(`http://localhost:4000/usersVer/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setusersVer(result.data)
+    } catch (err) {
+      console.error('Error al mostrar usuario:', err)
+    }
+  }
+
+  //VER-------------------------------------------------------------------
   //------------------------------------------------------------------
   const handleEditChange = (e) => {
     const { name, value } = e.target
@@ -242,6 +289,97 @@ const Usuarios = () => {
 
   return (
     <>
+      {/*MODAL PARA BOTON VER ----------------------------------------------------------------*/}
+      <CModal
+        visible={Modal_ver}
+        onClose={() => setModal_ver(false)}
+        backdrop="static"
+        keyboard={false}
+      >
+        <CModalHeader>Usuario : {String(UserName)}</CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CInputGroup className="mb-3">
+              <div className="d-flex  w-100 gap-3">
+                <div className="w-50">
+                  <CFormLabel>Primer Nombre</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilPencil} />
+                    </CInputGroupText>
+                    <CFormInput value={usersVer.Usua_PrimN || ''} disabled />
+                  </CInputGroup>
+                </div>
+                <div className="w-50">
+                  <CFormLabel>Primer Apellido</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilPencil} />
+                    </CInputGroupText>
+                    <CFormInput value={usersVer.Usua_PrimA || ''} disabled />
+                  </CInputGroup>
+                </div>
+              </div>
+            </CInputGroup>
+
+            <CInputGroup className="mb-3">
+              <div className="d-flex  w-100 gap-3">
+                <div className="w-50">
+                  <CFormLabel>Nombre de Usuario</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput value={usersVer.Usua_NomUs || ''} disabled />
+                  </CInputGroup>
+                </div>
+                <div className="w-50">
+                  <CFormLabel>Correo electronico</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilEnvelopeClosed} />
+                    </CInputGroupText>
+                    <CFormInput value={usersVer.Usua_Email || ''} disabled />
+                  </CInputGroup>
+                </div>
+              </div>
+            </CInputGroup>
+
+            <CInputGroup className="mb-3">
+              <div className="d-flex  w-100 gap-3">
+                <div className="w-50">
+                  <CFormLabel>Rol</CFormLabel>
+                  <CInputGroup>
+                    <CInputGroupText>
+                      <CIcon icon={cilGroup} />
+                    </CInputGroupText>
+                    <CFormInput value={usersVer.Rol_Nombre || ''} disabled></CFormInput>
+                  </CInputGroup>
+                </div>
+              </div>
+            </CInputGroup>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <CButton
+            className="boton-eliminar"
+            onClick={() => {
+              setModal_ver(false)
+              setusersVer({
+                Usua_PrimN: '',
+                Usua_PrimA: '',
+                Usua_NomUs: '',
+                Usua_Email: '',
+                Usua_Rol_Nombre: '',
+              })
+            }}
+          >
+            Cerrar
+          </CButton>
+        </CModalFooter>
+      </CModal>
+      {/*MODAL PARA BOTON VER ----------------------------------------------------------------*/}
+
       <CModal
         visible={editModalVisible}
         onClose={closeEditModal}
@@ -370,7 +508,12 @@ const Usuarios = () => {
       </CModal>
 
       {/*MODAL PARA BOTON ELIMINAR ----------------------------------------------------------------*/}
-      <CModal visible={Modal_eli} onClose={() => setModal_eli(false)}>
+      <CModal
+        visible={Modal_eli}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => setModal_eli(false)}
+      >
         <CModalHeader>Eliminar usuario</CModalHeader>
         <CModalBody>
           <p>¿Seguro que desea eliminar un usuario?</p>
@@ -385,7 +528,13 @@ const Usuarios = () => {
             >
               Eliminar
             </CButton>
-            <CButton className="boton" onClick={() => setModal_eli(false)}>
+            <CButton
+              className="boton"
+              onClick={() => {
+                setModal_eli(false)
+                setuserID(null)
+              }}
+            >
               Cancelar
             </CButton>
           </div>
@@ -397,11 +546,12 @@ const Usuarios = () => {
           <CFormInput
             className="input-buttom-search"
             type="text"
-            placeholder="Buscar..."
+            placeholder={Filtroactivo ? 'Buscar...' : 'Seleccione un filtro primero'}
             name="busqueda"
             onChange={handleBusquedaChange}
+            disabled={!Filtroactivo}
           ></CFormInput>
-          <CButton className="search-buttom" onClick={HandleBuscar}>
+          <CButton className="search-buttom" onClick={HandleBuscar} disabled={!Buscaractivo}>
             <CIcon className="icon-search" icon={cilSearch} />
           </CButton>
         </CForm>
@@ -415,12 +565,10 @@ const Usuarios = () => {
             <div>
               <CForm>
                 <CFormSelect className="filter-input" name="filtro" onChange={handleFiltroChange}>
-                  <option>Filtrar</option>
+                  <option value={''}>Filtrar</option>
                   <option>Nombre de usuario</option>
                   <option>Correo Electronico</option>
                   <option>Rol</option>
-                  <option>Nombre</option>
-                  <option>Apellido</option>
                 </CFormSelect>
               </CForm>
               <CButton className="boton-eliminar" onClick={() => limpiarFiltro()}>
@@ -455,7 +603,14 @@ const Usuarios = () => {
                     <CTableDataCell>{u.Rol_Nombre}</CTableDataCell>
                     <CTableDataCell>{u.Usua_Email}</CTableDataCell>
                     <CTableDataCell>
-                      <CButton className="botonhover" onClick={() => {}}>
+                      <CButton
+                        className="botonhover"
+                        onClick={() => {
+                          setModal_ver(true)
+                          setUserName(u.Usua_NomUs)
+                          UsuarioVer(u.Usua_Id)
+                        }}
+                      >
                         <CIcon icon={cilLowVision} />
                       </CButton>
                     </CTableDataCell>

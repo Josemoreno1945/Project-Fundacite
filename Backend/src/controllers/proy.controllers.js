@@ -13,6 +13,7 @@ import {
   CountArch,
   CountProyAp,
   CountProyPen,
+  getProyectobytitulo,
 } from "../models/proy.model.js";
 import { getPdfByProyId, deleteDocsByProyId } from "../models/doc.model.js";
 import { postDoc } from "../models/doc.model.js";
@@ -20,6 +21,20 @@ import proyectoSchema from "../schemas/proyecto.schemas.js";
 import { errors, throwError } from "../utils/errors.js";
 import { uploadBuffer, deleteRemotePath } from "../services/icedrive.js";
 import PDFDocument from "pdfkit";
+
+//--------------------------------titulo no repetido -----------------------
+
+export const check_titulo = async (req, res) => {
+  try {
+    const titulo = req.params.titulo;
+    const rows = await getProyectobytitulo(titulo);
+
+    return res.json({ exists: !!rows });
+  } catch (error) {
+    console.error("Error consiguiendo el titulo:", error);
+    res.status(500).send("Error consiguiendo el titulo");
+  }
+};
 
 //---------------------------------Get---------------------------------------
 export const getProyects = async (req, res) => {
@@ -158,6 +173,11 @@ export const postProyectWithPdf = async (req, res, next) => {
       throwError(errors.missingFields);
     }
     const parseU = proyectoSchema.safeParse(body);
+
+    const TituloExist = await getProyectobytitulo(body.Proy_Titul);
+    if (TituloExist) {
+      throwError(errors.ProyectotituloDuplicated);
+    }
 
     if (!parseU.success) {
       return res.status(400).json({
