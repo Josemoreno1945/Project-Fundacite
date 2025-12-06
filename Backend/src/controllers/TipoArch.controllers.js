@@ -1,4 +1,6 @@
 import { getTa, postTa, putTa } from "../models/TipoArch.model.js";
+import tipo_aSchema from "../schemas/tipo_archivos.js";
+import { errors, throwError } from "../utils/errors.js";
 
 //---------------------------------Get---------------------------------------
 export const getTipoArch = async (req, res) => {
@@ -12,26 +14,33 @@ export const getTipoArch = async (req, res) => {
 };
 
 //---------------------------------Post---------------------------------------
-export const posttipoArc = async (req, res) => {
+export const posttipoArc = async (req, res, next) => {
   try {
     const data = req.body;
+    const parseU = tipo_aSchema.safeParse(data);
+    if (!data.TipA_Nombr) {
+      throwError(errors.missingFields);
+    }
+    if (!parseU.success) {
+      return res.status(400).json({
+        errors: parseU.error.issues,
+      });
+    }
     const rows = await postTa(data);
-    res.json(rows);
+    return res.json({ rows, message: "Tipo de archivo registrado con exito" });
   } catch (error) {
-    console.error("Error enviando tipo de archivo:", error);
-    res.status(500).send("Error enviando tipo de archivo");
+    next(error);
   }
 };
 
 //--------------------------------Put----------------------------------------
-export const puttipoArch = async (req, res) => {
+export const puttipoArch = async (req, res, next) => {
   try {
     const id = req.params.id;
     const data = req.body;
     const rows = await putTa(id, data);
     res.json(rows);
   } catch (error) {
-    console.error("Error actualizando tipo de archivo:", error);
-    res.status(500).send("Error actualizando tipo de archivo");
+    next(error);
   }
 };

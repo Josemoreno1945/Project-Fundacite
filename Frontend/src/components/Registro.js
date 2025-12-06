@@ -131,7 +131,12 @@ const Registro = () => {
 
   return (
     <>
-      <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
+      <CModal
+        visible={ModalmensajeAprobado}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => setModalmensajeAprobado(false)}
+      >
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>{String(mensajeAprobado)}</div>
@@ -150,7 +155,12 @@ const Registro = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={ModalmensajeError} onClose={() => setModalmensajeError(false)}>
+      <CModal
+        visible={ModalmensajeError}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => setModalmensajeError(false)}
+      >
         <CModalHeader>Error</CModalHeader>
         <CModalBody>
           {Array.isArray(mensajeError) ? (
