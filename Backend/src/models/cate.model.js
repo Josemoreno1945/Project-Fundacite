@@ -1,5 +1,28 @@
 import { pool } from "../db.js";
 
+//---------------------------------GetNombre---------------------------------
+
+export const getCategoriabyNombre = async (Cate_NomCa) => {
+  const query = `
+  SELECT * 
+  FROM "FPM_Catego" 
+  WHERE  unaccent(LOWER("Cate_NomCa")) LIKE unaccent(LOWER('%' || $1 || '%'))
+  `;
+  const result = await pool.query(query, [Cate_NomCa]);
+  return result.rows[0];
+};
+
+//-------------------------------FILTROS----------------------------------------
+export const FiltroNombre_cat = async (data) => {
+  const query = `
+  SELECT "Cate_NomCa"
+	FROM public."FPM_Catego"
+	WHERE unaccent (LOWER("Cate_NomCa")) LIKE unaccent(LOWER('%' || $1 || '%'))
+  `;
+  const values = [data.Cate_NomCa];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
 //-------------------------------get-----------------------------------------
 export const getCat = async () => {
   const query = `SELECT * FROM "FPM_Catego"`;

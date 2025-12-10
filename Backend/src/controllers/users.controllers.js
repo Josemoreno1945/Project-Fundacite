@@ -68,25 +68,23 @@ export const getUsersVer = async (req, res, next) => {
   }
 };
 //--------------------------------------get por email---------------------------
-export const check_Email = async (req, res) => {
+export const check_Email = async (req, res, next) => {
   try {
     const email = req.params.email;
     const rows = await getUserbyemail(email);
     return res.json({ exists: !!rows });
   } catch (error) {
-    console.error("Error getting user:", error);
-    res.status(500).send("Error getting user");
+    next(error);
   }
 };
 //--------------------------------------get por usuario---------------------------
-export const check_username = async (req, res) => {
+export const check_username = async (req, res, next) => {
   try {
     const username = req.params.username;
     const rows = await getUserbyusername(username);
     return res.json({ exists: !!rows });
   } catch (error) {
-    console.error("Error getting user:", error);
-    res.status(500).send("Error getting user");
+    next(error);
   }
 };
 

@@ -1,25 +1,69 @@
-import { getCat, postCat, putCat, deleteCat } from "../models/cate.model.js";
+import {
+  getCat,
+  postCat,
+  putCat,
+  deleteCat,
+  FiltroNombre_cat,
+  getCategoriabyNombre,
+} from "../models/cate.model.js";
+import CategoriasSchema from "../schemas/categorias.schemas.js";
+
+import { errors, throwError } from "../utils/errors.js";
+
+//---------------------------------Filtro------------------------------------
+export const FNombre_cat = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroNombre_cat(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+//---------------------------------Get nombre---------------------------------------
+export const getCatbyNombre = async (req, res, next) => {
+  try {
+    const nombre = req.params.nombre;
+    const rows = await getCategoriabyNombre(nombre);
+    return res.json({ exists: !!rows });
+  } catch (error) {
+    next(error);
+  }
+};
 
 //---------------------------------Get---------------------------------------
-export const getCategorias = async (req, res) => {
+export const getCategorias = async (req, res, next) => {
   try {
     const rows = await getCat();
     res.json(rows);
   } catch (error) {
-    console.error("Error obteniendo categorias:", error);
-    res.status(500).send("Error obteniendo categorias");
+    next(error);
   }
 };
 
 //---------------------------------Post---------------------------------------
-export const postCategorias = async (req, res) => {
+export const postCategorias = async (req, res, next) => {
   try {
     const data = req.body;
+    const parseU = CategoriasSchema.safeParse(data);
+    if (!data.Cate_NomCa && !data.Cate_Descr) {
+      throwError(errors.missingFields);
+    }
+    const NombreExist = await getCategoriabyNombre(data.Cate_NomCa);
+    if (NombreExist) {
+      throwError(errors.NombreCategoriaDuplicated);
+    }
+
+    if (!parseU.success) {
+      return res.status(400).json({
+        errors: parseU.error.issues,
+      });
+    }
     const rows = await postCat(data);
-    res.json(rows);
+    return res.json({ rows, message: "Categoria registrada con exito" });
   } catch (error) {
-    console.error("Error enviando categorias:", error);
-    res.status(500).send("Error enviando categorias");
+    next(error);
   }
 };
 

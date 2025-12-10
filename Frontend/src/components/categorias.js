@@ -55,12 +55,29 @@ import {
 
 import '../scss/buscador.scss'
 import Paginacion from './paginacion'
-import '../scss/botonadd.scss'
+import '../scss/botones.scss'
 import axios from 'axios'
 
 const categorias = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 5
+  //FILTRO Y BUSQUEDA----------------------------------------------------------
+  const [Busqueda, setBusqueda] = useState('')
+  const [Filtro, setFiltro] = useState('')
+  const Filtroactivo = Filtro && Filtro !== 'Filtrar'
+  const Buscaractivo = Filtroactivo && Busqueda.trim().length > 0
+  //---------------------------------------------------------------------------
+  // modal y mensaje de error ---------------------------
+  const [ModalError, setModalError] = useState(false)
+  const [MensajeError, setMensajeError] = useState('')
+  //-----------------------------------------------------
+
+  // modal y mensaje de exito ---------------------------
+  const [Modalexito, setModalexito] = useState(false)
+  const [Mensajeexito, setMensajeexito] = useState('')
+  // -----------------------------------------------------
+
   const [catID, setcatID] = useState(null)
-  const [Modal_eli, setModal_eli] = useState(false)
   const [Modal_agg, setModal_agg] = useState(false)
   const [carga, setcarga] = useState(true)
   const [categorias, setcategorias] = useState([])
@@ -82,13 +99,9 @@ const categorias = () => {
     Cargarcategorias()
   }, [])
 
-  if (carga) {
-    return (
-      <div className="pt-3 text-center">
-        <CSpinner color="primary" variant="grow" />
-      </div>
-    )
-  }
+  const totalPages = Math.max(1, Math.ceil(categorias.length / pageSize))
+  const start = (currentPage - 1) * pageSize
+  const paginateCategorias = categorias.slice(start, start + pageSize)
 
   const Cargarcategorias = async () => {
     try {
@@ -108,64 +121,135 @@ const categorias = () => {
   }
 
   const postCategorias = async () => {
-    const formDataToSend = new FormData()
-    formDataToSend.append('Cate_NomCa', formData.Cate_NomCa)
-    formDataToSend.append('Cate_Descr', formData.Cate_Descr)
-
     try {
-      const postCat = await axios.post('http://localhost:4000/categorias', formDataToSend)
+      const token = localStorage.getItem('token')
+      const result = await axios.post('http://localhost:4000/categorias', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setMensajeexito(result.data.message)
+      setModalexito(true)
+      setModal_agg(false)
       Cargarcategorias()
     } catch (err) {
+      if (err.response.data.error) {
+        setMensajeError(err.response.data.error)
+      } else {
+        setMensajeError('')
+        const mensajes = err.response.data.errors.map((issue) => issue.message)
+        setMensajeError(mensajes)
+      }
+      setModalError(true)
       console.error('Error al registrar categoria:', err)
     }
   }
 
-  const deleteCategorias = async (id) => {
-    try {
-      const deleteCat = await axios.delete(`http://localhost:4000/categorias/${id}`)
-      Cargarcategorias()
-      setcatID(null)
-    } catch (err) {
-      console.error('Error al eliminar categoria:', err)
-    }
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value)
+  }
+  const limpiarFiltro = () => {
+    setFiltro('')
+    setBusqueda('')
+    Cargarcategorias()
+  }
+  const handleBusquedaChange = (e) => {
+    setBusqueda(e.target.value)
   }
 
-  const putCategorias = async (id) => {
+  const HandleBuscar = async () => {
     try {
-      const putCat = await axios.delete(`http://localhost:4000/categorias/${id}`)
-      Cargarcategorias()
-    } catch (err) {
-      console.error('Error al editar categoria:', err)
+      if (Filtro === 'Nombre de categoria') {
+        const token = localStorage.getItem('token')
+        const result = await axios.post(
+          'http://localhost:4000/FNombrecat',
+          { Cate_NomCa: Busqueda },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        setcategorias(result.data)
+        setCurrentPage(1)
+      } else {
+        Cargarcategorias()
+      }
+    } catch (error) {
+      console.error('Error al obtener el nombre del tipo de archivo:', error)
     }
   }
 
   return (
     <>
-      {/*MODAL PARA BOTON ELIMINAR ----------------------------------------------------------------*/}
-      <CModal visible={Modal_eli} onClose={() => setModal_eli(false)}>
-        <CModalHeader>Eliminar categoria</CModalHeader>
+      {/*MODAL PARA error y exito ----------------------------------------------------------------*/}
+
+      <CModal
+        visible={Modalexito}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => setModalexito(false)}
+      >
+        <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
-          <p>¿Seguro que desea eliminar una categoria?</p>
+          <div>{String(Mensajeexito)}</div>
         </CModalBody>
         <CModalFooter>
-          <div className="caja-boton">
+          <div className="button-box">
             <CButton
-              className="boton"
+              className="boton-regresar"
               onClick={() => {
-                deleteCategorias(catID), setModal_eli(false)
+                setMensajeexito('')
+                setModalexito(false)
               }}
             >
-              Eliminar
-            </CButton>
-            <CButton className="boton" onClick={() => setModal_eli(false)}>
-              Cancelar
+              Cerrar
             </CButton>
           </div>
         </CModalFooter>
       </CModal>
+
+      <CModal
+        visible={ModalError}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => setModalError(false)}
+      >
+        <CModalHeader>Error</CModalHeader>
+        <CModalBody>
+          {Array.isArray(MensajeError) ? (
+            <ul>
+              {MensajeError.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
+          ) : (
+            <div>{String(MensajeError)}</div>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setMensajeError('')
+                setModalError(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       {/*MODAL PARA BOTON AGREGAR ----------------------------------------------------------------*/}
 
-      <CModal visible={Modal_agg} onClose={() => setModal_agg(false)}>
+      <CModal
+        visible={Modal_agg}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => setModal_agg(false)}
+      >
         <CModalHeader>Agregar nueva categoria</CModalHeader>
         <CModalBody>
           <CForm>
@@ -202,14 +286,14 @@ const categorias = () => {
         <CModalFooter>
           <div className="caja-boton">
             <CButton
-              className="boton"
+              className="boton-generar"
               onClick={() => {
-                postCategorias(), setModal_agg(false)
+                postCategorias()
               }}
             >
               Agregar
             </CButton>
-            <CButton className="boton" onClick={() => setModal_agg(false)}>
+            <CButton className="boton-eliminar" onClick={() => setModal_agg(false)}>
               Cancelar
             </CButton>
           </div>
@@ -221,9 +305,12 @@ const categorias = () => {
           <CFormInput
             className="input-buttom-search"
             type="text"
-            placeholder="Buscar..."
+            placeholder={Filtroactivo ? 'Buscar...' : 'Seleccione un filtro primero'}
+            name="busqueda"
+            onChange={handleBusquedaChange}
+            disabled={!Filtroactivo}
           ></CFormInput>
-          <CButton className="search-buttom">
+          <CButton className="search-buttom" onClick={HandleBuscar} disabled={!Buscaractivo}>
             <CIcon className="icon-search" icon={cilSearch} />
           </CButton>
         </CForm>
@@ -231,11 +318,22 @@ const categorias = () => {
 
       <CCard className="mb-4">
         <CCardHeader>
+          <div>Categorias</div>
           <div className="box-buttom">
-            <div>Categorias</div>
-            <div>
-              <CButton className="botonadd" onClick={() => setModal_agg(true)}>
+            <div className="boton-agregar">
+              <CButton className="boton-descargar" onClick={() => setModal_agg(true)}>
                 Agregar
+              </CButton>
+            </div>
+            <div>
+              <CForm>
+                <CFormSelect className="filter-input" name="filtro" onChange={handleFiltroChange}>
+                  <option value={''}>Filtrar</option>
+                  <option>Nombre de categoria</option>
+                </CFormSelect>
+              </CForm>
+              <CButton className="boton-eliminar" onClick={() => limpiarFiltro()}>
+                Limpiar Filtro
               </CButton>
             </div>
           </div>
@@ -244,42 +342,41 @@ const categorias = () => {
           <CTable>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>id </CTableHeaderCell>
                 <CTableHeaderCell>Nombre </CTableHeaderCell>
                 <CTableHeaderCell>Descripcion</CTableHeaderCell>
                 <CTableHeaderCell>Editar</CTableHeaderCell>
-                <CTableHeaderCell>Eliminar</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {categorias.map((ca, index) => (
-                <CTableRow key={index}>
-                  <CTableDataCell>{ca.Cate_Id}</CTableDataCell>
-                  <CTableDataCell>{ca.Cate_NomCa}</CTableDataCell>
-                  <CTableDataCell>{ca.Cate_Descr}</CTableDataCell>
-                  <CTableDataCell>
-                    <CButton className="botonhover">
-                      <CIcon icon={cilPencil} style={{ color: 'blue' }}></CIcon>
-                    </CButton>
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <CButton
-                      className="botonhover"
-                      onClick={() => {
-                        setcatID(ca.Cate_Id), setModal_eli(true)
-                      }}
-                    >
-                      <CIcon icon={cilXCircle} style={{ color: 'red' }} />
-                    </CButton>
+              {paginateCategorias.length === 0 ? (
+                <CTableRow>
+                  <CTableDataCell colSpan={6} className="text-center">
+                    No hay categorias por ese nombre
                   </CTableDataCell>
                 </CTableRow>
-              ))}
+              ) : (
+                paginateCategorias.map((ca, index) => (
+                  <CTableRow key={index}>
+                    <CTableDataCell>{ca.Cate_NomCa}</CTableDataCell>
+                    <CTableDataCell>{ca.Cate_Descr}</CTableDataCell>
+                    <CTableDataCell>
+                      <CButton className="botonhover">
+                        <CIcon icon={cilPencil} style={{ color: 'blue' }}></CIcon>
+                      </CButton>
+                    </CTableDataCell>
+                  </CTableRow>
+                ))
+              )}
             </CTableBody>
             <CTableFoot></CTableFoot>
           </CTable>
         </CCardBody>
         <CCardFooter>
-          <Paginacion />
+          <Paginacion
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </CCardFooter>
       </CCard>
     </>

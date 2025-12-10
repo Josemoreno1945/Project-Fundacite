@@ -24,6 +24,11 @@ export const errors = {
     message: "El titulo del proyecto ya esta registrado",
   },
 
+  NombreCategoriaDuplicated: {
+    status: 409,
+    message: "El nombre de la categoria ya esta registrado",
+  },
+
   //login
   InvalidPassword: {
     status: 401,

@@ -79,7 +79,7 @@ export const FiltroNUsuario = async (data) => {
   const query = `
   SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_RolId"
 	FROM public."FPM_Usuari"
-	WHERE LOWER("Usua_NomUs") LIKE LOWER('%' || $1 || '%')
+	WHERE unaccent (LOWER("Usua_NomUs")) LIKE unaccent(LOWER('%' || $1 || '%'))
   `;
   const values = [data.Usua_NomUs];
   const result = await pool.query(query, values);
@@ -90,7 +90,7 @@ export const FiltroEmail = async (data) => {
   const query = `
   SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_RolId"
 	FROM public."FPM_Usuari"
-	WHERE LOWER("Usua_Email") LIKE LOWER('%' || $1 || '%')
+	WHERE unaccent(LOWER("Usua_Email")) LIKE unaccent(LOWER('%' || $1 || '%'))
   `;
   const values = [data.Usua_Email];
   const result = await pool.query(query, values);
@@ -102,7 +102,7 @@ export const FiltroRol = async (data) => {
   SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email","Rol_Nombre"
 	FROM public."FPM_Usuari"
 	JOIN "FPM_Rol" ON "FPM_Usuari"."Usua_RolId"="FPM_Rol"."Rol_Id"
-	WHERE LOWER("Rol_Nombre") LIKE LOWER('%' || $1 || '%')
+	WHERE unaccent(LOWER("Rol_Nombre")) LIKE unaccent(LOWER('%' || $1 || '%'))
   `;
   const values = [data.Rol_Nombre];
   const result = await pool.query(query, values);
