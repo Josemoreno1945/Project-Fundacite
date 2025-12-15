@@ -118,3 +118,47 @@
   justify-content: center;
   background: transparent !important;
 }
+
+
+
+.conjunto-dentro{
+  padding: 0.4rem; 
+}
+
+.conjunto-dentro .boton-perfil,
+.conjunto-dentro .boton-salir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  margin: 0.25rem 0;
+  background: #e6e6fa; /* mismo color que usas para hover/activo del sidebar */
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  position: relative;
+  text-decoration: none;
+  transition: background-color 0.15s ease, transform 0.08s ease;
+}
+
+.conjunto-dentro .boton-perfil::before,
+.conjunto-dentro .boton-salir::before {
+  content: "";
+  position: absolute;
+  left: -0.25rem;
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  border-radius: 4px;
+  background: #3d3dff; /* misma azul que .sidebar .nav-link.active::before */
+}
+
+.conjunto-dentro .boton-perfil:hover,
+.conjunto-dentro .boton-salir:hover {
+  background: #d7d7ff;
+  transform: translateY(-1px);
+  cursor: pointer;
+}
+

@@ -12,6 +12,7 @@ import {
   FEmail,
   FRol,
   getUsersVer,
+  getUsers_inSesion,
 } from "../controllers/users.controllers.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
@@ -27,6 +28,7 @@ router.post("/FEmail", verifyToken, isAdmin, FEmail);
 router.post("/FRol", verifyToken, isAdmin, FRol);
 
 router.get("/users", verifyToken, isAdmin, getUsers);
+router.get("/users_inSesion", verifyToken, getUsers_inSesion);
 router.get("/usersVer/:id", verifyToken, isAdmin, getUsersVer);
 
 router.get("/check_email/:email", check_Email);

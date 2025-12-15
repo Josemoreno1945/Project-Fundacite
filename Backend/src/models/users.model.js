@@ -13,6 +13,16 @@ export const getU = async () => {
 
 //---------------------------------GetUser---------------------------------------
 export const getUser = async (id) => {
+  const query = `SELECT "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Rol_Nombre","Usua_Protected"
+        FROM "FPM_Usuari"
+        JOIN "FPM_Rol" ON "FPM_Rol"."Rol_Id" = "FPM_Usuari"."Usua_RolId"
+        WHERE "Usua_Id" = $1
+        `;
+  const result = await pool.query(query, [id]);
+  return result.rows[0];
+};
+
+export const getUinSesion = async (id) => {
   const query = `SELECT "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Rol_Nombre"
         FROM "FPM_Usuari"
         JOIN "FPM_Rol" ON "FPM_Rol"."Rol_Id" = "FPM_Usuari"."Usua_RolId"

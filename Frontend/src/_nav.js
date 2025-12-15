@@ -128,6 +128,8 @@ const _nav = (Usua_RolId) => {
       return _nav_admin
     case 2:
       return _nav_user
+    case 3:
+      return _nav_admin
     default:
       return [
         {

@@ -11,12 +11,14 @@ import {
   FiltroEmail,
   FiltroRol,
   getUser,
+  getUinSesion,
 } from "../models/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userSchema from "../schemas/users.schemas.js";
 import loginSchema from "../schemas/login.schemas.js";
 import { errors, throwError } from "../utils/errors.js";
+import { id } from "zod/v4/locales";
 
 //---------------------------------Filtro------------------------------------
 export const FNomusuario = async (req, res, next) => {
@@ -50,6 +52,17 @@ export const FRol = async (req, res, next) => {
 };
 
 //---------------------------------Get---------------------------------------
+export const getUsers_inSesion = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    console.log("nose", req.user);
+    const rows = await getUinSesion(id);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUsers = async (req, res, next) => {
   try {
     const rows = await getU();
@@ -158,9 +171,16 @@ export const putUsers = async (req, res, next) => {
 
 //-------------------------------Delete-----------------------------------------
 
-export const deleteUsers = async (req, res) => {
+export const deleteUsers = async (req, res, next) => {
   try {
     const id = req.params.id;
+    const userToDelete = await getUser(id); // ajustar si getUser no trae la columna Usua_Protected
+    if (userToDelete?.Usua_Protected) {
+      return res
+        .status(403)
+        .json({ message: "No puedes eliminar este usuario." });
+    }
+
     const rows = await deleteU(id);
 
     if (rows === 0) {
@@ -169,8 +189,7 @@ export const deleteUsers = async (req, res) => {
       return res.json({ message: "usuario eliminada" });
     }
   } catch (error) {
-    console.error("Error obteniendo usuario:", error);
-    res.status(500).send("Error obteniendo usuario");
+    next(error);
   }
 };
 

@@ -67,6 +67,8 @@ const Usuarios = () => {
   const [carga, setcarga] = useState(true)
   const [users, setUsers] = useState([])
   const [deleteMensaje, SetdeleteMensaje] = useState(false)
+  const [mensajeError, setmensajeError] = useState('')
+  const [ModalmensajeError, setModalmensajeError] = useState(false)
 
   //Modal de ver --------------------------------------------------------------
   const [Modal_ver, setModal_ver] = useState(false)
@@ -279,7 +281,8 @@ const Usuarios = () => {
       cargarusuarios()
       setuserID(null)
     } catch (err) {
-      console.error('Error al eliminar usuario:', err)
+      setModalmensajeError(true)
+      setmensajeError(err.response.data.message)
     }
   }
 
@@ -289,6 +292,30 @@ const Usuarios = () => {
 
   return (
     <>
+      <CModal
+        visible={ModalmensajeError}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => setModalmensajeError(false)}
+      >
+        <CModalHeader>Error</CModalHeader>
+        <CModalBody>
+          <div>{String(mensajeError)}</div>
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalmensajeError(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       {/*MODAL PARA BOTON VER ----------------------------------------------------------------*/}
       <CModal
         visible={Modal_ver}
@@ -521,7 +548,7 @@ const Usuarios = () => {
         <CModalFooter>
           <div className="caja-boton">
             <CButton
-              className="boton"
+              className="boton-eliminar"
               onClick={() => {
                 deleteUsuario(userID), setModal_eli(false)
               }}
@@ -529,7 +556,7 @@ const Usuarios = () => {
               Eliminar
             </CButton>
             <CButton
-              className="boton"
+              className="boton-regresar"
               onClick={() => {
                 setModal_eli(false)
                 setuserID(null)
