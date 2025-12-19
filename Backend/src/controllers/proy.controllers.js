@@ -14,6 +14,10 @@ import {
   CountProyAp,
   CountProyPen,
   getProyectobytitulo,
+  FiltroTituloAprobado,
+  FiltroTituloArchivado,
+  FiltroTituloPendiente,
+  FiltroTituloRechazado,
 } from "../models/proy.model.js";
 import { getPdfByProyId, deleteDocsByProyId } from "../models/doc.model.js";
 import { postDoc } from "../models/doc.model.js";
@@ -21,6 +25,8 @@ import proyectoSchema from "../schemas/proyecto.schemas.js";
 import { errors, throwError } from "../utils/errors.js";
 import { uploadBuffer, deleteRemotePath } from "../services/icedrive.js";
 import PDFDocument from "pdfkit";
+import nodemailer from "nodemailer";
+import { getUser } from "../models/users.model.js";
 
 //--------------------------------titulo no repetido -----------------------
 
@@ -184,7 +190,7 @@ export const postProyectWithPdf = async (req, res, next) => {
         errors: parseU.error.issues,
       });
     }
-
+    body.Proy_UsuId = req.user.id;
     // 1) crear proyecto en BD-----------
     const result = await postP(body);
     const proyectoId =
@@ -298,5 +304,94 @@ export const deleteProyectAndDoc = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Error eliminando proyecto", detail: err.message });
+  }
+};
+
+//---------------------------------Filtro------------------------------------
+export const FTitulAprobado = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroTituloAprobado(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const FTitulRechazado = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroTituloRechazado(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const FTitulPendiente = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroTituloPendiente(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const FTitulArchivado = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const rows = await FiltroTituloArchivado(data);
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+//------------------------------------------------------------------
+
+export const rechazarConMotivo = async (req, res, next) => {
+  try {
+    const { Proy_Id, motivo } = req.body;
+    if (!Proy_Id || !motivo) {
+      throwError(errors.missingFields);
+    }
+
+    const proyectoRes = await getidP(Proy_Id);
+    const proyecto = proyectoRes[0];
+
+    if (!proyecto) {
+      return res.status(404).json({ message: "Proyecto no encontrado" });
+    }
+    console.log("usuario id", proyecto);
+    const usuario = await getUser(proyecto.Proy_UsuId);
+    const emailDestino = usuario?.Usua_Email;
+
+    if (!emailDestino) {
+      return res.status(404).json({ message: "Email no encontrado" });
+    }
+
+    // Enviar correo con nodemailer
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587,
+      secure: process.env.SMTP_SECURE === "true",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.FROM_EMAIL || process.env.SMTP_USER,
+      to: emailDestino,
+      subject: `Tu proyecto "${proyecto.Proy_Titul}" ha sido rechazado`,
+      text: `Hola,\n\nTu proyecto "${proyecto.Proy_Titul}" ha sido rechazado por la siguiente razón:\n\n${motivo}\n\nSi necesitas más información contacta al equipo.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return res.json({ message: "Proyecto rechazado y correo enviado" });
+  } catch (err) {
+    next(err);
   }
 };

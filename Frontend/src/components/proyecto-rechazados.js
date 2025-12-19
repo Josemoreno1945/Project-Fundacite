@@ -17,6 +17,7 @@ import {
   cilGroup,
   cilHome,
   cilBarChart,
+  cilSearch,
 } from '@coreui/icons'
 import {
   CNavGroup,
@@ -26,9 +27,15 @@ import {
   CCardBody,
   CCardHeader,
   CCardFooter,
+  CForm,
+  CFormInput,
+  CFormSelect,
+  CButton,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import '../scss/proyectos.scss'
+import '../scss/botones.scss'
+import '../scss/buscador.scss'
 import Paginacion from './paginacion'
 import axios from 'axios'
 
@@ -37,6 +44,13 @@ const Proyectos = () => {
   const pageSize = 8
   const [proyectos, setProyectos] = useState([])
   const navigate = useNavigate()
+
+  //FILTRO Y BUSQUEDA----------------------------------------------------------
+  const [Busqueda, setBusqueda] = useState('')
+  const [Filtro, setFiltro] = useState('')
+  const Filtroactivo = Filtro && Filtro !== 'Filtrar'
+  const Buscaractivo = Filtroactivo && Busqueda.trim().length > 0
+  //---------------------------------------------------------------------------
 
   useEffect(() => {
     const obtenerProyectos = async () => {
@@ -54,15 +68,94 @@ const Proyectos = () => {
     }
     obtenerProyectos()
   }, [])
-
+  const obtenerProyectos = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await axios.get('http://localhost:4000/proyectosRechazados', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setProyectos(res.data)
+    } catch (error) {
+      console.error('Error al obtener proyectos:', error)
+    }
+  }
   const totalPages = Math.max(1, Math.ceil(proyectos.length / pageSize))
   const start = (currentPage - 1) * pageSize
   const paginateProyectos = proyectos.slice(start, start + pageSize)
 
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value)
+  }
+  const limpiarFiltro = () => {
+    setFiltro('')
+    setBusqueda('')
+    obtenerProyectos()
+  }
+  const handleBusquedaChange = (e) => {
+    setBusqueda(e.target.value)
+  }
+
+  const HandleBuscar = async () => {
+    try {
+      if (Filtro === 'Titulo de proyecto') {
+        const token = localStorage.getItem('token')
+        const result = await axios.post(
+          'http://localhost:4000/FTituloRechazado',
+          { Proy_Titul: Busqueda }, //'''''''''''''''''''''''''''''''
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        setProyectos(result.data)
+        setCurrentPage(1)
+      } else {
+        obtenerProyectos()
+      }
+    } catch (error) {
+      console.error('Error al obtener el nombre del tipo de archivo:', error)
+    }
+  }
+
   return (
     <>
+      <div className="buscador">
+        <CForm className="d-flex">
+          <CFormInput
+            className="input-buttom-search"
+            type="text"
+            placeholder={Filtroactivo ? 'Buscar...' : 'Seleccione un filtro primero'}
+            name="busqueda"
+            value={Busqueda}
+            onChange={handleBusquedaChange}
+            disabled={!Filtroactivo}
+          ></CFormInput>
+          <CButton className="search-buttom" onClick={HandleBuscar} disabled={!Buscaractivo}>
+            <CIcon className="icon-search" icon={cilSearch} />
+          </CButton>
+        </CForm>
+      </div>
+
       <CCard className="mb-4">
-        <CCardHeader>Lista de Proyectos Rechazados</CCardHeader>
+        <CCardHeader>
+          <div className="box-buttom">
+            <div> Lista de Proyectos Rechazados</div>
+            <div>
+              <CForm>
+                <CFormSelect className="filter-input" name="filtro" onChange={handleFiltroChange}>
+                  <option value={''}>Filtrar</option>
+                  <option>Titulo de proyecto</option>
+                </CFormSelect>
+              </CForm>
+              <CButton className="boton-eliminar" onClick={() => limpiarFiltro()}>
+                Limpiar Filtro
+              </CButton>
+            </div>
+          </div>
+        </CCardHeader>
         <CCardBody>
           <div className="cuadros">
             {paginateProyectos.map((p, index) => (

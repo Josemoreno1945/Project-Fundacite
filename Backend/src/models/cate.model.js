@@ -15,7 +15,7 @@ export const getCategoriabyNombre = async (Cate_NomCa) => {
 //-------------------------------FILTROS----------------------------------------
 export const FiltroNombre_cat = async (data) => {
   const query = `
-  SELECT "Cate_NomCa"
+  SELECT "Cate_NomCa" , "Cate_Descr"
 	FROM public."FPM_Catego"
 	WHERE unaccent (LOWER("Cate_NomCa")) LIKE unaccent(LOWER('%' || $1 || '%'))
   `;

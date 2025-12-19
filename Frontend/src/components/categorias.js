@@ -1,4 +1,4 @@
-import { react, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
@@ -85,6 +85,60 @@ const categorias = () => {
     Cate_NomCa: '',
     Cate_Descr: '',
   })
+
+  // Estados y handlers para editar categoria
+  const [editingCatId, setEditingCatId] = useState(null)
+  const [editModalVisible, setEditModalVisible] = useState(false)
+  const [editFormData, setEditFormData] = useState({
+    Cate_NomCa: '',
+    Cate_Descr: '',
+  })
+
+  const openEditModal = (cat) => {
+    setEditingCatId(cat.Cate_Id || cat.Cate_Id === 0 ? cat.Cate_Id : cat.id || null)
+    setEditFormData({
+      Cate_NomCa: cat.Cate_NomCa || '',
+      Cate_Descr: cat.Cate_Descr || '',
+    })
+    setEditModalVisible(true)
+  }
+
+  const closeEditModal = () => {
+    setEditModalVisible(false)
+    setEditingCatId(null)
+    setEditFormData({ Cate_NomCa: '', Cate_Descr: '' })
+  }
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target
+    setEditFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const submitEdit = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      await axios.put(`http://localhost:4000/categorias/${editingCatId}`, editFormData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setMensajeexito('Categoría actualizada correctamente')
+      setModalexito(true)
+      closeEditModal()
+      Cargarcategorias()
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.error) {
+        setMensajeError(err.response.data.error)
+      } else if (err.response && err.response.data && err.response.data.errors) {
+        const mensajes = err.response.data.errors.map((issue) => issue.message)
+        setMensajeError(mensajes)
+      } else {
+        setMensajeError('Error al actualizar la categoría')
+      }
+      setModalError(true)
+      console.error('Error al actualizar categoria:', err)
+    }
+  }
 
   useEffect(() => {
     const Cargarcategorias = async () => {
@@ -209,6 +263,61 @@ const categorias = () => {
         </CModalFooter>
       </CModal>
 
+      {/*MODAL PARA EDITAR CATEGORIA ----------------------------------------------------------------*/}
+
+      <CModal
+        visible={editModalVisible}
+        backdrop="static"
+        keyboard={false}
+        onClose={() => closeEditModal()}
+      >
+        <CModalHeader>Editar categoria</CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CInputGroup className="mb-3">
+              <CFormLabel>Nombre</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText>
+                  <CIcon icon={cilPencil} />
+                </CInputGroupText>
+                <CFormInput
+                  type="text"
+                  placeholder="Nombre"
+                  name="Cate_NomCa"
+                  value={editFormData.Cate_NomCa}
+                  onChange={handleEditChange}
+                ></CFormInput>
+              </CInputGroup>
+            </CInputGroup>
+            <CInputGroup className="mb-3">
+              <CFormLabel>Descripcion</CFormLabel>
+              <CInputGroup>
+                <CInputGroupText>
+                  <CIcon icon={cilCommentSquare} />
+                </CInputGroupText>
+                <CFormTextarea
+                  placeholder="Descripcion"
+                  rows={3}
+                  name="Cate_Descr"
+                  value={editFormData.Cate_Descr}
+                  onChange={handleEditChange}
+                ></CFormTextarea>
+              </CInputGroup>
+            </CInputGroup>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <div className="caja-boton">
+            <CButton className="boton-eliminar" onClick={() => closeEditModal()}>
+              Cancelar
+            </CButton>
+            <CButton className="boton-generar" onClick={() => submitEdit()}>
+              Guardar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <CModal
         visible={ModalError}
         backdrop="static"
@@ -307,6 +416,7 @@ const categorias = () => {
             type="text"
             placeholder={Filtroactivo ? 'Buscar...' : 'Seleccione un filtro primero'}
             name="busqueda"
+            value={Busqueda}
             onChange={handleBusquedaChange}
             disabled={!Filtroactivo}
           ></CFormInput>
@@ -360,7 +470,7 @@ const categorias = () => {
                     <CTableDataCell>{ca.Cate_NomCa}</CTableDataCell>
                     <CTableDataCell>{ca.Cate_Descr}</CTableDataCell>
                     <CTableDataCell>
-                      <CButton className="botonhover">
+                      <CButton className="botonhover" onClick={() => openEditModal(ca)}>
                         <CIcon icon={cilPencil} style={{ color: 'blue' }}></CIcon>
                       </CButton>
                     </CTableDataCell>

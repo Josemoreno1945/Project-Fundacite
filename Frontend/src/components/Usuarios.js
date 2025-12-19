@@ -575,6 +575,7 @@ const Usuarios = () => {
             type="text"
             placeholder={Filtroactivo ? 'Buscar...' : 'Seleccione un filtro primero'}
             name="busqueda"
+            value={Busqueda}
             onChange={handleBusquedaChange}
             disabled={!Filtroactivo}
           ></CFormInput>

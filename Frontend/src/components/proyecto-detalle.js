@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
@@ -56,6 +56,7 @@ const ProyectosDetalle = () => {
   const [mensajeArchivado, setmensajeArchivado] = useState('')
   const [mensajeRechazado, setmensajeRechazado] = useState('')
   const [ModalRealizadoAprobado, setModalRealizadoAprobado] = useState(false)
+  const [ModalmensajeEliminar_motivo, setModalmensajeEliminar_motivo] = useState(false)
 
   const [ModalRealizadoArchivado, setModalRealizadoArchivado] = useState(false)
 
@@ -63,6 +64,11 @@ const ProyectosDetalle = () => {
   const [ModalmensajeEliminar, setModalmensajeEliminar] = useState(false)
   const [ModalmensajeAprobado, setModalmensajeAprobado] = useState(false)
   const [ModalmensajeArchivado, setModalmensajeArchivado] = useState(false)
+
+  const [Usuario_id, setUsuario_id] = useState('')
+
+  const [rechazoMotivo, setRechazoMotivo] = useState('')
+
   const navigate = useNavigate()
 
   const location = useLocation()
@@ -89,7 +95,6 @@ const ProyectosDetalle = () => {
       console.error('Error al obtener el proyecto:', error)
     }
   }
-  getidProyecto()
 
   const Aprobarproyecto = async () => {
     try {
@@ -152,22 +157,66 @@ const ProyectosDetalle = () => {
     }
   }
 
-  //elimminar
+  //motivo-rechazo
 
-  const handleDeleteProject = async () => {
+  const handleRechazarConMotivo = async () => {
     try {
       const token = localStorage.getItem('token')
-      await axios.delete(`http://localhost:4000/proyectos/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const res = await axios.post(
+        'http://localhost:4000/rechazarConMotivo',
+        { Proy_Id: id, motivo: rechazoMotivo, Usuario_id: Usuario_id },
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      Rechazarproyecto()
+      setmensajeRechazado(res.data.message || 'Proyecto rechazado')
+      setModalmensajeEliminar(false)
+      setModalRealizadoEliminado(true)
+      getidProyecto()
     } catch (err) {
-      console.error('Error eliminando proyecto:', err)
-      alert('No se pudo eliminar el proyecto')
+      console.error('Error al rechazar con motivo:', err)
     }
   }
 
   return (
     <>
+      <CModal
+        visible={ModalmensajeEliminar_motivo}
+        onClose={() => setModalmensajeEliminar_motivo(false)}
+      >
+        <CModalHeader>Motivo de rechazo</CModalHeader>
+        <CModalBody>
+          <div>Escribe el motivo del rechazo:</div>
+          <CFormTextarea
+            value={rechazoMotivo}
+            onChange={(e) => setRechazoMotivo(e.target.value)}
+            placeholder="Motivo"
+            rows={4}
+            className="mt-2"
+          />
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-eliminar"
+              disabled={!rechazoMotivo.trim()}
+              onClick={() => {
+                handleRechazarConMotivo()
+                setModalmensajeEliminar_motivo(false)
+                setModalRealizadoEliminado(true)
+              }}
+            >
+              Rechazar
+            </CButton>
+            <CButton
+              className="boton-regresar"
+              onClick={() => setModalmensajeEliminar_motivo(false)}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <CModal visible={ModalRealizadoEliminado} onClose={() => setModalRealizadoEliminado(false)}>
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
@@ -198,9 +247,8 @@ const ProyectosDetalle = () => {
             <CButton
               className="boton-eliminar"
               onClick={() => {
-                Rechazarproyecto()
+                setModalmensajeEliminar_motivo(true)
                 setModalmensajeEliminar(false)
-                setModalRealizadoEliminado(true)
               }}
             >
               Rechazar
@@ -310,7 +358,7 @@ const ProyectosDetalle = () => {
                 <CInputGroup className="mb-3">
                   <div className="d-flex  w-100 gap-3">
                     <div className="w-50">
-                      <CFormLabel>Usuario</CFormLabel>
+                      <CFormLabel>autor</CFormLabel>
                       <CInputGroup>
                         <CInputGroupText>
                           <CIcon icon={cilUser} />

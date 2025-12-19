@@ -21,7 +21,7 @@ export const getP = async () => {
 //---------------------------------Get---------------------------------------
 export const getidP = async (id) => {
   const query = `
-  SELECT "Proy_Id", "Proy_Titul", "Proy_Descr", "Proy_Resum", "Proy_FecRe", proy_statu,"Proy_NomAu", "Cate_NomCa"
+  SELECT "Proy_Id", "Proy_Titul", "Proy_Descr", "Proy_Resum", "Proy_FecRe", proy_statu,"Proy_NomAu", "Cate_NomCa","Proy_UsuId"
   FROM "FPT_Proyec"
   JOIN "FPM_Catego" on "FPM_Catego"."Cate_Id" = "FPT_Proyec"."Proy_CatId"
   WHERE "Proy_Id" = $1`;
@@ -32,8 +32,8 @@ export const getidP = async (id) => {
 //-------------------------------Post-----------------------------------------
 export const postP = async (data) => {
   const query = `
-        INSERT INTO "FPT_Proyec"("Proy_Titul", "Proy_Descr", "Proy_Resum", "Proy_FecRe", proy_statu, "Proy_NomAu", "Proy_CatId")
-        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING "Proy_Id"
+        INSERT INTO "FPT_Proyec"("Proy_Titul", "Proy_Descr", "Proy_Resum", "Proy_FecRe", proy_statu, "Proy_NomAu", "Proy_CatId","Proy_UsuId")
+        VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING "Proy_Id"
     `;
 
   const values = [
@@ -44,6 +44,7 @@ export const postP = async (data) => {
     "pendiente",
     data.Proy_NomAu,
     data.Proy_CatId,
+    data.Proy_UsuId,
   ];
 
   const result = await pool.query(query, values);
@@ -269,4 +270,85 @@ export const deleteProyById = async (proyId) => {
   const query = `DELETE FROM "FPT_Proyec" WHERE "Proy_Id" = $1 RETURNING *`;
   const result = await pool.query(query, [proyId]);
   return result.rows[0] || null;
+};
+
+//-------------------------------FILTROS----------------------------------------
+export const FiltroTituloAprobado = async (data) => {
+  const query = `
+    SELECT "Proy_Id", 
+        "Proy_Titul", 
+        "Proy_Descr", 
+        "Proy_Resum", 
+        "Proy_FecRe", 
+        proy_statu, 
+        "Proy_UsuId", 
+        "Proy_CatId", 
+        "Proy_NomAu"
+    FROM public."FPT_Proyec"
+    WHERE unaccent(LOWER("Proy_Titul")) LIKE unaccent(LOWER('%' || $1 || '%'))
+    AND proy_statu = 'aprobado';
+  `;
+  const values = [data.Proy_Titul];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
+
+export const FiltroTituloPendiente = async (data) => {
+  const query = `
+    SELECT "Proy_Id", 
+        "Proy_Titul", 
+        "Proy_Descr", 
+        "Proy_Resum", 
+        "Proy_FecRe", 
+        proy_statu, 
+        "Proy_UsuId", 
+        "Proy_CatId", 
+        "Proy_NomAu"
+    FROM public."FPT_Proyec"
+    WHERE unaccent(LOWER("Proy_Titul")) LIKE unaccent(LOWER('%' || $1 || '%'))
+    AND proy_statu = 'pendiente';
+  `;
+  const values = [data.Proy_Titul];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
+
+export const FiltroTituloArchivado = async (data) => {
+  const query = `
+    SELECT "Proy_Id", 
+        "Proy_Titul", 
+        "Proy_Descr", 
+        "Proy_Resum", 
+        "Proy_FecRe", 
+        proy_statu, 
+        "Proy_UsuId", 
+        "Proy_CatId", 
+        "Proy_NomAu"
+    FROM public."FPT_Proyec"
+    WHERE unaccent(LOWER("Proy_Titul")) LIKE unaccent(LOWER('%' || $1 || '%'))
+    AND proy_statu = 'archivado';
+  `;
+  const values = [data.Proy_Titul];
+  const result = await pool.query(query, values);
+  return result.rows;
+};
+
+export const FiltroTituloRechazado = async (data) => {
+  const query = `
+    SELECT "Proy_Id", 
+        "Proy_Titul", 
+        "Proy_Descr", 
+        "Proy_Resum", 
+        "Proy_FecRe", 
+        proy_statu, 
+        "Proy_UsuId", 
+        "Proy_CatId", 
+        "Proy_NomAu"
+    FROM public."FPT_Proyec"
+    WHERE unaccent(LOWER("Proy_Titul")) LIKE unaccent(LOWER('%' || $1 || '%'))
+    AND proy_statu = 'rechazado';
+  `;
+  const values = [data.Proy_Titul];
+  const result = await pool.query(query, values);
+  return result.rows;
 };

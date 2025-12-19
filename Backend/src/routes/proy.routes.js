@@ -15,6 +15,11 @@ import {
   getCountProyectsPen,
   getCountProyectsRech,
   check_titulo,
+  FTitulAprobado,
+  FTitulRechazado,
+  FTitulPendiente,
+  FTitulArchivado,
+  rechazarConMotivo,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -31,6 +36,12 @@ router.get("/proyectosRechazados", getProyectsRech);
 router.get("/proyectosArc", getProyectsArc);
 
 router.get("/proyectos/:id", getidProyects);
+
+router.post("/FTituloPendiente", verifyToken, isAdmin, FTitulPendiente);
+router.post("/FTituloArchivado", verifyToken, isAdmin, FTitulArchivado);
+router.post("/FTituloAprobado", verifyToken, FTitulAprobado);
+router.post("/FTituloRechazado", verifyToken, isAdmin, FTitulRechazado);
+router.post("/rechazarConMotivo", verifyToken, isAdmin, rechazarConMotivo);
 
 router.post(
   "/proyectos",
