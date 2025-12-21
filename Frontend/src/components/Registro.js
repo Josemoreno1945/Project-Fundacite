@@ -20,6 +20,7 @@ import {
   CModalFooter,
   CModalHeader,
   CPopover,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -37,6 +38,9 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 const Registro = () => {
+  const [loadingAction, setLoadingAction] = useState(false)
+  const [actionLabel, setActionLabel] = useState('')
+
   const [usernameAvailable, setUsernameAvailable] = useState(null)
   const [emailAvailable, setEmailAvailable] = useState(null)
   const [mensajeAprobado, setmensajeAprobado] = useState('')
@@ -106,6 +110,8 @@ const Registro = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoadingAction(true)
+    setActionLabel('Registrando...')
     try {
       const token = localStorage.getItem('token')
       const postUsers = await axios.post('http://localhost:4000/users', formData, {
@@ -126,11 +132,28 @@ const Registro = () => {
       }
 
       setModalmensajeError(true)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
   return (
     <>
+      <CModal
+        visible={loadingAction}
+        backdrop="static"
+        keyboard={false}
+        alignment="center"
+        onClose={() => {}}
+      >
+        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalBody className="d-flex align-items-center gap-3">
+          <CSpinner />
+          <span>{actionLabel}</span>
+        </CModalBody>
+      </CModal>
+
       <CModal
         visible={ModalmensajeAprobado}
         backdrop="static"

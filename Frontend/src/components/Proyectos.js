@@ -31,6 +31,7 @@ import {
   CFormInput,
   CFormSelect,
   CButton,
+  CSpinner,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import '../scss/proyectos.scss'
@@ -121,6 +122,17 @@ const Proyectos = () => {
     }
   }
 
+  const renderCount = (value) => {
+    if (!value || value.length === 0) {
+      return (
+        <div className="d-flex align-items-center">
+          <CSpinner size="lg" />
+        </div>
+      )
+    }
+    return value
+  }
+
   return (
     <>
       <div className="buscador">
@@ -159,20 +171,22 @@ const Proyectos = () => {
         </CCardHeader>
         <CCardBody>
           <div className="cuadros">
-            {paginateProyectos.map((p, index) => (
-              <CCard
-                className="cuadro2"
-                key={p.Proy_Id}
-                onClick={() =>
-                  navigate(`/ProyectosDetalle/${p.Proy_Id}`, {
-                    state: { from: '/components/Proyectos' },
-                  })
-                }
-              >
-                <CCardHeader>{p.Proy_Titul}</CCardHeader>
-                <CCardBody>Haz clic para ver más detalles</CCardBody>
-              </CCard>
-            ))}
+            {!paginateProyectos || paginateProyectos.length === 0
+              ? renderCount(paginateProyectos)
+              : paginateProyectos.map((p, index) => (
+                  <CCard
+                    className="cuadro2"
+                    key={p.Proy_Id}
+                    onClick={() =>
+                      navigate(`/ProyectosDetalle/${p.Proy_Id}`, {
+                        state: { from: '/components/Proyectos' },
+                      })
+                    }
+                  >
+                    <CCardHeader>{p.Proy_Titul}</CCardHeader>
+                    <CCardBody>Haz clic para ver más detalles</CCardBody>
+                  </CCard>
+                ))}
           </div>
         </CCardBody>
         <CCardFooter>

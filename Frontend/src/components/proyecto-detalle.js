@@ -42,6 +42,7 @@ import {
   CModalBody,
   CModalFooter,
   CModalHeader,
+  CSpinner,
 } from '@coreui/react'
 import '../scss/proyectos.scss'
 import '../scss/botones.scss'
@@ -50,6 +51,9 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
 const ProyectosDetalle = () => {
+  const [loadingAction, setLoadingAction] = useState(false)
+  const [actionLabel, setActionLabel] = useState('')
+
   const { id } = useParams()
   const [proyecto, setProyecto] = useState([])
   const [mensajeAprobado, setmensajeAprobado] = useState('')
@@ -97,6 +101,8 @@ const ProyectosDetalle = () => {
   }
 
   const Aprobarproyecto = async () => {
+    setLoadingAction(true)
+    setActionLabel('Aprobando...')
     try {
       const token = localStorage.getItem('token')
       const response = await axios.put('http://localhost:4000/aprobar', proyecto[0], {
@@ -106,12 +112,18 @@ const ProyectosDetalle = () => {
       })
       getidProyecto()
       setmensajeAprobado(response.data.message)
+      setModalRealizadoAprobado(true)
     } catch (err) {
       console.log(err)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
   const Archivarproyecto = async () => {
+    setLoadingAction(true)
+    setActionLabel('Archivando...')
     try {
       const token = localStorage.getItem('token')
       const response = await axios.put('http://localhost:4000/archivar', proyecto[0], {
@@ -121,8 +133,12 @@ const ProyectosDetalle = () => {
       })
       getidProyecto()
       setmensajeArchivado(response.data.message)
+      setModalRealizadoArchivado(true)
     } catch (err) {
       console.log(err)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
@@ -134,7 +150,6 @@ const ProyectosDetalle = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-      getidProyecto()
       setmensajeRechazado(response.data.message)
     } catch (err) {
       console.log(err)
@@ -160,6 +175,8 @@ const ProyectosDetalle = () => {
   //motivo-rechazo
 
   const handleRechazarConMotivo = async () => {
+    setLoadingAction(true)
+    setActionLabel('Rechazando...')
     try {
       const token = localStorage.getItem('token')
       const res = await axios.post(
@@ -168,18 +185,35 @@ const ProyectosDetalle = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       )
       Rechazarproyecto()
-      setmensajeRechazado(res.data.message || 'Proyecto rechazado')
-      setModalmensajeEliminar(false)
-      setModalRealizadoEliminado(true)
       getidProyecto()
+      setModalRealizadoEliminado(true)
     } catch (err) {
       console.error('Error al rechazar con motivo:', err)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
   return (
     <>
       <CModal
+        visible={loadingAction}
+        alignment="center"
+        backdrop="static"
+        keyboard={false}
+        onClose={() => {}}
+      >
+        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalBody className="d-flex align-items-center gap-3">
+          <CSpinner />
+          <span>{actionLabel}</span>
+        </CModalBody>
+      </CModal>
+
+      <CModal
+        backdrop="static"
+        keyboard={false}
         visible={ModalmensajeEliminar_motivo}
         onClose={() => setModalmensajeEliminar_motivo(false)}
       >
@@ -200,9 +234,8 @@ const ProyectosDetalle = () => {
               className="boton-eliminar"
               disabled={!rechazoMotivo.trim()}
               onClick={() => {
-                handleRechazarConMotivo()
                 setModalmensajeEliminar_motivo(false)
-                setModalRealizadoEliminado(true)
+                handleRechazarConMotivo()
               }}
             >
               Rechazar
@@ -217,7 +250,12 @@ const ProyectosDetalle = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={ModalRealizadoEliminado} onClose={() => setModalRealizadoEliminado(false)}>
+      <CModal
+        backdrop="static"
+        keyboard={false}
+        visible={ModalRealizadoEliminado}
+        onClose={() => setModalRealizadoEliminado(false)}
+      >
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>{String(mensajeRechazado)}</div>
@@ -237,7 +275,12 @@ const ProyectosDetalle = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={ModalmensajeEliminar} onClose={() => setModalmensajeEliminar(false)}>
+      <CModal
+        backdrop="static"
+        keyboard={false}
+        visible={ModalmensajeEliminar}
+        onClose={() => setModalmensajeEliminar(false)}
+      >
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>Desea rechazar el proyecto?</div>
@@ -247,8 +290,8 @@ const ProyectosDetalle = () => {
             <CButton
               className="boton-eliminar"
               onClick={() => {
-                setModalmensajeEliminar_motivo(true)
                 setModalmensajeEliminar(false)
+                setModalmensajeEliminar_motivo(true)
               }}
             >
               Rechazar
@@ -260,7 +303,12 @@ const ProyectosDetalle = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={ModalRealizadoAprobado} onClose={() => setModalRealizadoAprobado(false)}>
+      <CModal
+        backdrop="static"
+        keyboard={false}
+        visible={ModalRealizadoAprobado}
+        onClose={() => setModalRealizadoAprobado(false)}
+      >
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>{String(mensajeAprobado)}</div>
@@ -280,7 +328,12 @@ const ProyectosDetalle = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
+      <CModal
+        backdrop="static"
+        keyboard={false}
+        visible={ModalmensajeAprobado}
+        onClose={() => setModalmensajeAprobado(false)}
+      >
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>Desea aprobar el proyecto?</div>
@@ -290,9 +343,8 @@ const ProyectosDetalle = () => {
             <CButton
               className="boton-generar"
               onClick={() => {
-                Aprobarproyecto()
                 setModalmensajeAprobado(false)
-                setModalRealizadoAprobado(true)
+                Aprobarproyecto()
               }}
             >
               Aprobar
@@ -304,7 +356,12 @@ const ProyectosDetalle = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={ModalmensajeArchivado} onClose={() => setModalmensajeArchivado(false)}>
+      <CModal
+        backdrop="static"
+        keyboard={false}
+        visible={ModalmensajeArchivado}
+        onClose={() => setModalmensajeArchivado(false)}
+      >
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>Desea archivar el proyecto?</div>
@@ -314,10 +371,8 @@ const ProyectosDetalle = () => {
             <CButton
               className="boton-eliminar"
               onClick={() => {
-                Archivarproyecto()
                 setModalmensajeArchivado(false)
-                setModalRealizadoArchivado(true)
-                navigate('../components/Proyectos')
+                Archivarproyecto()
               }}
             >
               Archivar
@@ -329,7 +384,12 @@ const ProyectosDetalle = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={ModalRealizadoArchivado} onClose={() => setModalRealizadoArchivado(false)}>
+      <CModal
+        backdrop="static"
+        keyboard={false}
+        visible={ModalRealizadoArchivado}
+        onClose={() => setModalRealizadoArchivado(false)}
+      >
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>
           <div>{String(mensajeArchivado)}</div>

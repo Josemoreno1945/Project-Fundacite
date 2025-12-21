@@ -17,6 +17,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CSpinner,
 } from '@coreui/react'
 import axios from 'axios'
 import { CChartPie } from '@coreui/react-chartjs'
@@ -89,6 +90,17 @@ const Dashboard = () => {
     obtenerProyectosPendientes()
   }, [])
 
+  const renderCount = (value) => {
+    if (value === null) {
+      return (
+        <div className="d-flex align-items-center">
+          <CSpinner size="lg" />
+        </div>
+      )
+    }
+    return value
+  }
+
   return (
     <>
       <div className="contador-proyectos">
@@ -106,7 +118,7 @@ const Dashboard = () => {
                       onClick={() => navigate('../../components/Proyectos')}
                     >
                       <h5>Proyectos Aprobados</h5>
-                      <h3>{String(Paprobados)}</h3>
+                      <h3>{renderCount(Paprobados)}</h3>
                     </CCardBody>
                     <div style={{ height: '4px', backgroundColor: '#28a745' }}></div>
                   </CCard>
@@ -120,7 +132,7 @@ const Dashboard = () => {
                       onClick={() => navigate('../../components/ProyectosPendientes')}
                     >
                       <h5>Proyectos Pendientes</h5>
-                      <h3>{String(Ppendientes)}</h3>
+                      <h3>{renderCount(Ppendientes)}</h3>
                     </CCardBody>
                     <div style={{ height: '4px', backgroundColor: '#ffc107' }}></div>
                   </CCard>
@@ -134,7 +146,7 @@ const Dashboard = () => {
                       onClick={() => navigate('../../components/proyecto-rechazados')}
                     >
                       <h5>Proyectos Rechazados</h5>
-                      <h3>{String(Prechazados)}</h3>
+                      <h3>{renderCount(Prechazados)}</h3>
                     </CCardBody>
                     <div style={{ height: '4px', backgroundColor: '#dc3545' }}></div>
                   </CCard>
@@ -148,7 +160,7 @@ const Dashboard = () => {
                       onClick={() => navigate('../../components/proyecto-archivados')}
                     >
                       <h5>Proyectos Archivados</h5>
-                      <h3>{String(Parchivados)}</h3>
+                      <h3>{renderCount(Parchivados)}</h3>
                     </CCardBody>
                     <div style={{ height: '4px', backgroundColor: '#dc3545' }}></div>
                   </CCard>

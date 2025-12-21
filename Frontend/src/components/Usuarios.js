@@ -59,6 +59,9 @@ import '../scss/botones.scss'
 import Paginacion from './paginacion'
 
 const Usuarios = () => {
+  const [loadingAction, setLoadingAction] = useState(false)
+  const [actionLabel, setActionLabel] = useState('')
+
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 5
   const [roles, Setroles] = useState([])
@@ -202,6 +205,8 @@ const Usuarios = () => {
   }
 
   const submitEdit = async (e) => {
+    setLoadingAction(true)
+    setActionLabel('Editando...')
     // si lo llamas desde onClick sin evento, permite e ser opcional
     if (e && e.preventDefault) e.preventDefault()
     try {
@@ -215,7 +220,17 @@ const Usuarios = () => {
       cargarusuarios()
       closeEditModal()
     } catch (err) {
-      console.error('Error actualizando usuario:', err)
+      if (err.response.data.error) {
+        setmensajeError(err.response.data.error)
+      } else {
+        setmensajeError('')
+        const mensajes = err.response.data.errors.map((issue) => issue.message)
+        setmensajeError(mensajes)
+      }
+      setModalmensajeError(true)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
@@ -245,14 +260,6 @@ const Usuarios = () => {
     }
     usuarios()
   }, [])
-
-  if (carga) {
-    return (
-      <div className="pt-3 text-center">
-        <CSpinner color="primary" variant="grow" />
-      </div>
-    )
-  }
 
   const cargarusuarios = async () => {
     try {
@@ -292,6 +299,20 @@ const Usuarios = () => {
 
   return (
     <>
+      <CModal
+        visible={loadingAction}
+        backdrop="static"
+        keyboard={false}
+        alignment="center"
+        onClose={() => {}}
+      >
+        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalBody className="d-flex align-items-center gap-3">
+          <CSpinner />
+          <span>{actionLabel}</span>
+        </CModalBody>
+      </CModal>
+
       <CModal
         visible={ModalmensajeError}
         backdrop="static"

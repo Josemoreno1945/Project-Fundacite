@@ -33,6 +33,7 @@ import {
   CModalBody,
   CModalFooter,
   CModalHeader,
+  CSpinner,
 } from '@coreui/react'
 import '../scss/registro-u.scss'
 import '../scss/botones.scss'
@@ -41,6 +42,9 @@ import MyDropzone from './subirarchivos'
 import { useNavigate } from 'react-router-dom'
 
 const Registro_Proyectos = () => {
+  const [loadingAction, setLoadingAction] = useState(false)
+  const [actionLabel, setActionLabel] = useState('')
+
   const now = new Date()
   const yyyy = now.getFullYear()
   const mm = String(now.getMonth() + 1).padStart(2, '0')
@@ -146,6 +150,8 @@ const Registro_Proyectos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoadingAction(true)
+    setActionLabel('Registrando...')
     try {
       const formDataToSend = new FormData()
       formDataToSend.append('Proy_Titul', formData.Proy_Titul)
@@ -173,6 +179,9 @@ const Registro_Proyectos = () => {
         setmensajeError(mensajes)
       }
       setModalmensajeError(true)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
@@ -203,6 +212,20 @@ const Registro_Proyectos = () => {
 
   return (
     <>
+      <CModal
+        visible={loadingAction}
+        backdrop="static"
+        keyboard={false}
+        alignment="center"
+        onClose={() => {}}
+      >
+        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalBody className="d-flex align-items-center gap-3">
+          <CSpinner />
+          <span>{actionLabel}</span>
+        </CModalBody>
+      </CModal>
+
       <CModal visible={ModalmensajeAprobado} onClose={() => setModalmensajeAprobado(false)}>
         <CModalHeader>Mensaje</CModalHeader>
         <CModalBody>

@@ -59,6 +59,9 @@ import '../scss/botones.scss'
 import axios from 'axios'
 
 const categorias = () => {
+  const [loadingAction, setLoadingAction] = useState(false)
+  const [actionLabel, setActionLabel] = useState('')
+
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 5
   //FILTRO Y BUSQUEDA----------------------------------------------------------
@@ -115,6 +118,8 @@ const categorias = () => {
   }
 
   const submitEdit = async () => {
+    setLoadingAction(true)
+    setActionLabel('Editando...')
     try {
       const token = localStorage.getItem('token')
       await axios.put(`http://localhost:4000/categorias/${editingCatId}`, editFormData, {
@@ -127,16 +132,18 @@ const categorias = () => {
       closeEditModal()
       Cargarcategorias()
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.error) {
+      if (err.response.data.error) {
         setMensajeError(err.response.data.error)
-      } else if (err.response && err.response.data && err.response.data.errors) {
+      } else {
+        setMensajeError('')
         const mensajes = err.response.data.errors.map((issue) => issue.message)
         setMensajeError(mensajes)
-      } else {
-        setMensajeError('Error al actualizar la categoría')
       }
       setModalError(true)
-      console.error('Error al actualizar categoria:', err)
+      console.error('Error al registrar categoria:', err)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
@@ -175,6 +182,8 @@ const categorias = () => {
   }
 
   const postCategorias = async () => {
+    setLoadingAction(true)
+    setActionLabel('Registrando...')
     try {
       const token = localStorage.getItem('token')
       const result = await axios.post('http://localhost:4000/categorias', formData, {
@@ -184,7 +193,7 @@ const categorias = () => {
       })
       setMensajeexito(result.data.message)
       setModalexito(true)
-      setModal_agg(false)
+
       Cargarcategorias()
     } catch (err) {
       if (err.response.data.error) {
@@ -196,6 +205,9 @@ const categorias = () => {
       }
       setModalError(true)
       console.error('Error al registrar categoria:', err)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
@@ -236,6 +248,19 @@ const categorias = () => {
 
   return (
     <>
+      <CModal
+        visible={loadingAction}
+        backdrop="static"
+        keyboard={false}
+        alignment="center"
+        onClose={() => {}}
+      >
+        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalBody className="d-flex align-items-center gap-3">
+          <CSpinner />
+          <span>{actionLabel}</span>
+        </CModalBody>
+      </CModal>
       {/*MODAL PARA error y exito ----------------------------------------------------------------*/}
 
       <CModal
@@ -397,6 +422,7 @@ const categorias = () => {
             <CButton
               className="boton-generar"
               onClick={() => {
+                setModal_agg(false)
                 postCategorias()
               }}
             >

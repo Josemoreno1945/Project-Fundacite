@@ -18,6 +18,7 @@ import {
   CInputGroup,
   CInputGroupText,
   CFormLabel,
+  CSpinner,
 } from '@coreui/react'
 import { cilPencil, cilLockLocked, cilEnvelopeClosed, cilGroup, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
@@ -27,7 +28,13 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 const AppHeaderDropdown = () => {
   const [modalVisible, setModalVisible] = useState(false)
-  const [usersVer, setusersVer] = useState([])
+  const [usersVer, setusersVer] = useState({
+    Usua_PrimN: '',
+    Usua_PrimA: '',
+    Usua_NomUs: '',
+    Usua_Email: '',
+    Rol_Nombre: '',
+  })
   const navigate = useNavigate()
 
   const UsuarioVer = async () => {
@@ -42,6 +49,12 @@ const AppHeaderDropdown = () => {
     } catch (err) {
       console.error('Error al mostrar usuario:', err)
     }
+  }
+  const renderCount = (value) => {
+    if (value === null || value === '') {
+      return 'Cargando...'
+    }
+    return value
   }
   return (
     <>
@@ -63,7 +76,7 @@ const AppHeaderDropdown = () => {
                     <CInputGroupText>
                       <CIcon icon={cilPencil} />
                     </CInputGroupText>
-                    <CFormInput value={usersVer.Usua_PrimN || ''} disabled />
+                    <CFormInput value={renderCount(usersVer.Usua_PrimN)} disabled />
                   </CInputGroup>
                 </div>
                 <div className="w-50">
@@ -72,7 +85,7 @@ const AppHeaderDropdown = () => {
                     <CInputGroupText>
                       <CIcon icon={cilPencil} />
                     </CInputGroupText>
-                    <CFormInput value={usersVer.Usua_PrimA || ''} disabled />
+                    <CFormInput value={renderCount(usersVer.Usua_PrimA)} disabled />
                   </CInputGroup>
                 </div>
               </div>
@@ -86,7 +99,7 @@ const AppHeaderDropdown = () => {
                     <CInputGroupText>
                       <CIcon icon={cilUser} />
                     </CInputGroupText>
-                    <CFormInput value={usersVer.Usua_NomUs || ''} disabled />
+                    <CFormInput value={renderCount(usersVer.Usua_NomUs)} disabled />
                   </CInputGroup>
                 </div>
                 <div className="w-50">
@@ -95,7 +108,7 @@ const AppHeaderDropdown = () => {
                     <CInputGroupText>
                       <CIcon icon={cilEnvelopeClosed} />
                     </CInputGroupText>
-                    <CFormInput value={usersVer.Usua_Email || ''} disabled />
+                    <CFormInput value={renderCount(usersVer.Usua_Email)} disabled />
                   </CInputGroup>
                 </div>
               </div>
@@ -109,7 +122,7 @@ const AppHeaderDropdown = () => {
                     <CInputGroupText>
                       <CIcon icon={cilGroup} />
                     </CInputGroupText>
-                    <CFormInput value={usersVer.Rol_Nombre || ''} disabled></CFormInput>
+                    <CFormInput value={renderCount(usersVer.Rol_Nombre)} disabled></CFormInput>
                   </CInputGroup>
                 </div>
               </div>

@@ -68,15 +68,27 @@ export const postCategorias = async (req, res, next) => {
 };
 
 //--------------------------------Put----------------------------------------
-export const putCategorias = async (req, res) => {
+export const putCategorias = async (req, res, next) => {
   try {
     const id = req.params.id;
     const data = req.body;
+    const parseU = CategoriasSchema.safeParse(data);
+    if (!data.Cate_NomCa && !data.Cate_Descr) {
+      throwError(errors.missingFields);
+    }
+    const NombreExist = await getCategoriabyNombre(data.Cate_NomCa);
+    if (NombreExist) {
+      throwError(errors.NombreCategoriaDuplicated);
+    }
+    if (!parseU.success) {
+      return res.status(400).json({
+        errors: parseU.error.issues,
+      });
+    }
     const rows = await putCat(id, data);
-    res.json(rows);
+    return res.json({ rows, message: "Categoria editada con exito" });
   } catch (error) {
-    console.error("Error actualizando categorias:", error);
-    res.status(500).send("Error actualizando categorias");
+    next(error);
   }
 };
 
