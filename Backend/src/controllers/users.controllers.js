@@ -1,7 +1,6 @@
 import {
   getU,
   postU,
-  deleteU,
   putU,
   getUserByusername,
   postRegister,
@@ -12,6 +11,9 @@ import {
   FiltroRol,
   getUser,
   getUinSesion,
+  getUInactivo,
+  ActivarU,
+  DesactivarU,
 } from "../models/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -71,6 +73,16 @@ export const getUsers = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUsersInactivo = async (req, res, next) => {
+  try {
+    const rows = await getUInactivo();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUsersVer = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -188,28 +200,41 @@ export const putUsers = async (req, res, next) => {
 
 //-------------------------------Delete-----------------------------------------
 
-export const deleteUsers = async (req, res, next) => {
+export const DesactivarUsers = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const userToDelete = await getUser(id); // ajustar si getUser no trae la columna Usua_Protected
+    const userToDelete = await getUser(id);
     if (userToDelete?.Usua_Protected) {
       return res
         .status(403)
         .json({ message: "No puedes eliminar este usuario." });
     }
-
-    const rows = await deleteU(id);
-
+    const rows = await DesactivarU(id);
     if (rows === 0) {
       return res.status(404).json({ message: "usuario no encontrada" });
     } else {
-      return res.json({ message: "usuario eliminada" });
+      return res.json({ message: "usuario eliminadO" });
     }
   } catch (error) {
     next(error);
   }
 };
 
+//-------------------------------ACTIVAR-----------------------------------------
+export const activarUsers = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const rows = await ActivarU(id);
+    if (rows === 0) {
+      return res.status(404).json({ message: "usuario no encontrada" });
+    } else {
+      return res.json({ message: "usuario eliminadO" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+//-------------------------------------------------------------------------------
 export const login = async (req, res, next) => {
   try {
     const data = req.body;

@@ -114,7 +114,7 @@ const Registro = () => {
     setActionLabel('Registrando...')
     try {
       const token = localStorage.getItem('token')
-      const postUsers = await axios.post('http://localhost:4000/users', formData, {
+      const postUsers = await axios.post('http://localhost:4000/users_registrar', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

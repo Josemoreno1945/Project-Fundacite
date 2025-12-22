@@ -5,6 +5,7 @@ const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
 const Usuarios = React.lazy(() => import('./components/Usuarios'))
+const Usuarios_Inactivos = React.lazy(() => import('./components/Usuarios_Inactivos'))
 const Registro = React.lazy(() => import('./components/Registro'))
 const Proyectos = React.lazy(() => import('./components/Proyectos'))
 const ProyectosPendientes = React.lazy(() => import('./components/ProyectosPendientes'))
@@ -115,6 +116,7 @@ const routes = [
 
   { path: '/components/Perfil', name: 'components', element: Perfil },
   { path: '/components/Usuarios', name: 'components', element: Usuarios },
+  { path: '/components/Usuarios_Inactivos', name: 'components', element: Usuarios_Inactivos },
   { path: '/components/Registro', name: 'components', element: Registro },
   { path: '/components/Proyectos', name: 'components', element: Proyectos },
   { path: '/components/ProyectosPendientes', name: 'components', element: ProyectosPendientes },

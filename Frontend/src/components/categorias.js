@@ -59,6 +59,8 @@ import '../scss/botones.scss'
 import axios from 'axios'
 
 const categorias = () => {
+  const [Cargando, setCargando] = useState(true)
+
   const [loadingAction, setLoadingAction] = useState(false)
   const [actionLabel, setActionLabel] = useState('')
 
@@ -149,12 +151,15 @@ const categorias = () => {
 
   useEffect(() => {
     const Cargarcategorias = async () => {
+      setCargando(true)
       try {
         const result = await axios.get('http://localhost:4000/categorias')
         setcategorias(result.data)
         setcarga(false)
       } catch (error) {
         console.error('Error al obtener las categorias:', error)
+      } finally {
+        setCargando(false)
       }
     }
     Cargarcategorias()
@@ -224,6 +229,8 @@ const categorias = () => {
   }
 
   const HandleBuscar = async () => {
+    setLoadingAction(true)
+    setActionLabel('Buscando...')
     try {
       if (Filtro === 'Nombre de categoria') {
         const token = localStorage.getItem('token')
@@ -243,7 +250,23 @@ const categorias = () => {
       }
     } catch (error) {
       console.error('Error al obtener el nombre del tipo de archivo:', error)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
+  }
+
+  const renderCount = (value) => {
+    if (!value || value.length === 0) {
+      return (
+        <CTableRow>
+          <CTableDataCell>
+            <CSpinner size="lg" />
+          </CTableDataCell>
+        </CTableRow>
+      )
+    }
+    return value
   }
 
   return (
@@ -463,7 +486,12 @@ const categorias = () => {
             </div>
             <div>
               <CForm>
-                <CFormSelect className="filter-input" name="filtro" onChange={handleFiltroChange}>
+                <CFormSelect
+                  value={Filtro}
+                  className="filter-input"
+                  name="filtro"
+                  onChange={handleFiltroChange}
+                >
                   <option value={''}>Filtrar</option>
                   <option>Nombre de categoria</option>
                 </CFormSelect>
@@ -484,7 +512,9 @@ const categorias = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {paginateCategorias.length === 0 ? (
+              {Cargando ? (
+                renderCount(null)
+              ) : paginateCategorias.length === 0 ? (
                 <CTableRow>
                   <CTableDataCell colSpan={6} className="text-center">
                     No hay categorias por ese nombre
@@ -504,7 +534,6 @@ const categorias = () => {
                 ))
               )}
             </CTableBody>
-            <CTableFoot></CTableFoot>
           </CTable>
         </CCardBody>
         <CCardFooter>

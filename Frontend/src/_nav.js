@@ -50,8 +50,13 @@ const _nav_admin = [
       },
       {
         component: CNavItem,
-        name: 'Lista de usuarios',
+        name: 'Usuarios Activos',
         to: '/components/Usuarios',
+      },
+      {
+        component: CNavItem,
+        name: 'Usuarios Inactivos',
+        to: '/components/Usuarios_Inactivos',
       },
     ],
   },

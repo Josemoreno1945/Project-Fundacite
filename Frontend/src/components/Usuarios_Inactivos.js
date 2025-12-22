@@ -21,6 +21,7 @@ import {
   cilSearch,
   cilLowVision,
   cilEnvelopeClosed,
+  cilCheck,
 } from '@coreui/icons'
 import {
   CButton,
@@ -217,7 +218,7 @@ const Usuarios = () => {
     try {
       const token = localStorage.getItem('token')
       const payload = { ...editFormData }
-      await axios.put(`http://localhost:4000/users_editar/${editingUserId}`, payload, {
+      await axios.put(`http://localhost:4000/users/${editingUserId}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -253,7 +254,7 @@ const Usuarios = () => {
       setCargando(true)
       try {
         const token = localStorage.getItem('token')
-        const result = await axios.get('http://localhost:4000/users', {
+        const result = await axios.get('http://localhost:4000/usersInactivo', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -271,7 +272,7 @@ const Usuarios = () => {
   const cargarusuarios = async () => {
     try {
       const token = localStorage.getItem('token')
-      const result = await axios.get('http://localhost:4000/users', {
+      const result = await axios.get('http://localhost:4000/usersInactivo', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -282,12 +283,12 @@ const Usuarios = () => {
     }
   }
 
-  const DesactivarUsuario = async (id) => {
+  const ActivarUsuario = async (id) => {
     setLoadingAction(true)
-    setActionLabel('Desactivando...')
+    setActionLabel('Activando...')
     try {
       const token = localStorage.getItem('token')
-      await axios.put(`http://localhost:4000/users_desactivar/${id}`, users[0], {
+      await axios.put(`http://localhost:4000/users_activar/${id}`, users[0], {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -567,7 +568,7 @@ const Usuarios = () => {
       <CModal visible={deleteMensaje} onClose={() => SetdeleteMensaje(false)}>
         <CModalHeader></CModalHeader>
         <CModalBody>
-          <div>Desactivacion exitosa</div>
+          <div>Activacion exitosa</div>
         </CModalBody>
         <CModalFooter>
           <div className="button-box">
@@ -578,26 +579,26 @@ const Usuarios = () => {
         </CModalFooter>
       </CModal>
 
-      {/*MODAL PARA BOTON DESACTIVAR ----------------------------------------------------------------*/}
+      {/*MODAL PARA BOTON ACTIVAR ----------------------------------------------------------------*/}
       <CModal
         visible={Modal_eli}
         backdrop="static"
         keyboard={false}
         onClose={() => setModal_eli(false)}
       >
-        <CModalHeader>Desactivar usuario</CModalHeader>
+        <CModalHeader>Activar usuario</CModalHeader>
         <CModalBody>
-          <p>¿Seguro que desea desactivar un usuario?</p>
+          <p>¿Seguro que desea activar un usuario?</p>
         </CModalBody>
         <CModalFooter>
           <div className="caja-boton">
             <CButton
-              className="boton-eliminar"
+              className="boton-descargar"
               onClick={() => {
-                DesactivarUsuario(userID), setModal_eli(false)
+                ActivarUsuario(userID), setModal_eli(false)
               }}
             >
-              Desactivar
+              Activar
             </CButton>
             <CButton
               className="boton-regresar"
@@ -632,7 +633,7 @@ const Usuarios = () => {
       <CCard className="mb-4">
         <CCardHeader>
           <div className="box-buttom">
-            <div>Usuarios Activos</div>
+            <div>Usuarios Inactivos</div>
 
             <div>
               <CForm>
@@ -663,7 +664,7 @@ const Usuarios = () => {
                 <CTableHeaderCell>Correo electronico</CTableHeaderCell>
                 <CTableHeaderCell>Ver</CTableHeaderCell>
                 <CTableHeaderCell>Editar</CTableHeaderCell>
-                <CTableHeaderCell>Desactivar</CTableHeaderCell>
+                <CTableHeaderCell>Activar</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -706,7 +707,7 @@ const Usuarios = () => {
                           setModal_eli(true)
                         }}
                       >
-                        <CIcon icon={cilXCircle} style={{ color: 'red' }} />
+                        <CIcon icon={cilCheck} style={{ color: 'green' }} />
                       </CButton>
                     </CTableDataCell>
                   </CTableRow>

@@ -6,6 +6,16 @@ export const getU = async () => {
   const query = `SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_Contr", "Rol_Nombre", "Usua_FecCr"
         FROM "FPM_Usuari"
         JOIN "FPM_Rol" ON "FPM_Rol"."Rol_Id" = "FPM_Usuari"."Usua_RolId"
+        WHERE "Usua_Activo" = TRUE
+        `;
+  const result = await pool.query(query);
+  return result.rows;
+};
+export const getUInactivo = async () => {
+  const query = `SELECT "Usua_Id", "Usua_PrimN", "Usua_PrimA", "Usua_NomUs", "Usua_Email", "Usua_Contr", "Rol_Nombre", "Usua_FecCr"
+        FROM "FPM_Usuari"
+        JOIN "FPM_Rol" ON "FPM_Rol"."Rol_Id" = "FPM_Usuari"."Usua_RolId"
+        WHERE "Usua_Activo" = FALSE
         `;
   const result = await pool.query(query);
   return result.rows;
@@ -119,17 +129,30 @@ export const FiltroRol = async (data) => {
   return result.rows;
 };
 
-//-------------------------------Delete-----------------------------------------
+//-------------------------------INACTIVO Y ACTIVO-----------------------------------------
 
-export const deleteU = async (id) => {
+export const DesactivarU = async (id) => {
   const query = `
-  DELETE FROM "FPM_Usuari"
-	WHERE "Usua_Id"=$1
+  UPDATE "FPM_Usuari"
+    SET "Usua_Activo" = FALSE
+    WHERE "Usua_Id" = $1
+    RETURNING *;
   `;
   const result = await pool.query(query, [id]);
   return result.rows;
 };
 
+export const ActivarU = async (id) => {
+  const query = `
+  UPDATE "FPM_Usuari"
+    SET "Usua_Activo" = TRUE
+    WHERE "Usua_Id" = $1
+    RETURNING *;
+  `;
+  const result = await pool.query(query, [id]);
+  return result.rows;
+};
+//---------------------------------------------------------------------------------
 export const getUserByusername = async (Usua_NomUs) => {
   const query = 'SELECT * FROM "FPM_Usuari" WHERE "Usua_NomUs" = $1';
   const result = await pool.query(query, [Usua_NomUs]);

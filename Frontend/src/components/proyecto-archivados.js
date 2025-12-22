@@ -31,6 +31,10 @@ import {
   CFormInput,
   CFormSelect,
   CButton,
+  CSpinner,
+  CModal,
+  CModalHeader,
+  CModalBody,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import '../scss/proyectos.scss'
@@ -40,6 +44,9 @@ import Paginacion from './paginacion'
 import axios from 'axios'
 
 const Proyectos = () => {
+  const [loadingAction, setLoadingAction] = useState(false)
+  const [actionLabel, setActionLabel] = useState('')
+  const [Cargando, setCargando] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 8
   const [proyectos, setProyectos] = useState([])
@@ -54,6 +61,7 @@ const Proyectos = () => {
 
   useEffect(() => {
     const obtenerProyectos = async () => {
+      setCargando(true)
       try {
         const token = localStorage.getItem('token')
         const res = await axios.get('http://localhost:4000/proyectosArc', {
@@ -64,6 +72,8 @@ const Proyectos = () => {
         setProyectos(res.data)
       } catch (error) {
         console.error('Error al obtener proyectos:', error)
+      } finally {
+        setCargando(false)
       }
     }
     obtenerProyectos()
@@ -100,6 +110,8 @@ const Proyectos = () => {
   }
 
   const HandleBuscar = async () => {
+    setLoadingAction(true)
+    setActionLabel('Buscando...')
     try {
       if (Filtro === 'Titulo de proyecto') {
         const token = localStorage.getItem('token')
@@ -119,11 +131,38 @@ const Proyectos = () => {
       }
     } catch (error) {
       console.error('Error al obtener el nombre del tipo de archivo:', error)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
 
+  const renderCount = (value) => {
+    if (!value || value.length === 0) {
+      return (
+        <div className="d-flex align-items-center">
+          <CSpinner size="lg" />
+        </div>
+      )
+    }
+    return value
+  }
   return (
     <>
+      <CModal
+        visible={loadingAction}
+        backdrop="static"
+        keyboard={false}
+        alignment="center"
+        onClose={() => {}}
+      >
+        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalBody className="d-flex align-items-center gap-3">
+          <CSpinner />
+          <span>{actionLabel}</span>
+        </CModalBody>
+      </CModal>
+
       <div className="buscador">
         <CForm className="d-flex">
           <CFormInput
@@ -147,7 +186,12 @@ const Proyectos = () => {
             <div>Lista de Proyectos Archivados</div>
             <div>
               <CForm>
-                <CFormSelect className="filter-input" name="filtro" onChange={handleFiltroChange}>
+                <CFormSelect
+                  value={Filtro}
+                  className="filter-input"
+                  name="filtro"
+                  onChange={handleFiltroChange}
+                >
                   <option value={''}>Filtrar</option>
                   <option>Titulo de proyecto</option>
                 </CFormSelect>
@@ -160,20 +204,31 @@ const Proyectos = () => {
         </CCardHeader>
         <CCardBody>
           <div className="cuadros">
-            {paginateProyectos.map((p, index) => (
-              <CCard
-                className="cuadro2"
-                key={p.Proy_Id}
-                onClick={() =>
-                  navigate(`/ProyectosDetalle/${p.Proy_Id}`, {
-                    state: { from: '/components/proyecto-archivados' },
-                  })
-                }
+            {Cargando ? (
+              renderCount(null)
+            ) : paginateProyectos.length === 0 ? (
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ gridColumn: '1 / -1', minHeight: '200px', width: '100%' }}
               >
-                <CCardHeader>{p.Proy_Titul}</CCardHeader>
-                <CCardBody>Haz clic para ver más detalles</CCardBody>
-              </CCard>
-            ))}
+                No hay proyectos por ese nombre
+              </div>
+            ) : (
+              paginateProyectos.map((p, index) => (
+                <CCard
+                  className="cuadro2"
+                  key={p.Proy_Id}
+                  onClick={() =>
+                    navigate(`/ProyectosDetalle/${p.Proy_Id}`, {
+                      state: { from: '/components/proyecto-archivados' },
+                    })
+                  }
+                >
+                  <CCardHeader>{p.Proy_Titul}</CCardHeader>
+                  <CCardBody>Haz clic para ver más detalles</CCardBody>
+                </CCard>
+              ))
+            )}
           </div>
         </CCardBody>
         <CCardFooter>
