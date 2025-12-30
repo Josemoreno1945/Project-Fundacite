@@ -14,13 +14,17 @@ import {
   getUInactivo,
   ActivarU,
   DesactivarU,
+  putContraseña,
 } from "../models/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userSchema from "../schemas/users.schemas.js";
+import passwordSchema from "../schemas/password.Schema.js";
 import loginSchema from "../schemas/login.schemas.js";
 import { errors, throwError } from "../utils/errors.js";
-import { id } from "zod/v4/locales";
+
+import nodemailer from "nodemailer";
+import { pool } from "../db.js";
 
 //---------------------------------Filtro------------------------------------
 export const FNomusuario = async (req, res, next) => {
@@ -327,6 +331,98 @@ export const register = async (req, res, next) => {
 
     const rows = await postRegister(data);
     return res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+//--------------------------------------------------------------------------------------------------------------
+
+export const forgotPassword = async (req, res, next) => {
+  try {
+    //manejo de errores , si hay email y si existe el usuario
+    const { email } = req.body;
+    if (!email) {
+      throwError(errors.missingFields);
+    }
+
+    const user = await getUserbyemail(email);
+    if (!user) {
+      throwError(errors.User_emailNotFound);
+    }
+
+    //aqui creo un token para el url nuevo
+    const secret = process.env.JWT_SECRET;
+    const token = jwt.sign({ id: user.Usua_Id }, secret, { expiresIn: "1h" });
+
+    const frontendUrl = process.env.FRONTEND_URL;
+    const resetUrl = `${frontendUrl}#/reset-password?token=${token}`; //el url
+
+    //la configuracion para usar el nodemailer
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: process.env.SMTP_SECURE,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+    //el correo
+    const mailOptions = {
+      from: process.env.FROM_EMAIL,
+      to: email,
+      subject: "Recuperar contraseña - Fundacite",
+      html: `
+        <p>Has solicitado recuperar tu contraseña.</p>
+        <p>Haz clic en el siguiente enlace para crear una nueva contraseña (válido 1 hora):</p>
+        <p><a href="${resetUrl}">Recuperar contraseña</a></p>
+        <p>Si no solicitaste esto, puedes ignorar el mensaje.</p>
+      `,
+    };
+    //AQUI MANDO EL EMAIL
+    await transporter.sendMail(mailOptions);
+
+    return res.json({
+      message: "Correo Enviado",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    if (!password) {
+      throwError(errors.missingFields);
+    }
+
+    const parseU = passwordSchema.safeParse({ Usua_Contr: password });
+    if (!parseU.success) {
+      return res.status(400).json({
+        errors: parseU.error.issues,
+      });
+    }
+
+    const secret = process.env.JWT_SECRET;
+    let payload;
+    try {
+      payload = jwt.verify(token, secret);
+    } catch (err) {
+      throwError(errors.invalidToken);
+    }
+
+    const userId = payload.id;
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
+    const result = await putContraseña(hashed, userId);
+
+    if (!result) {
+      throwError(errors.userNotFound);
+    }
+
+    return res.json({ message: "Contraseña actualizada correctamente" });
   } catch (error) {
     next(error);
   }

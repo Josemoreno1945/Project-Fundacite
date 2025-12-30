@@ -18,6 +18,14 @@ import {
   FiltroTituloArchivado,
   FiltroTituloPendiente,
   FiltroTituloRechazado,
+  CountProyEnergiayAmbiente,
+  CountProyCienciaBasica,
+  CountProyTecnologiaeInnovacion,
+  CountProyAstronomiayEspacio,
+  CountProySemillerosCientificos,
+  CountProyCienciasSocialesyHumanas,
+  CountProySaludyBiotecnologia,
+  CountProyEducacionCientifica,
 } from "../models/proy.model.js";
 import { getPdfByProyId, deleteDocsByProyId } from "../models/doc.model.js";
 import { postDoc } from "../models/doc.model.js";
@@ -393,5 +401,78 @@ export const rechazarConMotivo = async (req, res, next) => {
     return res.json({ message: "Proyecto rechazado y correo enviado" });
   } catch (err) {
     next(err);
+  }
+};
+
+//------------------------------Contadores categorias-----------------------------------
+export const getCountProyEnergiayAmbiente = async (req, res, next) => {
+  try {
+    const rows = await CountProyEnergiayAmbiente();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountProyCienciaBasica = async (req, res, next) => {
+  try {
+    const rows = await CountProyCienciaBasica();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountTecnologiaeInnovacion = async (req, res, next) => {
+  try {
+    const rows = await CountProyTecnologiaeInnovacion();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountAstronomiayEspacio = async (req, res, next) => {
+  try {
+    const rows = await CountProyAstronomiayEspacio();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountSemillerosCientificos = async (req, res, next) => {
+  try {
+    const rows = await CountProySemillerosCientificos();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountCienciasSocialesyHumanas = async (req, res, next) => {
+  try {
+    const rows = await CountProyCienciasSocialesyHumanas();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountSaludyBiotecnologia = async (req, res, next) => {
+  try {
+    const rows = await CountProySaludyBiotecnologia();
+    res.json(rows);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCountEducacionCientifica = async (req, res, next) => {
+  try {
+    const rows = await CountProyEducacionCientifica();
+    res.json(rows);
+  } catch (error) {
+    next(error);
   }
 };

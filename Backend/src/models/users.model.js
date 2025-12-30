@@ -173,3 +173,18 @@ export const postRegister = async (data) => {
   const result = await pool.query(query, values);
   return result.rows;
 };
+
+//-------------------------------Actualizar contrase;a-----------------------------------------
+
+export const putContraseña = async (hashed, userId) => {
+  const query = `
+        UPDATE "FPM_Usuari" 
+        SET "Usua_Contr" = $1 
+        WHERE "Usua_Id" = $2 RETURNING *
+        `;
+
+  const values = [hashed, userId];
+
+  const result = await pool.query(query, values);
+  return result.rows;
+};

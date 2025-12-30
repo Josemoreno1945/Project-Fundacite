@@ -10,6 +10,10 @@ export const errors = {
     status: 404,
     message: "Usuario no encontrado",
   },
+  User_emailNotFound: {
+    status: 409,
+    message: "Email no encontrado",
+  },
   userDuplicated: {
     status: 409,
     message: "El usuario ya esta registrado",
@@ -74,7 +78,7 @@ export const errors = {
   },
   invalidToken: {
     status: 403,
-    message: "Invalid token",
+    message: "Token invalido",
   },
 
   // Otros errores comunes

@@ -1,24 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import {
-  CAvatar,
-  CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCol,
-  CProgress,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-  CSpinner,
-} from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCol, CRow, CSpinner } from '@coreui/react'
 import axios from 'axios'
 import { CChartPie } from '@coreui/react-chartjs'
 import '../../scss/dashboard.scss'
@@ -30,6 +12,15 @@ const Dashboard = () => {
   const [Prechazados, setPrechazados] = useState(null)
   const [Parchivados, setParchivados] = useState(null)
   const [Ppendientes, setPpendientes] = useState(null)
+
+  const [PEnergiayAmbiente, setPEnergiayAmbiente] = useState(null)
+  const [PCienciaBasica, setPCienciaBasica] = useState(null)
+  const [PtecnologiaInnovacion, setPtecnologiaInnovacion] = useState(null)
+  const [PAstronomiayEspacio, setPAstronomiayEspacio] = useState(null)
+  const [PSemillerosCientificos, setPSemillerosCientificos] = useState(null)
+  const [PCienciasSocialesyHumanas, setPCienciasSocialesyHumanas] = useState(null)
+  const [PSaludyBiotecnologia, setPSaludyBiotecnologia] = useState(null)
+  const [PeducacionCientifica, setPeducacionCientifica] = useState(null)
 
   useEffect(() => {
     const obtenerProyectosAprobados = async () => {
@@ -84,10 +75,131 @@ const Dashboard = () => {
         console.error('Error al obtener proyectos:', error)
       }
     }
+
+    const obtenerProyectosEnergiayAmbiente = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countEnergiayAmbiente', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPEnergiayAmbiente(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
+    const obtenerProyectosCienciaBasica = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countCienciaBasica', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPCienciaBasica(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
+    const obtenerProyectosTecnologiaeInnovacion = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countTecnologiaeInnovacion', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPtecnologiaInnovacion(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
+    const obtenerProyectosAstronomiayEspacio = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countAstronomiayEspacio', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPAstronomiayEspacio(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
+    const obtenerProyectosSemillerosCientificos = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countSemillerosCientificos', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPSemillerosCientificos(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
+    const obtenerProyectosCienciasSocialesyHumanas = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countCienciasSocialesyHumanas', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPCienciasSocialesyHumanas(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
+    const obtenerSaludyBiotecnologia = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countSaludyBiotecnologia', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPSaludyBiotecnologia(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
+    const obtenerEducacionCientifica = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('http://localhost:4000/countEducacionCientifica', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setPeducacionCientifica(res.data.count)
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error)
+      }
+    }
+
     obtenerProyectosArchivados()
     obtenerProyectosAprobados()
     obtenerProyectosRechazados()
     obtenerProyectosPendientes()
+    obtenerProyectosEnergiayAmbiente()
+    obtenerProyectosCienciaBasica()
+    obtenerProyectosTecnologiaeInnovacion()
+    obtenerProyectosAstronomiayEspacio()
+    obtenerProyectosSemillerosCientificos()
+    obtenerProyectosCienciasSocialesyHumanas()
+    obtenerSaludyBiotecnologia()
+    obtenerEducacionCientifica()
   }, [])
 
   const renderCount = (value) => {
@@ -180,13 +292,50 @@ const Dashboard = () => {
             <div className="chart-container">
               <CChartPie
                 data={{
-                  labels: ['Investigación', 'Desarrollo', 'Educación', 'Innovación', 'Otros'],
+                  labels: [
+                    'Ciencia Básica',
+                    'Tecnología e Innovación',
+                    'Astronomía y Espacio',
+                    'Semilleros Científicos',
+                    'Ciencias Sociales y Humanas',
+                    'Energía y Ambiente',
+                    'Salud y Biotecnología',
+                    'Educación Científica',
+                  ],
                   datasets: [
                     {
-                      backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d'],
-                      hoverBackgroundColor: ['#0056b3', '#1e7e34', '#d39e00', '#a71d2a', '#5a6268'],
+                      backgroundColor: [
+                        '#007bff',
+                        '#28a745',
+                        '#ffc107',
+                        '#dc3545',
+                        '#6c757d',
+                        '#c300b6ff',
+                        '#cd6d00ff',
+                        '#009898ff',
+                      ],
+                      hoverBackgroundColor: [
+                        '#0056b3',
+                        '#1e7e34',
+                        '#d39e00',
+                        '#a71d2a',
+                        '#5a6268',
+                        '#9a0090',
+                        '#a34a00',
+                        '#006f6f',
+                      ],
+
                       hoverOffset: 10,
-                      data: [20, 35, 25, 10, 15],
+                      data: [
+                        PCienciaBasica,
+                        PtecnologiaInnovacion,
+                        PAstronomiayEspacio,
+                        PSemillerosCientificos,
+                        PCienciasSocialesyHumanas,
+                        PEnergiayAmbiente,
+                        PSaludyBiotecnologia,
+                        PeducacionCientifica,
+                      ],
                     },
                   ],
                 }}

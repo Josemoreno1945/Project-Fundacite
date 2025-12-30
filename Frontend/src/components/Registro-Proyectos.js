@@ -1,30 +1,15 @@
 import { React, use, useState, useEffect } from 'react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilLockLocked,
-  cilPencil,
-  cilUser,
-  cilEnvelopeClosed,
-  cilGroup,
-  cilCalendar,
-  cilLockUnlocked,
-  cilCommentSquare,
-  cilBookmark,
-  cilOptions,
-} from '@coreui/icons'
+import { cilUser, cilCalendar, cilCommentSquare, cilBookmark, cilOptions } from '@coreui/icons'
 import {
   CButton,
   CCard,
   CCardBody,
   CCardHeader,
-  CCol,
-  CContainer,
   CForm,
   CFormInput,
   CInputGroup,
   CInputGroupText,
-  CNavGroup,
-  CRow,
   CFormSelect,
   CCardFooter,
   CFormLabel,
@@ -219,7 +204,7 @@ const Registro_Proyectos = () => {
         alignment="center"
         onClose={() => {}}
       >
-        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalHeader closeButton={false}>{actionLabel}</CModalHeader>
         <CModalBody className="d-flex align-items-center gap-3">
           <CSpinner />
           <span>{actionLabel}</span>

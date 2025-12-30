@@ -352,3 +352,92 @@ export const FiltroTituloRechazado = async (data) => {
   const result = await pool.query(query, values);
   return result.rows;
 };
+
+//---------------------------------------------------------------
+export const CountProyEnergiayAmbiente = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Energía y Ambiente';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProyCienciaBasica = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Ciencia Básica';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProyTecnologiaeInnovacion = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Tecnología e Innovación';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProyAstronomiayEspacio = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Astronomía y Espacio';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProySemillerosCientificos = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Semilleros Científicos';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProyCienciasSocialesyHumanas = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Ciencias Sociales y Humanas';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProySaludyBiotecnologia = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Salud y Biotecnología';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};
+
+export const CountProyEducacionCientifica = async () => {
+  const query = `
+  SELECT COUNT(*)
+	FROM public."FPT_Proyec"
+	JOIN "FPM_Catego" ON "FPM_Catego"."Cate_Id"= "FPT_Proyec"."Proy_CatId"
+	WHERE "Cate_NomCa" ='Educación Científica';
+`;
+  const result = await pool.query(query);
+  return result.rows[0];
+};

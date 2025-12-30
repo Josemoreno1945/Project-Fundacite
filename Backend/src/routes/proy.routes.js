@@ -20,6 +20,14 @@ import {
   FTitulPendiente,
   FTitulArchivado,
   rechazarConMotivo,
+  getCountProyEnergiayAmbiente,
+  getCountProyCienciaBasica,
+  getCountTecnologiaeInnovacion,
+  getCountAstronomiayEspacio,
+  getCountSemillerosCientificos,
+  getCountCienciasSocialesyHumanas,
+  getCountSaludyBiotecnologia,
+  getCountEducacionCientifica,
 } from "../controllers/proy.controllers.js";
 import multer from "multer";
 import { verifyToken } from "../middlewares/auth.js";
@@ -59,6 +67,62 @@ router.get("/countRechazados", verifyToken, isAdmin, getCountProyectsRech);
 router.get("/countArchivados", verifyToken, isAdmin, getCountProyectsArch);
 router.get("/countPendientes", verifyToken, isAdmin, getCountProyectsPen);
 router.get("/countAprobados", verifyToken, isAdmin, getCountProyectsAp);
+
+router.get(
+  "/countEnergiayAmbiente",
+  verifyToken,
+  isAdmin,
+  getCountProyEnergiayAmbiente
+);
+
+router.get(
+  "/countCienciaBasica",
+  verifyToken,
+  isAdmin,
+  getCountProyCienciaBasica
+);
+
+router.get(
+  "/countTecnologiaeInnovacion",
+  verifyToken,
+  isAdmin,
+  getCountTecnologiaeInnovacion
+);
+
+router.get(
+  "/countAstronomiayEspacio",
+  verifyToken,
+  isAdmin,
+  getCountAstronomiayEspacio
+);
+
+router.get(
+  "/countSemillerosCientificos",
+  verifyToken,
+  isAdmin,
+  getCountSemillerosCientificos
+);
+
+router.get(
+  "/countCienciasSocialesyHumanas",
+  verifyToken,
+  isAdmin,
+  getCountCienciasSocialesyHumanas
+);
+
+router.get(
+  "/countSaludyBiotecnologia",
+  verifyToken,
+  isAdmin,
+  getCountSaludyBiotecnologia
+);
+
+router.get(
+  "/countEducacionCientifica",
+  verifyToken,
+  isAdmin,
+  getCountEducacionCientifica
+);
 
 router.get("/check_titulo/:titulo", check_titulo);
 

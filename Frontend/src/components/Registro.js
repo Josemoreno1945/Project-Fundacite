@@ -4,14 +4,10 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CCol,
-  CContainer,
   CForm,
   CFormInput,
   CInputGroup,
   CInputGroupText,
-  CNavGroup,
-  CRow,
   CFormSelect,
   CCardFooter,
   CFormLabel,
@@ -19,7 +15,6 @@ import {
   CModalBody,
   CModalFooter,
   CModalHeader,
-  CPopover,
   CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -147,7 +142,7 @@ const Registro = () => {
         alignment="center"
         onClose={() => {}}
       >
-        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalHeader closeButton={false}>{actionLabel}</CModalHeader>
         <CModalBody className="d-flex align-items-center gap-3">
           <CSpinner />
           <span>{actionLabel}</span>

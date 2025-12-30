@@ -278,7 +278,7 @@ const categorias = () => {
         alignment="center"
         onClose={() => {}}
       >
-        <CModalHeader>{actionLabel}</CModalHeader>
+        <CModalHeader closeButton={false}>{actionLabel}</CModalHeader>
         <CModalBody className="d-flex align-items-center gap-3">
           <CSpinner />
           <span>{actionLabel}</span>

@@ -15,6 +15,8 @@ import {
   getUsersInactivo,
   activarUsers,
   DesactivarUsers,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/users.controllers.js";
 import { verifyToken } from "../middlewares/auth.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
@@ -48,5 +50,9 @@ router.put("/users_activar/:id", verifyToken, isAdmin, activarUsers);
 router.post("/login", login);
 
 router.post("/register", register);
+
+// ...------------------------------------------------------------------
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 export default router;

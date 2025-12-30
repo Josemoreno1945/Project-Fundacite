@@ -19,6 +19,7 @@ import {
   CFormSelect,
   CCardFooter,
   CFormLabel,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -32,10 +33,14 @@ import {
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import '../../../scss/login.scss'
+import '../../../scss/botones.scss'
 import axios from 'axios'
 
 const Register = () => {
   const navigate = useNavigate()
+  const [loadingAction, setLoadingAction] = useState(false)
+  const [actionLabel, setActionLabel] = useState('')
+
   const [usernameAvailable, setUsernameAvailable] = useState(null)
   const [emailAvailable, setEmailAvailable] = useState(null)
   const [mensajeAprobado, setmensajeAprobado] = useState('')
@@ -93,6 +98,8 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoadingAction(true)
+    setActionLabel('Cargando...')
     try {
       const postUsers = await axios.post('http://localhost:4000/register', formData)
       navigate('/login')
@@ -109,10 +116,26 @@ const Register = () => {
       }
 
       setModalmensajeError(true)
+    } finally {
+      setLoadingAction(false)
+      setActionLabel('')
     }
   }
   return (
     <>
+      <CModal
+        visible={loadingAction}
+        backdrop="static"
+        keyboard={false}
+        alignment="center"
+        onClose={() => {}}
+      >
+        <CModalHeader closeButton={false}>{actionLabel}</CModalHeader>
+        <CModalBody className="d-flex align-items-center gap-3">
+          <CSpinner />
+          <span>{actionLabel}</span>
+        </CModalBody>
+      </CModal>
       <CModal visible={ModalmensajeError} onClose={() => setModalmensajeError(false)}>
         <CModalHeader>Error</CModalHeader>
         <CModalBody>
@@ -144,7 +167,7 @@ const Register = () => {
           <CCardBody>
             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
               <h3 style={{ marginBottom: '1.5rem', fontWeight: 'bold', color: '#1a237e' }}>
-                Registrate!
+                Registro
               </h3>
             </div>
             <CForm>
@@ -198,13 +221,13 @@ const Register = () => {
                         name="Usua_NomUs"
                         onChange={handleInputChange}
                       ></CFormInput>
-                      {usernameAvailable === false && (
-                        <small style={{ color: 'red' }}>Usuario ya en uso</small>
-                      )}
-                      {usernameAvailable === true && (
-                        <small style={{ color: 'green' }}>Usuario disponible</small>
-                      )}
                     </CInputGroup>
+                    {usernameAvailable === false && (
+                      <small style={{ color: 'red' }}>Usuario ya en uso</small>
+                    )}
+                    {usernameAvailable === true && (
+                      <small style={{ color: 'green' }}>Usuario disponible</small>
+                    )}
                   </div>
                   <div className="w-50">
                     <CFormLabel>Correo electronico</CFormLabel>
@@ -219,13 +242,13 @@ const Register = () => {
                         name="Usua_Email"
                         onChange={handleInputChange}
                       ></CFormInput>
-                      {emailAvailable === false && (
-                        <small style={{ color: 'red' }}>Email ya en uso</small>
-                      )}
-                      {emailAvailable === true && (
-                        <small style={{ color: 'green' }}>Email disponible</small>
-                      )}
                     </CInputGroup>
+                    {emailAvailable === false && (
+                      <small style={{ color: 'red' }}>Email ya en uso</small>
+                    )}
+                    {emailAvailable === true && (
+                      <small style={{ color: 'green' }}>Email disponible</small>
+                    )}
                   </div>
                 </div>
               </CInputGroup>
@@ -252,13 +275,13 @@ const Register = () => {
             </CForm>
             <div>
               <CButton color="link" className="boton-link" onClick={() => navigate('/login')}>
-                Ya tienes cuenta ?
+                ¿ Ya tienes cuenta ?
               </CButton>
             </div>
           </CCardBody>
           <CCardFooter>
             <div className="caja-boton">
-              <CButton className="boton-login" onClick={handleSubmit}>
+              <CButton className="boton-generar" onClick={handleSubmit}>
                 Registrar
               </CButton>
             </div>
