@@ -30,11 +30,7 @@
 }
 
 
-.contador-proyectos{
-  display: flex;
-  justify-content: center;
 
-}
 
 .project-container {
   display: flex;
@@ -52,4 +48,23 @@
     background-color: rgba(0, 0, 0, 0.05);
     cursor:crosshair;
   }
+}
+
+.contador-proyectos {
+  display: flex;
+  justify-content: space-between;
+  align-items:flex-start;
+ 
+}
+
+/* Ambos lados ocupan el mismo espacio disponible */
+.vacio-spacer, 
+.contenedor-boton-derecha {
+  flex: 1; 
+}
+
+/* Alineamos el botón al final de su propio espacio */
+.contenedor-boton-derecha {
+  display: flex;
+  justify-content: flex-end;
 }

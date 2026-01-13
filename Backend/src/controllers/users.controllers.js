@@ -168,8 +168,6 @@ export const putUsers = async (req, res, next) => {
     const id = req.params.id;
     const data = req.body;
 
-    const parseU = userSchema.safeParse(data);
-
     if (
       !data.Usua_PrimN &&
       !data.Usua_PrimA &&
@@ -187,12 +185,6 @@ export const putUsers = async (req, res, next) => {
     const usernameExist = await getUserByusername(data.Usua_NomUs);
     if (usernameExist) {
       throwError(errors.userDuplicated);
-    }
-
-    if (!parseU.success) {
-      return res.status(400).json({
-        errors: parseU.error.issues,
-      });
     }
 
     const rows = await putU(id, data);

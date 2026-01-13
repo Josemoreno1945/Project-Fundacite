@@ -85,3 +85,23 @@
     }
 }
 
+.boton-ayuda{
+    margin-right: 10px;
+    background-color:#f7ff04;
+    color: rgb(0, 0, 0);
+    border-radius: 10px; // Hace los botones ovalados
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: darken(#f7ff04, 10%);
+        transform:scale(1.1);
+        color: rgb(0, 0, 0);
+    }
+
+    &:focus {
+        outline: 3px solid lighten(#f7ff04, 30%);
+        color: rgb(0, 0, 0);
+    }
+}

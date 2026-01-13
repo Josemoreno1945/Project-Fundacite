@@ -1,12 +1,27 @@
 import { useState, useEffect } from 'react'
 
-import { CCard, CCardBody, CCardHeader, CCol, CRow, CSpinner } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CRow,
+  CSpinner,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CButton,
+  CImage,
+} from '@coreui/react'
 import axios from 'axios'
 import { CChartPie } from '@coreui/react-chartjs'
 import '../../scss/dashboard.scss'
 import { useNavigate } from 'react-router-dom'
+import DashboardAyuda from '../../assets/images/manualdeusuario/dashboard (2).png'
 
 const Dashboard = () => {
+  const [imagenAyuda, setImagenAyuda] = useState(null)
+  const [ModalAyuda, setModalAyuda] = useState(false)
   const navigate = useNavigate()
   const [Paprobados, setPaprobados] = useState(null)
   const [Prechazados, setPrechazados] = useState(null)
@@ -213,9 +228,32 @@ const Dashboard = () => {
     return value
   }
 
+  const abrirModalConImagen = (imagen) => {
+    setImagenAyuda(imagen), setModalAyuda(true)
+  }
+
   return (
     <>
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+        <CModalBody>
+          {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalAyuda(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <div className="contador-proyectos">
+        <div className="vacio-spacer"></div>
         {/* Tarjeta de Resumen de Proyectos */}
         <CCol xs={12} sm={6}>
           <CCard className="mb-4 project-container">
@@ -281,6 +319,17 @@ const Dashboard = () => {
             </CCardBody>
           </CCard>
         </CCol>
+
+        <div className="contenedor-boton-derecha">
+          <CButton
+            className="boton-ayuda"
+            onClick={() => {
+              abrirModalConImagen(DashboardAyuda)
+            }}
+          >
+            ¿Ayuda?
+          </CButton>
+        </div>
       </div>
       {/* Gráfico de Distribución */}
       <div className="contador-categorias">

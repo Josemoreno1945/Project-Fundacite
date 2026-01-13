@@ -51,6 +51,14 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
 const ProyectosDetalle = () => {
+  const [usersVer, setusersVer] = useState({
+    Usua_PrimN: '',
+    Usua_PrimA: '',
+    Usua_NomUs: '',
+    Usua_Email: '',
+    Rol_Nombre: '',
+  })
+
   const [loadingAction, setLoadingAction] = useState(false)
   const [actionLabel, setActionLabel] = useState('')
 
@@ -80,6 +88,19 @@ const ProyectosDetalle = () => {
     location.state?.from || '/components/ProyectosPendientes' || '/components/Proyectos'
 
   useEffect(() => {
+    const UsuarioVer = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const result = await axios.get(`http://localhost:4000/users_inSesion`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        setusersVer(result.data)
+      } catch (err) {
+        console.error('Error al mostrar usuario:', err)
+      }
+    }
     const getidProyecto = async () => {
       try {
         const res = await axios.get(`http://localhost:4000/proyectos/${id}`)
@@ -89,6 +110,7 @@ const ProyectosDetalle = () => {
       }
     }
     getidProyecto()
+    UsuarioVer()
   }, [id])
 
   const getidProyecto = async () => {
@@ -564,16 +586,17 @@ const ProyectosDetalle = () => {
                 </CButton>
               </>
             )}
-            {proyecto[0]?.proy_statu === 'aprobado' && (
-              <CButton
-                className="boton-eliminar"
-                onClick={() => {
-                  setModalmensajeArchivado(true)
-                }}
-              >
-                Archivar
-              </CButton>
-            )}
+            {(proyecto[0]?.proy_statu === 'aprobado' && usersVer.Rol_Nombre === 'Administrador') ||
+              (usersVer.Rol_Nombre === 'Administrador principal' && (
+                <CButton
+                  className="boton-eliminar"
+                  onClick={() => {
+                    setModalmensajeArchivado(true)
+                  }}
+                >
+                  Archivar
+                </CButton>
+              ))}
 
             <CButton className="boton-descargar" onClick={openPdf}>
               Descargar PDF

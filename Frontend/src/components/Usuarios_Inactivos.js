@@ -51,6 +51,7 @@ import {
   CModalBody,
   CModalFooter,
   CModalHeader,
+  CImage,
 } from '@coreui/react'
 
 import '../scss/buscador.scss'
@@ -58,8 +59,12 @@ import '../scss/lista-usuarios.scss'
 import axios from 'axios'
 import '../scss/botones.scss'
 import Paginacion from './paginacion'
+import UsuarioInactivosAyuda from '../assets/images/manualdeusuario/usuarios inactivos.png'
 
 const Usuarios = () => {
+  const [imagenAyuda, setImagenAyuda] = useState(null)
+  const [ModalAyuda, setModalAyuda] = useState(false)
+
   const [Cargando, setCargando] = useState(true)
   const [loadingAction, setLoadingAction] = useState(false)
   const [actionLabel, setActionLabel] = useState('')
@@ -213,12 +218,14 @@ const Usuarios = () => {
   const submitEdit = async (e) => {
     setLoadingAction(true)
     setActionLabel('Editando...')
+
     // si lo llamas desde onClick sin evento, permite e ser opcional
     if (e && e.preventDefault) e.preventDefault()
     try {
       const token = localStorage.getItem('token')
       const payload = { ...editFormData }
-      await axios.put(`http://localhost:4000/users/${editingUserId}`, payload, {
+
+      await axios.put(`http://localhost:4000/users_editar/${editingUserId}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -321,8 +328,30 @@ const Usuarios = () => {
     }
     return value
   }
+
+  const abrirModalConImagen = (imagen) => {
+    setImagenAyuda(imagen), setModalAyuda(true)
+  }
   return (
     <>
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+        <CModalBody>
+          {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalAyuda(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <CModal
         visible={loadingAction}
         backdrop="static"
@@ -612,6 +641,22 @@ const Usuarios = () => {
           </div>
         </CModalFooter>
       </CModal>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <CButton
+          className="boton-ayuda"
+          onClick={() => {
+            abrirModalConImagen(UsuarioInactivosAyuda)
+          }}
+        >
+          ¿Ayuda?
+        </CButton>
+      </div>
 
       <div className="buscador">
         <CForm className="d-flex">

@@ -21,10 +21,13 @@ import {
   CCardFooter,
   CFormLabel,
   CSpinner,
+  CImage,
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
 import fundaciteLogo from '../../../assets/images/logoFundacite.png'
+import LoginAyuda from '../../../assets/images/manualdeusuario/login.png'
+import RecuperarAyuda from '../../../assets/images/manualdeusuario/recuperarContraseña.png'
 import { cilPencil } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import '../../../scss/login.scss'
@@ -33,6 +36,8 @@ import axios from 'axios'
 
 const Login = () => {
   const navigate = useNavigate()
+  const [imagenAyuda, setImagenAyuda] = useState(null)
+  const [ModalAyuda, setModalAyuda] = useState(false)
   // modal y mensaje de exito ---------------------------
   const [Modalexito, setModalexito] = useState(false)
 
@@ -111,8 +116,30 @@ const Login = () => {
     }
   }
 
+  const abrirModalConImagen = (imagen) => {
+    setImagenAyuda(imagen), setModalAyuda(true)
+  }
+
   return (
     <>
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+        <CModalBody>
+          {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalAyuda(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <CModal
         visible={loadingAction}
         backdrop="static"
@@ -152,8 +179,8 @@ const Login = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={modalRecuperar} onClose={() => setModalRecuperar(false)}>
-        <CModalHeader>Recuperar contraseña</CModalHeader>
+      <CModal backdrop="static" keyboard={false} alignment="center" visible={modalRecuperar}>
+        <CModalHeader closeButton={false}>Recuperar contraseña</CModalHeader>
         <CModalBody>
           <CFormLabel>Ingresa tu correo electronico</CFormLabel>
           <CFormInput
@@ -163,6 +190,14 @@ const Login = () => {
           />
         </CModalBody>
         <CModalFooter>
+          <CButton
+            className="boton-ayuda"
+            onClick={() => {
+              abrirModalConImagen(RecuperarAyuda)
+            }}
+          >
+            ¿Ayuda?
+          </CButton>
           <CButton
             className="boton-generar"
             onClick={() => {
@@ -204,6 +239,23 @@ const Login = () => {
           </div>
         </CModalFooter>
       </CModal>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          margin: '30px',
+        }}
+      >
+        <CButton
+          className="boton-ayuda"
+          onClick={() => {
+            abrirModalConImagen(LoginAyuda)
+          }}
+        >
+          ¿Ayuda?
+        </CButton>
+      </div>
 
       <div className="login-container">
         <CCard>

@@ -20,6 +20,7 @@ import {
   CCardFooter,
   CFormLabel,
   CSpinner,
+  CImage,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -34,10 +35,15 @@ import {
 import { useNavigate } from 'react-router-dom'
 import '../../../scss/login.scss'
 import '../../../scss/botones.scss'
+import RegistroAyuda from '../../../assets/images/manualdeusuario/registro.png'
 import axios from 'axios'
 
 const Register = () => {
   const navigate = useNavigate()
+
+  const [imagenAyuda, setImagenAyuda] = useState(null)
+  const [ModalAyuda, setModalAyuda] = useState(false)
+
   const [loadingAction, setLoadingAction] = useState(false)
   const [actionLabel, setActionLabel] = useState('')
 
@@ -121,8 +127,47 @@ const Register = () => {
       setActionLabel('')
     }
   }
+
+  const abrirModalConImagen = (imagen) => {
+    setImagenAyuda(imagen), setModalAyuda(true)
+  }
   return (
     <>
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+        <CModalBody>
+          {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalAyuda(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          margin: '30px',
+        }}
+      >
+        <CButton
+          className="boton-ayuda"
+          onClick={() => {
+            abrirModalConImagen(RegistroAyuda)
+          }}
+        >
+          ¿Ayuda?
+        </CButton>
+      </div>
+
       <CModal
         visible={loadingAction}
         backdrop="static"
