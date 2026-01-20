@@ -70,7 +70,7 @@ const Inicio = () => {
       <div>
         <CCard className="mb-4">
           <CCardHeader>
-            <h2>¿Qué es Fundacite?</h2>
+            <h2>¿Quienes somos?</h2>
           </CCardHeader>
           <CCardBody>
             <p>

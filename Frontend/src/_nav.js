@@ -120,8 +120,8 @@ const _nav_user = [
       },
       {
         component: CNavItem,
-        name: 'Lista de Proyectos',
-        to: '/components/Proyectos',
+        name: 'Mis Proyectos',
+        to: '/components/MisProyectos',
       },
     ],
   },

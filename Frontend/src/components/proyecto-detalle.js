@@ -586,8 +586,9 @@ const ProyectosDetalle = () => {
                 </CButton>
               </>
             )}
-            {(proyecto[0]?.proy_statu === 'aprobado' && usersVer.Rol_Nombre === 'Administrador') ||
-              (usersVer.Rol_Nombre === 'Administrador principal' && (
+            {proyecto[0]?.proy_statu === 'aprobado' &&
+              (usersVer.Rol_Nombre === 'Administrador' ||
+                usersVer.Rol_Nombre === 'Administrador principal') && (
                 <CButton
                   className="boton-eliminar"
                   onClick={() => {
@@ -596,7 +597,7 @@ const ProyectosDetalle = () => {
                 >
                   Archivar
                 </CButton>
-              ))}
+              )}
 
             <CButton className="boton-descargar" onClick={openPdf}>
               Descargar PDF

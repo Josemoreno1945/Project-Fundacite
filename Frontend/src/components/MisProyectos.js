@@ -32,17 +32,19 @@ import {
   CFormSelect,
   CButton,
   CSpinner,
+  CTableRow,
+  CTableDataCell,
   CModal,
   CModalHeader,
   CModalBody,
-  CImage,
   CModalFooter,
+  CImage,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import '../scss/proyectos.scss'
 import '../scss/botones.scss'
 import '../scss/buscador.scss'
-import ProyectoPendientes from '../assets/images/manualdeusuario/proyectos pendientes.png'
+import ProyectoAprobados from '../assets/images/manualdeusuario/lista de proyectos.png'
 import Paginacion from './paginacion'
 import axios from 'axios'
 
@@ -55,8 +57,11 @@ const Proyectos = () => {
   const [Cargando, setCargando] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 8
+
   const [proyectos, setProyectos] = useState([])
+
   const navigate = useNavigate()
+
   //FILTRO Y BUSQUEDA----------------------------------------------------------
   const [Busqueda, setBusqueda] = useState('')
   const [Filtro, setFiltro] = useState('')
@@ -64,16 +69,32 @@ const Proyectos = () => {
   const Buscaractivo = Filtroactivo && Busqueda.trim().length > 0
   //---------------------------------------------------------------------------
 
+  function getUserNameFromToken() {
+    const token = localStorage.getItem('token')
+    if (!token) return null
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      return payload.username
+    } catch (e) {
+      return null
+    }
+  }
+
   useEffect(() => {
     const obtenerProyectos = async () => {
       setCargando(true)
       try {
         const token = localStorage.getItem('token')
-        const res = await axios.get('http://localhost:4000/proyectos', {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const Usua_NomUs = getUserNameFromToken()
+        const res = await axios.post(
+          'http://localhost:4000/MisProyectos',
+          { Usua_NomUs },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        })
+        )
         setProyectos(res.data)
       } catch (error) {
         console.error('Error al obtener proyectos:', error)
@@ -87,17 +108,21 @@ const Proyectos = () => {
   const obtenerProyectos = async () => {
     try {
       const token = localStorage.getItem('token')
-      const res = await axios.get('http://localhost:4000/proyectos', {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const Usua_NomUs = getUserNameFromToken()
+      const res = await axios.post(
+        'http://localhost:4000/MisProyectos',
+        { Usua_NomUs },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      })
+      )
       setProyectos(res.data)
     } catch (error) {
       console.error('Error al obtener proyectos:', error)
     }
   }
-
   const totalPages = Math.max(1, Math.ceil(proyectos.length / pageSize))
   const start = (currentPage - 1) * pageSize
   const paginateProyectos = proyectos.slice(start, start + pageSize)
@@ -113,6 +138,7 @@ const Proyectos = () => {
   const handleBusquedaChange = (e) => {
     setBusqueda(e.target.value)
   }
+
   const HandleBuscar = async () => {
     setLoadingAction(true)
     setActionLabel('Buscando...')
@@ -120,7 +146,7 @@ const Proyectos = () => {
       if (Filtro === 'Titulo de proyecto') {
         const token = localStorage.getItem('token')
         const result = await axios.post(
-          'http://localhost:4000/FTituloPendiente',
+          'http://localhost:4000/FTituloAprobado',
           { Proy_Titul: Busqueda }, //'''''''''''''''''''''''''''''''
           {
             headers: {
@@ -199,7 +225,7 @@ const Proyectos = () => {
         <CButton
           className="boton-ayuda"
           onClick={() => {
-            abrirModalConImagen(ProyectoPendientes)
+            abrirModalConImagen(ProyectoAprobados)
           }}
         >
           ¿Ayuda?
@@ -222,11 +248,10 @@ const Proyectos = () => {
           </CButton>
         </CForm>
       </div>
-
       <CCard className="mb-4">
         <CCardHeader>
           <div className="box-buttom">
-            <div>Lista de Proyectos pendientes</div>
+            <div>Lista de Proyectos</div>
             <div>
               <CForm>
                 <CFormSelect
@@ -263,7 +288,7 @@ const Proyectos = () => {
                   key={p.Proy_Id}
                   onClick={() =>
                     navigate(`/ProyectosDetalle/${p.Proy_Id}`, {
-                      state: { from: '/components/ProyectosPendientes' },
+                      state: { from: '/components/MisProyectos' },
                     })
                   }
                 >

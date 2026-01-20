@@ -51,14 +51,19 @@ import {
   CModalBody,
   CModalFooter,
   CFormTextarea,
+  CImage,
 } from '@coreui/react'
 
 import '../scss/buscador.scss'
 import Paginacion from './paginacion'
 import '../scss/botones.scss'
+import CategoriasAyuda from '../assets/images/manualdeusuario/categorias.png'
 import axios from 'axios'
 
 const categorias = () => {
+  const [imagenAyuda, setImagenAyuda] = useState(null)
+  const [ModalAyuda, setModalAyuda] = useState(false)
+
   const [Cargando, setCargando] = useState(true)
 
   const [loadingAction, setLoadingAction] = useState(false)
@@ -269,8 +274,30 @@ const categorias = () => {
     return value
   }
 
+  const abrirModalConImagen = (imagen) => {
+    setImagenAyuda(imagen), setModalAyuda(true)
+  }
+
   return (
     <>
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+        <CModalBody>
+          {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalAyuda(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <CModal
         visible={loadingAction}
         backdrop="static"
@@ -457,6 +484,22 @@ const categorias = () => {
           </div>
         </CModalFooter>
       </CModal>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <CButton
+          className="boton-ayuda"
+          onClick={() => {
+            abrirModalConImagen(CategoriasAyuda)
+          }}
+        >
+          ¿Ayuda?
+        </CButton>
+      </div>
 
       <div className="buscador">
         <CForm className="d-flex">

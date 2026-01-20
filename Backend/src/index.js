@@ -11,11 +11,12 @@ import proyRoutes from "./routes/proy.routes.js";
 import catRoutes from "./routes/cate.routes.js";
 import TaRoutes from "./routes/TipoArch.routes.js";
 import RolRoutes from "./routes/roles.routes.js";
+import MisProyectos from "./routes/MisProyectos.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import morgan from "morgan";
 console.log(
   "PORT (env):",
-  process.env.PORT || PORT ? process.env.PORT || PORT : "<no-port>"
+  process.env.PORT || PORT ? process.env.PORT || PORT : "<no-port>",
 );
 // opcional: mostrar si existe DATABASE_URL (no imprimirla completa por seguridad)
 console.log("DATABASE_URL set:", !!process.env.DATABASE_URL);
@@ -26,6 +27,7 @@ app.use(cors());
 app.use(usersRoutes);
 app.use(docRoutes);
 app.use(proyRoutes);
+app.use(MisProyectos);
 app.use(catRoutes);
 app.use(TaRoutes);
 app.use(RolRoutes);

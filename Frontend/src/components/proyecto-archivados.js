@@ -35,15 +35,21 @@ import {
   CModal,
   CModalHeader,
   CModalBody,
+  CImage,
+  CModalFooter,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import '../scss/proyectos.scss'
 import '../scss/botones.scss'
 import '../scss/buscador.scss'
+import ProyectoArchivado from '../assets/images/manualdeusuario/proyectos archivados.png'
 import Paginacion from './paginacion'
 import axios from 'axios'
 
 const Proyectos = () => {
+  const [imagenAyuda, setImagenAyuda] = useState(null)
+  const [ModalAyuda, setModalAyuda] = useState(false)
+
   const [loadingAction, setLoadingAction] = useState(false)
   const [actionLabel, setActionLabel] = useState('')
   const [Cargando, setCargando] = useState(true)
@@ -147,8 +153,30 @@ const Proyectos = () => {
     }
     return value
   }
+
+  const abrirModalConImagen = (imagen) => {
+    setImagenAyuda(imagen), setModalAyuda(true)
+  }
   return (
     <>
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+        <CModalBody>
+          {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalAyuda(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <CModal
         visible={loadingAction}
         backdrop="static"
@@ -162,6 +190,22 @@ const Proyectos = () => {
           <span>{actionLabel}</span>
         </CModalBody>
       </CModal>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <CButton
+          className="boton-ayuda"
+          onClick={() => {
+            abrirModalConImagen(ProyectoArchivado)
+          }}
+        >
+          ¿Ayuda?
+        </CButton>
+      </div>
 
       <div className="buscador">
         <CForm className="d-flex">

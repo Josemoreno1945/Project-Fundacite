@@ -19,14 +19,19 @@ import {
   CModalFooter,
   CModalHeader,
   CSpinner,
+  CImage,
 } from '@coreui/react'
 import '../scss/registro-u.scss'
 import '../scss/botones.scss'
+import RegistroProyectoAyuda from '../assets/images/manualdeusuario/registrar proyecto.png'
 import axios from 'axios'
 import MyDropzone from './subirarchivos'
 import { useNavigate } from 'react-router-dom'
 
 const Registro_Proyectos = () => {
+  const [imagenAyuda, setImagenAyuda] = useState(null)
+  const [ModalAyuda, setModalAyuda] = useState(false)
+
   const [loadingAction, setLoadingAction] = useState(false)
   const [actionLabel, setActionLabel] = useState('')
 
@@ -195,8 +200,30 @@ const Registro_Proyectos = () => {
     }
   }
 
+  const abrirModalConImagen = (imagen) => {
+    setImagenAyuda(imagen), setModalAyuda(true)
+  }
+
   return (
     <>
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+        <CModalBody>
+          {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
+        </CModalBody>
+        <CModalFooter>
+          <div className="button-box">
+            <CButton
+              className="boton-regresar"
+              onClick={() => {
+                setModalAyuda(false)
+              }}
+            >
+              Cerrar
+            </CButton>
+          </div>
+        </CModalFooter>
+      </CModal>
+
       <CModal
         visible={loadingAction}
         backdrop="static"
@@ -251,6 +278,22 @@ const Registro_Proyectos = () => {
           </div>
         </CModalFooter>
       </CModal>
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <CButton
+          className="boton-ayuda"
+          onClick={() => {
+            abrirModalConImagen(RegistroProyectoAyuda)
+          }}
+        >
+          ¿Ayuda?
+        </CButton>
+      </div>
 
       <div className="proyecto-caja">
         <CCard className="mb-4">
