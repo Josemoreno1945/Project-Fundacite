@@ -206,7 +206,7 @@ const Registro_Proyectos = () => {
 
   return (
     <>
-      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="xl">
         <CModalBody>
           {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
         </CModalBody>

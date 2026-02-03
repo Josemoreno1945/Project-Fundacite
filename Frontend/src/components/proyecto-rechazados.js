@@ -227,7 +227,7 @@ const Proyectos = () => {
         <CCardHeader>
           <div className="box-buttom">
             <div> Lista de Proyectos Rechazados</div>
-            <div>
+            <div className="filtros-container">
               <CForm>
                 <CFormSelect
                   value={Filtro}
@@ -239,7 +239,7 @@ const Proyectos = () => {
                   <option>Titulo de proyecto</option>
                 </CFormSelect>
               </CForm>
-              <CButton className="boton-eliminar" onClick={() => limpiarFiltro()}>
+              <CButton className="eliminarfiltro boton-eliminar" onClick={() => limpiarFiltro()}>
                 Limpiar Filtro
               </CButton>
             </div>
@@ -254,7 +254,7 @@ const Proyectos = () => {
                 className="d-flex justify-content-center align-items-center"
                 style={{ gridColumn: '1 / -1', minHeight: '200px', width: '100%' }}
               >
-                No hay proyectos por ese nombre
+                No hay proyectos
               </div>
             ) : (
               paginateProyectos.map((p, index) => (

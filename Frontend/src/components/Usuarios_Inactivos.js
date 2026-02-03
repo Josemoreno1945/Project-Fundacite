@@ -680,7 +680,7 @@ const Usuarios = () => {
           <div className="box-buttom">
             <div>Usuarios Inactivos</div>
 
-            <div>
+            <div className="filtros-container">
               <CForm>
                 <CFormSelect
                   value={Filtro}
@@ -694,7 +694,7 @@ const Usuarios = () => {
                   <option>Rol</option>
                 </CFormSelect>
               </CForm>
-              <CButton className="boton-eliminar" onClick={() => limpiarFiltro()}>
+              <CButton className="eliminarfiltro boton-eliminar" onClick={() => limpiarFiltro()}>
                 Limpiar Filtro
               </CButton>
             </div>

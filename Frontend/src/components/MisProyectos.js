@@ -44,7 +44,7 @@ import { useNavigate } from 'react-router-dom'
 import '../scss/proyectos.scss'
 import '../scss/botones.scss'
 import '../scss/buscador.scss'
-import ProyectoAprobados from '../assets/images/manualdeusuario/lista de proyectos.png'
+import ProyectoAprobados from '../assets/images/manualdeusuario/misProyectos.png'
 import Paginacion from './paginacion'
 import axios from 'axios'
 
@@ -184,7 +184,7 @@ const Proyectos = () => {
 
   return (
     <>
-      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="lg">
+      <CModal visible={ModalAyuda} backdrop="static" keyboard={false} alignment="center" size="xl">
         <CModalBody>
           {imagenAyuda && <CImage className="d-block w-100" src={imagenAyuda} />}
         </CModalBody>
@@ -279,7 +279,7 @@ const Proyectos = () => {
                 className="d-flex justify-content-center align-items-center"
                 style={{ gridColumn: '1 / -1', minHeight: '200px', width: '100%' }}
               >
-                No hay proyectos por ese nombre
+                No hay proyectos
               </div>
             ) : (
               paginateProyectos.map((p, index) => (

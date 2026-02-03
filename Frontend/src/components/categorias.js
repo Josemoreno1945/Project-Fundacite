@@ -319,7 +319,7 @@ const categorias = () => {
         keyboard={false}
         onClose={() => setModalexito(false)}
       >
-        <CModalHeader>Mensaje</CModalHeader>
+        <CModalHeader closeButton={false}>Mensaje</CModalHeader>
         <CModalBody>
           <div>{String(Mensajeexito)}</div>
         </CModalBody>
@@ -346,7 +346,7 @@ const categorias = () => {
         keyboard={false}
         onClose={() => closeEditModal()}
       >
-        <CModalHeader>Editar categoria</CModalHeader>
+        <CModalHeader closeButton={false}>Editar categoria</CModalHeader>
         <CModalBody>
           <CForm>
             <CInputGroup className="mb-3">
@@ -399,7 +399,7 @@ const categorias = () => {
         keyboard={false}
         onClose={() => setModalError(false)}
       >
-        <CModalHeader>Error</CModalHeader>
+        <CModalHeader closeButton={false}>Error</CModalHeader>
         <CModalBody>
           {Array.isArray(MensajeError) ? (
             <ul>
@@ -434,7 +434,7 @@ const categorias = () => {
         keyboard={false}
         onClose={() => setModal_agg(false)}
       >
-        <CModalHeader>Agregar nueva categoria</CModalHeader>
+        <CModalHeader closeButton={false}>Agregar nueva categoria</CModalHeader>
         <CModalBody>
           <CForm>
             <CInputGroup className="mb-3">
@@ -527,7 +527,7 @@ const categorias = () => {
                 Agregar
               </CButton>
             </div>
-            <div>
+            <div className="filtros-container">
               <CForm>
                 <CFormSelect
                   value={Filtro}
@@ -539,7 +539,7 @@ const categorias = () => {
                   <option>Nombre de categoria</option>
                 </CFormSelect>
               </CForm>
-              <CButton className="boton-eliminar" onClick={() => limpiarFiltro()}>
+              <CButton className="eliminarfiltro boton-eliminar" onClick={() => limpiarFiltro()}>
                 Limpiar Filtro
               </CButton>
             </div>
