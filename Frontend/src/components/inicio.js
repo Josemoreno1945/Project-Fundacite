@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CCard,
   CCardBody,
@@ -14,11 +14,12 @@ import {
   CModalFooter,
   CModalHeader,
 } from '@coreui/react'
-
+import { jwtDecode } from 'jwt-decode'
 import '../scss/carrusel.scss'
 import img1 from '../assets/images/img1.jpeg'
 import img2 from '../assets/images/logoFundacite.png'
 import InicioAyuda from '../../../Frontend/src/assets/images/manualdeusuario/inicio.png'
+import InicioAyudaUser from '../../../Frontend/src/assets/images/manualdeusuario/inicioNormal.png'
 
 const imagenes = [img1, img2]
 
@@ -26,8 +27,32 @@ const Inicio = () => {
   const [imagenAyuda, setImagenAyuda] = useState(null)
   const [ModalAyuda, setModalAyuda] = useState(false)
 
-  const abrirModalConImagen = (imagen) => {
-    setImagenAyuda(imagen), setModalAyuda(true)
+  const abrirModalConImagen = () => {
+    try {
+      const rol = getUserRole()
+      if (rol === 2) {
+        setImagenAyuda(InicioAyudaUser), setModalAyuda(true)
+      } else {
+        setImagenAyuda(InicioAyuda), setModalAyuda(true)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getUserRole = () => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      return null
+    }
+    try {
+      const decodedToken = jwtDecode(token)
+      const rol = decodedToken.rol
+      return rol || null
+    } catch (error) {
+      console.error('Error al decodificar el token:', error)
+      return null
+    }
   }
 
   return (
@@ -60,7 +85,7 @@ const Inicio = () => {
         <CButton
           className="boton-ayuda"
           onClick={() => {
-            abrirModalConImagen(InicioAyuda)
+            abrirModalConImagen()
           }}
         >
           ¿Ayuda?
